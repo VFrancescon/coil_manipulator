@@ -112,7 +112,7 @@ namespace CppLinuxSerial {
 
         ConfigureTermios();
 
-		// std::cout << "COM port opened successfully." << std::endl;
+		std::cout << "COM port opened successfully." << std::endl;
         state_ = State::OPEN;
 	}
 
@@ -132,7 +132,7 @@ namespace CppLinuxSerial {
 
 		//================= (.c_cflag) ===============//
 
-		tty.c_cflag     &=  ~PARENB;       	// No parity bit is added to the output characters
+		tty.c_cflag     |=  PARENB;       	// No parity bit is added to the output characters
 		tty.c_cflag     &=  ~CSTOPB;		// Only one stop-bit is used
 		tty.c_cflag     &=  ~CSIZE;			// CSIZE is a mask for the number of bits per character
 		tty.c_cflag     |=  CS8;			// Set to 8 bits per character
@@ -430,8 +430,9 @@ namespace CppLinuxSerial {
         // We provide the underlying raw array from the readBuffer_ vector to this C api.
         // This will work because we do not delete/resize the vector while this method
         // is called
+		std::cout << "We got to the before the reading call.\n";
 		ssize_t n = read(fileDesc_, &readBuffer_[0], readBufferSize_B_);
-
+		std::cout << "We got to the after the reading call.\n";
 		// Error Handling
 		if(n < 0) {
 			// Read was unsuccessful
@@ -446,7 +447,7 @@ namespace CppLinuxSerial {
             data = std::string(&readBuffer_[0], n);
 			//std::cout << *str << " and size of string =" << str->size() << "\r\n";
 		}
-
+		std::cout << "Function cleared\n";
 		// If code reaches here, read must of been successful
 	}
 
