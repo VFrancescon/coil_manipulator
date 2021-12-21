@@ -20,12 +20,14 @@ void MainWindow::on_Field_Current_Toggle_stateChanged(int arg1)
 {
     if(!arg1){
         //qDebug() << "Box is off\n";
-        ui->A1_Top_Label->setText("Field");
+        ui->CF_Label_CSV->setText("Field");
+        ui->CF_Label_MAN->setText("Field");
         FieldToggle = true;
     }
     else{
         //qDebug() << "Box is on\n";
-        ui->A1_Top_Label->setText("Current");
+        ui->CF_Label_CSV->setText("Current");
+        ui->CF_Label_MAN->setText("Current");
         FieldToggle = false;
     }
 
@@ -111,28 +113,66 @@ void MainWindow::on_Z1_SpinBox_editingFinished()
 
 
 
-void MainWindow::on_csvInput1_released()
+void MainWindow::on_csvInputX1_released()
 {
 
     /* PROPER version to ship.
-     *
+
      * FileName = FileDialog->getOpenFileName(this, "CSV File Path", "/home",
                                             tr("Csv files (*.csv)"));
     */
-    //hacky fixed path so I don't have to click has many times every test
+    //hacky fixed path so I don't have to click as many times every test
     FileName = FileDialog->getOpenFileName(this, "CSV File Path", "/home/vittorio/coil_manipulator",
                                                 tr("Csv files (*.csv)"));
+    std::string filepath = FileName.toStdString();
 
-
-    /*To whoever is reading this, running this file dialog will print a
-       "GtkDialog mapped without a transient parent. This is discouraged."
+    /*
+    To whoever is reading this, running this file dialog will print a
+       "GtkDialog mapped without a transient parent. This is discouraged." prompt
     According to the Qt forums, this is a bug. it's nothing major so I will ignore it for now.
     */
 
-    qDebug() << "File name (or path?) is: " << FileName << "\n";
+    //qDebug() << "File name (or path?) is: " << FileName << "\n";
 
-    csv_input_stream = std::fopen(FileName.toStdString(), "w");
+    csv_input.open(filepath, std::ifstream::in);
+    if(!csv_input.is_open()){
+        qDebug() << "Failed to open file: " << FileName << "\n";
+    }
+
+    std::string line;
+    std::getline(csv_input, line); //skip first line
+
+    while ( std::getline(csv_input, line) ){
+
+        if(line.empty()) break;
+        std::stringstream iss(line);
+        std::string lineStream;
+        std::vector<int> row;
+        while( std::getline(iss, lineStream, ',') ){
+            row.push_back(std::stoi(lineStream));
+        }
+        csv_col1.push_back(row[0]);
+        csv_col2.push_back(row[1]);
+        csv_col3.push_back(row[2]);
+
+    }
+
+    qDebug() << "Printing results now\n";
+    int vec_size = csv_col1.size();
+
+    for(int i = 0; i < vec_size; i++){
+        qDebug() << "Col1: " << csv_col1[i] << "Col2: " << csv_col2[i] << "Col3: " << csv_col3[i] << "\n";
+    }
 
 
+}
 
+void MainWindow::on_stepButton_released()
+{
+    step_value = ui->stepBox->value();
+    if(step_value == 0) {
+        qDebug() << "Must enter a positive integer\n";
+        return;
+    }
+    qDebug() << "Stepping through first " << step_value - 1 << "indeces of vectors\n";
 }

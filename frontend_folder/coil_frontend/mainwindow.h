@@ -9,7 +9,11 @@
 #include "fancyslider.h"
 
 // C/C++ Headers
+#include <iostream>
 #include <fstream>
+#include <vector>
+#include <string>
+#include <sstream>
 
 #define CHECKBOX_ON 2
 #define CHECKBOX_OFF 0
@@ -31,6 +35,12 @@ public:
     int y1_pos=0;
     int z1_pos=0;
 
+    std::vector<int> csv_col1;
+    std::vector<int> csv_col2;
+    std::vector<int> csv_col3;
+
+    int step_value = 0;
+
 private slots:
 
     void on_Field_Current_Toggle_stateChanged(int arg1);
@@ -51,13 +61,15 @@ private slots:
 //    void on_Z2_Slider_sliderReleased();
 //    void on_Z2_SpinBox_editingFinished();
 
-    void on_csvInput1_released();
+    void on_csvInputX1_released();
+
+    void on_stepButton_released();
 
 private:
     Ui::MainWindow *ui;
     QString FileName;
     QFileDialog *FileDialog;
-    std::ifstream csv_input_stream;
+    std::ifstream csv_input;
 
 };
 
