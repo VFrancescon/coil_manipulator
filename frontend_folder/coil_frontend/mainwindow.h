@@ -6,7 +6,18 @@
 #include <QDebug>
 #include <QString>
 #include <QFileDialog>
+#include <QDialog>
+#include <QGraphicsView>
+#include <QPainter>
+#include <QPointF>
+#include <QGraphicsItem>
+#include <QPolygonF>
+
+// Custom Qt Headers
 #include "fancyslider.h"
+#include "clickablerect.h"
+#include "clickableview.h"
+
 
 // C/C++ Headers
 #include <iostream>
@@ -30,6 +41,8 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
+
+    /*File/Manual Control variables below */
     bool FieldToggle = true;
     int x1_pos=0;
     int y1_pos=0;
@@ -40,6 +53,15 @@ public:
     std::vector<int> csv_col3;
 
     int step_value = 0;
+    /*File/Manual Control variables above */
+
+    /*Drag/Drop Control members below */
+    QGraphicsScene *scene;
+    QGraphicsRectItem *rect;
+    QGraphicsRectItem *rect1;
+    ClickableRect *rect2;
+
+
 
 private slots:
 

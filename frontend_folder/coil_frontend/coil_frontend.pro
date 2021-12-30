@@ -26,11 +26,15 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
-    fancyslider.cpp
+    fancyslider.cpp \
+    clickablerect.cpp \
+    clickableview.cpp
 
 HEADERS += \
         mainwindow.h \
-    fancyslider.h
+    fancyslider.h \
+    clickablerect.h \
+    clickableview.h
 
 FORMS += \
         mainwindow.ui

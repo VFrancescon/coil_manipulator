@@ -7,7 +7,51 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     QFileDialog *FileDialog = new QFileDialog;
+    //setOption is meant to stop nutils from throwing errors, but does not work
     FileDialog->setOption(QFileDialog::DontUseNativeDialog, true);
+
+    /*
+    Graphics view setup
+    scene is a pointer instance of qgraphics scene
+    that we pair to a widget through ui->WidgetName->setscene
+    */
+    scene = new QGraphicsScene(this);
+    ui->graphicsViewL1->setScene(scene);
+
+
+
+    //brushes below
+    QBrush greenBrush(Qt::green);
+    QBrush blueBrush(Qt::blue);
+    QBrush redBrush(Qt::red);
+    QPen outlinePen(Qt::black);
+    outlinePen.setWidth(2);
+
+    //rect = scene->addRect(0,0, 50,50, outlinePen, greenBrush);
+    rect = new QGraphicsRectItem(0,0,20,20);
+    rect->setPos(100,200);
+    scene->addItem(rect);
+
+    rect1 = new QGraphicsRectItem(0,0,30,30);
+    rect1->setPos(0,0);
+    //scene->addItem(rect1);
+
+    rect2 = new ClickableRect(0,0,20,20);
+    rect2->setPos(0,0);
+    scene->addItem(rect2);
+
+    rect->setBrush(greenBrush);
+    rect->setPen(outlinePen);
+    //rect->setFlag(QGraphicsItem::ItemIsMovable);
+
+    rect1->setBrush(blueBrush);
+    rect1->setPen(outlinePen);
+    //rect1->setFlag(QGraphicsItem::ItemIsMovable);
+
+    rect2->setBrush(redBrush);
+    rect2->setPen(outlinePen);
+    //rect2->setFlag(QGraphicsItem::ItemIsMovable);
+
 }
 
 MainWindow::~MainWindow()
