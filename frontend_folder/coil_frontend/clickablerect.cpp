@@ -11,3 +11,11 @@ void ClickableRect::mousePressEvent(QMouseEvent *event){
     //QGraphicsRectItem::mouseReleaseEvent(event);
 
 }
+
+void ClickableRect::dragMoveEvent(QGraphicsSceneDragDropEvent *event){
+    qDebug() << "Rectangle is being dragged\n";
+}
+
+void ClickableRect::dropEvent(QGraphicsSceneDragDropEvent *event){
+    qDebug() << "Rectangle is being dropped\n";
+}

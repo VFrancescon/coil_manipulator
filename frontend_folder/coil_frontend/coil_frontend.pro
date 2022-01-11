@@ -24,6 +24,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 
 SOURCES += \
+    dragdopscene.cpp \
         main.cpp \
         mainwindow.cpp \
     fancyslider.cpp \
@@ -31,6 +32,7 @@ SOURCES += \
     clickableview.cpp
 
 HEADERS += \
+    dragdopscene.h \
         mainwindow.h \
     fancyslider.h \
     clickablerect.h \

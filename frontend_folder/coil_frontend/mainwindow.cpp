@@ -17,7 +17,7 @@ MainWindow::MainWindow(QWidget *parent) :
     */
     scene = new QGraphicsScene(this);
     ui->graphicsViewL1->setScene(scene);
-
+    ui->graphicsViewL1->setDragMode(QGraphicsView::NoDrag);
 
 
     //brushes below
@@ -29,15 +29,15 @@ MainWindow::MainWindow(QWidget *parent) :
 
     //rect = scene->addRect(0,0, 50,50, outlinePen, greenBrush);
     rect = new QGraphicsRectItem(0,0,20,20);
-    rect->setPos(100,200);
+    rect->setPos(100,100);
     scene->addItem(rect);
 
-    rect1 = new QGraphicsRectItem(0,0,30,30);
-    rect1->setPos(0,0);
-    //scene->addItem(rect1);
+    rect1 = new QGraphicsRectItem(0,0,20,20);
+    rect1->setPos(100,50);
+    scene->addItem(rect1);
 
     rect2 = new ClickableRect(0,0,20,20);
-    rect2->setPos(0,0);
+    rect2->setPos(100,0);
     scene->addItem(rect2);
 
     rect->setBrush(greenBrush);
@@ -50,7 +50,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     rect2->setBrush(redBrush);
     rect2->setPen(outlinePen);
-    //rect2->setFlag(QGraphicsItem::ItemIsMovable);
+    rect2->setFlag(QGraphicsItem::ItemIsMovable);
 
 }
 
