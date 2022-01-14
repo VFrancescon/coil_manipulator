@@ -12,11 +12,14 @@
 #include <QPointF>
 #include <QGraphicsItem>
 #include <QPolygonF>
+#include <QLineF>
+#include <QGraphicsLineItem>
 
 // Custom Qt Headers
 #include "fancyslider.h"
 #include "clickablerect.h"
 #include "clickableview.h"
+#include "arcitem.h"
 
 
 // C/C++ Headers
@@ -57,11 +60,20 @@ public:
 
     /*Drag/Drop Control members below */
     QGraphicsScene *scene;
-    QGraphicsRectItem *rect;
-    QGraphicsRectItem *rect1;
-    ClickableRect *rect2;
+//    QGraphicsRectItem *rect;
+//    QGraphicsRectItem *rect1;
+//    ClickableRect *rect2;
 
+    ClickableRect *green_rect;
+    ClickableRect *blue_rect;
+    ClickableRect *red_rect;
+    QLineF *line;
 
+    ArcItem *arc_l;
+
+    QPointF green_rect_pos, blue_rect_pos, red_rect_pos;
+    QGraphicsLineItem *line_item;
+    QPainter *painter;
 
 private slots:
 

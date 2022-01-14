@@ -9,11 +9,11 @@
 * Formatted message can be sent
 * No reception verified yet
 * Most of the documentation transcribed on Notion
-* Initial Frontend Design
+* Visual manipulation of tentacle in progress
 * File (csv) and Manual input prototype written
 
 * Screenshots
-![GUI_Alpha1](images/frontend_alpha1.png)
+![GUI_Alpha1](images/frontend_alpha2.png)
 
 # Credits
 * [Geoffry Hunter](https://github.com/gbmhunter/CppLinuxSerial) for the Serial Comm C++ Class

@@ -27,30 +27,68 @@ MainWindow::MainWindow(QWidget *parent) :
     QPen outlinePen(Qt::black);
     outlinePen.setWidth(2);
 
-    //rect = scene->addRect(0,0, 50,50, outlinePen, greenBrush);
-    rect = new QGraphicsRectItem(0,0,20,20);
-    rect->setPos(100,100);
-    scene->addItem(rect);
 
-    rect1 = new QGraphicsRectItem(0,0,20,20);
-    rect1->setPos(100,50);
-    scene->addItem(rect1);
 
-    rect2 = new ClickableRect(0,0,20,20);
-    rect2->setPos(100,0);
-    scene->addItem(rect2);
+    red_rect = new ClickableRect(0,0,20,20);
+    red_rect->setPos(150,0);
+    scene->addItem(red_rect);
+    red_rect->setBrush(redBrush);
+    red_rect->setPen(outlinePen);
 
-    rect->setBrush(greenBrush);
-    rect->setPen(outlinePen);
-    //rect->setFlag(QGraphicsItem::ItemIsMovable);
+    blue_rect = new ClickableRect(0,0,20,20);
+    blue_rect->setPos(100,100);
+    scene->addItem(blue_rect);
+    blue_rect->setBrush(blueBrush);
+    blue_rect->setPen(outlinePen);
 
-    rect1->setBrush(blueBrush);
-    rect1->setPen(outlinePen);
-    //rect1->setFlag(QGraphicsItem::ItemIsMovable);
+    green_rect = new ClickableRect(0,0,20,20);
+    green_rect->setPos(100,200);
+    scene->addItem(green_rect);
+    green_rect->setBrush(greenBrush);
+    green_rect->setPen(outlinePen);
 
-    rect2->setBrush(redBrush);
-    rect2->setPen(outlinePen);
-    rect2->setFlag(QGraphicsItem::ItemIsMovable);
+    green_rect_pos = green_rect->scenePos();
+    blue_rect_pos = blue_rect->scenePos();
+    red_rect_pos = red_rect->scenePos();
+
+    QPointF p(10,10);
+
+    green_rect_pos += p;
+    red_rect_pos += p;
+    blue_rect_pos += p;
+
+    line = new QLineF(red_rect_pos, blue_rect_pos);
+    line_item = new QGraphicsLineItem(*line);
+    scene->addItem(line_item);
+    line_item->setPen(outlinePen);
+
+    int start_angle = 90*16;
+    int end_angle = 180*16;
+    int span = (end_angle-start_angle);
+
+
+    int h = (100 - 0) * 2;
+    int w = (150 - 100) * 2;
+
+    arc_l = new ArcItem(blue_rect_pos.x(), blue_rect_pos.y() - h/2 , w, h);
+    arc_l->setSpanAngle(span);
+    arc_l->setStartAngle(start_angle);
+    scene->addItem(arc_l);
+    arc_l->setBrush(Qt::black);
+    arc_l->setPen(outlinePen);
+    //arc_l->paint(painter, 0, 0);
+
+//    int start_angle1 = 90*16;
+//    int end_angle1 = 180*16;
+//    int span1 = (end_angle1-start_angle1);
+
+//    ArcItem *arc_l1 = new ArcItem(blue_rect_pos.x()-50, blue_rect_pos.y()-50,100,100);
+//    arc_l1->setSpanAngle(span1);
+//    arc_l1->setStartAngle(start_angle1);
+//    scene->addItem(arc_l1);
+//    arc_l1->setBrush(Qt::blue);
+//    arc_l1->setPen(outlinePen);
+
 
 }
 

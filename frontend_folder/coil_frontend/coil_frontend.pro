@@ -29,14 +29,16 @@ SOURCES += \
         mainwindow.cpp \
     fancyslider.cpp \
     clickablerect.cpp \
-    clickableview.cpp
+    clickableview.cpp \
+    arcitem.cpp
 
 HEADERS += \
     dragdopscene.h \
         mainwindow.h \
     fancyslider.h \
     clickablerect.h \
-    clickableview.h
+    clickableview.h \
+    arcitem.h
 
 FORMS += \
         mainwindow.ui
