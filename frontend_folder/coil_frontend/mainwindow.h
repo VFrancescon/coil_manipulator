@@ -20,7 +20,7 @@
 #include "clickablerect.h"
 #include "clickableview.h"
 #include "arcitem.h"
-
+#include "interactive_scene.h"
 
 // C/C++ Headers
 #include <iostream>
@@ -59,7 +59,8 @@ public:
     /*File/Manual Control variables above */
 
     /*Drag/Drop Control members below */
-    QGraphicsScene *scene;
+//    QGraphicsScene *scene;
+    interactive_scene *scene;
 //    QGraphicsRectItem *rect;
 //    QGraphicsRectItem *rect1;
 //    ClickableRect *rect2;
@@ -98,6 +99,10 @@ private slots:
     void on_csvInputX1_released();
 
     void on_stepButton_released();
+
+    /* Rectangle Coordinate Change slots */
+    void on_xChanged();
+    void on_yChanged();
 
 private:
     Ui::MainWindow *ui;

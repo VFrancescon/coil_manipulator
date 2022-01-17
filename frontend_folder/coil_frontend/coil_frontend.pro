@@ -24,21 +24,21 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 
 SOURCES += \
-    dragdopscene.cpp \
         main.cpp \
         mainwindow.cpp \
     fancyslider.cpp \
     clickablerect.cpp \
     clickableview.cpp \
-    arcitem.cpp
+    arcitem.cpp \
+    interactive_scene.cpp
 
 HEADERS += \
-    dragdopscene.h \
         mainwindow.h \
     fancyslider.h \
     clickablerect.h \
     clickableview.h \
-    arcitem.h
+    arcitem.h \
+    interactive_scene.h
 
 FORMS += \
         mainwindow.ui

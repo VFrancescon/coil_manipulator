@@ -2,19 +2,19 @@
 #define CLICKABLEVIEW_H
 
 #include <QGraphicsView>
+#include <QMouseEvent>
 #include <QMainWindow>
 #include <QDebug>
 
 class ClickableView : public QGraphicsView
 {
 protected:
-    //void mousePressEvent(QMouseEvent *event) override;
     void wheelEvent(QWheelEvent *) override;
     void keyPressEvent(QKeyEvent * e) override;
-    void scrollContentsBy(int,int) override;
+    //void scrollContentsBy(int,int) override;
 
     void resizeEvent(QResizeEvent *) override;
-    void showEvent(QShowEvent *) override;
+//    void showEvent(QShowEvent *) override;
 
 public:
     //ClickableView();

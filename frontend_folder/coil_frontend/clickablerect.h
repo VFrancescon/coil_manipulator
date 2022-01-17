@@ -17,6 +17,9 @@ protected:
 //    void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
 
     QVariant itemChange(GraphicsItemChange change, const QVariant &value) override;
+    QPointF UpdateCoordinates(QPointF pos);
+    QPointF curr_pos;
+
     /*
     Big Revelation: Drag and Drop events are for dragging and dropping THINGS
     INTO the widget. Moving an item around needs to used MousePress and MouseRelease Events.
@@ -28,6 +31,7 @@ protected:
 public:
     //ClickableRect();
     explicit ClickableRect(qreal x, qreal y, qreal width, qreal height, QGraphicsItem *parent = nullptr);
+    explicit ClickableRect(const QRectF &rect, QGraphicsItem *parent = nullptr);
 };
 
 #endif // CLICKABLERECT_H

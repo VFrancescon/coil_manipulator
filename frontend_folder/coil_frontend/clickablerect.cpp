@@ -2,9 +2,13 @@
 
 //ClickableRect::ClickableRect(){}
 
-ClickableRect::ClickableRect(qreal x, qreal y, qreal width, qreal height, QGraphicsItem *parent)
-    : QGraphicsRectItem(x, y, width, height, parent)
+ClickableRect::ClickableRect(qreal x, qreal y, qreal width, qreal height, QGraphicsItem *parent) : QGraphicsRectItem(x, y, width, height, parent)
 {
+    setFlag(GraphicsItemFlag::ItemSendsScenePositionChanges);
+    setFlag(QGraphicsItem::ItemIsMovable);
+}
+
+ClickableRect::ClickableRect(const QRectF &rect, QGraphicsItem *parent) : QGraphicsRectItem(rect, parent){
     setFlag(GraphicsItemFlag::ItemSendsScenePositionChanges);
     setFlag(QGraphicsItem::ItemIsMovable);
 }
@@ -58,19 +62,24 @@ QVariant ClickableRect::itemChange(GraphicsItemChange change, const QVariant &va
             //qDebug() << "Item pos has changed";
             QPointF newPos = value.toPointF();
             QRectF rect = scene()->sceneRect();
-            qDebug() << "1st IF New pos is: x = " << newPos.x() << " y = " << newPos.y() << "\n";
+            //qDebug() << "1st IF New pos is: x = " << newPos.x() << " y = " << newPos.y() << "\n";
+            curr_pos = this->UpdateCoordinates(newPos);
             if (!rect.contains(newPos)) {
                 // Keep the item inside the scene rect.
                 newPos.setX(qMin(rect.right(), qMax(newPos.x(), rect.left())));
                 newPos.setY(qMin(rect.bottom(), qMax(newPos.y(), rect.top())));
-
-                //qDebug() << "2nd IF New pos is: x = " << newPos.x() << " y = " << newPos.y() << "\n";
+              //qDebug() << "2nd IF New pos is: x = " << newPos.x() << " y = " << newPos.y() << "\n";
                 return newPos;
             }
         }
         return QGraphicsItem::itemChange(change, value);
 
 }
+
+QPointF ClickableRect::UpdateCoordinates(QPointF pos){
+    return pos;
+}
+
 //void ClickableRect::dragMoveEvent(QGraphicsSceneDragDropEvent *event){
 //    qDebug() << "Rectangle is being dragged\n";
 //    event->

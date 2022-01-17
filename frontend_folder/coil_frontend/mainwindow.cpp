@@ -15,67 +15,74 @@ MainWindow::MainWindow(QWidget *parent) :
     scene is a pointer instance of qgraphics scene
     that we pair to a widget through ui->WidgetName->setscene
     */
-    scene = new QGraphicsScene(this);
+//    scene = new QGraphicsScene(this);
+//    QRectF scene_rect(0,0,300,500);
+//    scene = new interactive_scene(scene_rect, this);
+    scene = new interactive_scene(this);
     ui->graphicsViewL1->setScene(scene);
-    ui->graphicsViewL1->setDragMode(QGraphicsView::NoDrag);
+    scene->setup_rectangles();
+    scene->setup_arcitem();
+    //ui->graphicsViewL1->setDragMode(QGraphicsView::NoDrag);
 
 
     //brushes below
-    QBrush greenBrush(Qt::green);
-    QBrush blueBrush(Qt::blue);
-    QBrush redBrush(Qt::red);
-    QPen outlinePen(Qt::black);
-    outlinePen.setWidth(2);
+//    QBrush greenBrush(Qt::green);
+//    QBrush blueBrush(Qt::blue);
+//    QBrush redBrush(Qt::red);
+//    QPen outlinePen(Qt::black);
+//    outlinePen.setWidth(2);
 
 
 
-    red_rect = new ClickableRect(0,0,20,20);
-    red_rect->setPos(150,0);
-    scene->addItem(red_rect);
-    red_rect->setBrush(redBrush);
-    red_rect->setPen(outlinePen);
+//    red_rect = new ClickableRect(0,0,20,20);
+//    red_rect->setPos(150,0);
+//    scene->addItem(red_rect);
+//    red_rect->setBrush(redBrush);
+//    red_rect->setPen(outlinePen);
 
-    blue_rect = new ClickableRect(0,0,20,20);
-    blue_rect->setPos(100,100);
-    scene->addItem(blue_rect);
-    blue_rect->setBrush(blueBrush);
-    blue_rect->setPen(outlinePen);
+//    blue_rect = new ClickableRect(0,0,20,20);
+//    blue_rect->setPos(100,100);
+//    scene->addItem(blue_rect);
+//    blue_rect->setBrush(blueBrush);
+//    blue_rect->setPen(outlinePen);
 
-    green_rect = new ClickableRect(0,0,20,20);
-    green_rect->setPos(100,200);
-    scene->addItem(green_rect);
-    green_rect->setBrush(greenBrush);
-    green_rect->setPen(outlinePen);
+//    green_rect = new ClickableRect(0,0,20,20);
+//    green_rect->setPos(100,200);
+//    scene->addItem(green_rect);
+//    green_rect->setBrush(greenBrush);
+//    green_rect->setPen(outlinePen);
 
-    green_rect_pos = green_rect->scenePos();
-    blue_rect_pos = blue_rect->scenePos();
-    red_rect_pos = red_rect->scenePos();
+//    green_rect_pos = green_rect->scenePos();
+//    blue_rect_pos = blue_rect->scenePos();
+//    red_rect_pos = red_rect->scenePos();
 
-    QPointF p(10,10);
+//    QPointF p(10,10);
 
-    green_rect_pos += p;
-    red_rect_pos += p;
-    blue_rect_pos += p;
-
-    line = new QLineF(red_rect_pos, blue_rect_pos);
-    line_item = new QGraphicsLineItem(*line);
-    scene->addItem(line_item);
-    line_item->setPen(outlinePen);
-
-    int start_angle = 90*16;
-    int end_angle = 180*16;
-    int span = (end_angle-start_angle);
+//    green_rect_pos += p;
+//    red_rect_pos += p;
+//    blue_rect_pos += p;
 
 
-    int h = (100 - 0) * 2;
-    int w = (150 - 100) * 2;
 
-    arc_l = new ArcItem(blue_rect_pos.x(), blue_rect_pos.y() - h/2 , w, h);
-    arc_l->setSpanAngle(span);
-    arc_l->setStartAngle(start_angle);
-    scene->addItem(arc_l);
-    arc_l->setBrush(Qt::black);
-    arc_l->setPen(outlinePen);
+//    line = new QLineF(red_rect_pos, blue_rect_pos);
+//    line_item = new QGraphicsLineItem(*line);
+//    scene->addItem(line_item);
+////    line_item->setPen(outlinePen);
+
+//    int start_angle = 90*16;
+//    int end_angle = 180*16;
+//    int span = (end_angle-start_angle);
+
+
+//    int h = (100 - 0) * 2;
+//    int w = (150 - 100) * 2;
+
+//    arc_l = new ArcItem(blue_rect_pos.x(), blue_rect_pos.y() - h/2 , w, h);
+//    arc_l->setSpanAngle(span);
+//    arc_l->setStartAngle(start_angle);
+//    scene->addItem(arc_l);
+//    arc_l->setBrush(Qt::black);
+////    arc_l->setPen(outlinePen);
     //arc_l->paint(painter, 0, 0);
 
 //    int start_angle1 = 90*16;
@@ -97,6 +104,12 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+void MainWindow::on_xChanged(){
+    qDebug() << "Yup. received x change";
+}
+void MainWindow::on_yChanged(){
+    qDebug() << "Yup. received y change";
+}
 
 void MainWindow::on_Field_Current_Toggle_stateChanged(int arg1)
 {
