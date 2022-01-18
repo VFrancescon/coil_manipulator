@@ -11,10 +11,8 @@ class ClickableView : public QGraphicsView
 protected:
     void wheelEvent(QWheelEvent *) override;
     void keyPressEvent(QKeyEvent * e) override;
-    //void scrollContentsBy(int,int) override;
 
     void resizeEvent(QResizeEvent *) override;
-//    void showEvent(QShowEvent *) override;
 
 public:
     //ClickableView();

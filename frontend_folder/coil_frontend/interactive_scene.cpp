@@ -12,7 +12,7 @@ interactive_scene::interactive_scene(const QRectF &sceneRect, QObject *parent) :
 
 }
 
-void interactive_scene::setup_rectangles(){
+void interactive_scene::setupRectangles(){
     QBrush greenBrush(Qt::green);
     QBrush blueBrush(Qt::blue);
     QBrush redBrush(Qt::red);
@@ -48,26 +48,44 @@ void interactive_scene::setup_rectangles(){
 
 }
 
-void interactive_scene::setup_arcitem(){
+void interactive_scene::setupTopArc(){
     QBrush greenBrush(Qt::green);
     QBrush blueBrush(Qt::blue);
     QBrush redBrush(Qt::red);
     QPen outlinePen(Qt::black);
     outlinePen.setWidth(2);
 
-    int start_angle = 90*16;
-    int end_angle = 180*16;
-    int span = (end_angle-start_angle);
-
+    this->calculate_arc_angles(1);
     int h = abs((blue_rect_pos.y() - red_rect_pos.y()) * 2);
     int w = abs((blue_rect_pos.x() - red_rect_pos.x()) * 2);
 
     arc_top = new ArcItem(blue_rect_pos.x(), blue_rect_pos.y() - h/2 , w, h);
-    arc_top->setSpanAngle(span);
-    arc_top->setStartAngle(start_angle);
+    arc_top->setSpanAngle(top_span_angle*16);
+    arc_top->setStartAngle(top_start_angle*16);
     this->addItem(arc_top);
     arc_top->setBrush(Qt::black);
     arc_top->setPen(outlinePen);
+
+
+}
+
+void interactive_scene::setupBottomArc(){
+    QBrush greenBrush(Qt::green);
+    QBrush blueBrush(Qt::blue);
+    QBrush redBrush(Qt::red);
+    QPen outlinePen(Qt::black);
+    outlinePen.setWidth(2);
+
+    this->calculate_arc_angles(2);
+    int h = abs((blue_rect_pos.y() - green_rect_pos.y()) * 2);
+    int w = abs((blue_rect_pos.x() - green_rect_pos.x()) * 2);
+
+    arc_bottom = new ArcItem(blue_rect_pos.x(), blue_rect_pos.y() - h/2, w, h);
+    arc_bottom->setSpanAngle(bottom_span_angle*16);
+    arc_bottom->setStartAngle(bottom_start_angle*16);
+    this->addItem(arc_bottom);
+    arc_bottom->setBrush(Qt::black);
+    arc_bottom->setPen(outlinePen);
 }
 
 void interactive_scene::mousePressEvent(QGraphicsSceneMouseEvent *event){
@@ -104,19 +122,26 @@ void interactive_scene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event){
     qDebug() << "X pos released: " << mouse_release_pos.x() << " Y pos released: " << mouse_release_pos.y();
     if(RED_RECT_BOOL){
         this->red_rect->setPos(this->mouse_release_pos.x()-Rect_W_2, this->mouse_release_pos.y()-Rect_H_2);
-        RED_RECT_BOOL = 0;
+
     }
     if(BLUE_RECT_BOOL){
         this->blue_rect->setPos(this->mouse_release_pos.x()-Rect_W_2, this->mouse_release_pos.y()-Rect_H_2);
-        BLUE_RECT_BOOL = 0;
+
     }
     if(GREEN_RECT_BOOL){
         this->green_rect->setPos(this->mouse_release_pos.x()-Rect_W_2, this->mouse_release_pos.y()-Rect_H_2);
-        GREEN_RECT_BOOL = 0;
+
     }
 
-    this->UpdateRectPos();
-    this->UpdateArc();
+    if(RED_RECT_BOOL || BLUE_RECT_BOOL || GREEN_RECT_BOOL)
+    {
+        this->UpdateRectPos();
+        this->UpdateTopArc();
+        this->UpdateBottomArc();
+        RED_RECT_BOOL = 0;
+        BLUE_RECT_BOOL = 0;
+        GREEN_RECT_BOOL = 0;
+    }
 }
 
 void interactive_scene::UpdateRectPos()
@@ -132,7 +157,7 @@ void interactive_scene::UpdateRectPos()
     blue_rect_pos += p;
 }
 
-void interactive_scene::UpdateArc()
+void interactive_scene::UpdateTopArc()
 {
     QBrush greenBrush(Qt::green);
     QBrush blueBrush(Qt::blue);
@@ -140,18 +165,103 @@ void interactive_scene::UpdateArc()
     QPen outlinePen(Qt::black);
     outlinePen.setWidth(2);
 
-    int start_angle = 90*16;
-    int end_angle = 180*16;
-    int span = (end_angle-start_angle);
-
+    calculate_arc_angles(1);
     int h = abs((blue_rect_pos.y() - red_rect_pos.y()) * 2);
     int w = abs((blue_rect_pos.x() - red_rect_pos.x()) * 2);
 
     delete arc_top;
-    arc_top = new ArcItem(blue_rect_pos.x(), blue_rect_pos.y() - h/2 , w, h);
-    arc_top->setSpanAngle(span);
-    arc_top->setStartAngle(start_angle);
+    if(left_side) arc_top = new ArcItem(blue_rect_pos.x()-w, blue_rect_pos.y() - h/2 , w, h);
+    else arc_top = new ArcItem(blue_rect_pos.x(), blue_rect_pos.y() - h/2 , w, h);
+
+    arc_top->setSpanAngle(top_span_angle*16);
+    arc_top->setStartAngle(top_start_angle*16);
+    qDebug() << "top span " << top_span_angle << " top start " << top_start_angle;
+    qDebug() << "top span " << arc_top->spanAngle() << " top start " << arc_top->startAngle();
     this->addItem(arc_top);
     arc_top->setBrush(Qt::black);
     arc_top->setPen(outlinePen);
+
+}
+
+void interactive_scene::UpdateBottomArc()
+{
+    QBrush greenBrush(Qt::green);
+    QBrush blueBrush(Qt::blue);
+    QBrush redBrush(Qt::red);
+    QPen outlinePen(Qt::black);
+    outlinePen.setWidth(2);
+
+    calculate_arc_angles(2);
+    int h = abs((blue_rect_pos.y() - green_rect_pos.y()) * 2);
+    int w = abs((blue_rect_pos.x() - green_rect_pos.x()) * 2);
+
+    delete arc_bottom;
+    if(left_side) arc_bottom = new ArcItem(blue_rect_pos.x()-w, blue_rect_pos.y() - h/2 , w, h);
+    else arc_bottom = new ArcItem(blue_rect_pos.x(), blue_rect_pos.y() - h/2 , w, h);
+    arc_bottom->setSpanAngle(bottom_span_angle*16);
+    arc_bottom->setStartAngle(bottom_start_angle*16);
+    this->addItem(arc_bottom);
+    arc_bottom->setBrush(Qt::black);
+    arc_bottom->setPen(outlinePen);
+}
+
+void interactive_scene::calculate_arc_angles(int opt)
+{
+    // set opt to 1 to set angles for top arc, 2 for bottom arc
+    int arc_start_angle, arc_end_angle, arc_span;
+    QPointF P1, P2;
+    switch (opt) {
+        case 1:
+            P1 = blue_rect_pos;
+            P2 = red_rect_pos;
+            top_angle = true;
+        break;
+        case 2:
+            P1 = blue_rect_pos;
+            P2 = green_rect_pos;
+            top_angle = false;
+        break;
+        default:
+            return;
+        break;
+    }
+
+    if(P1.x() > P2.x() && P1.y() > P2.y()) {
+        qDebug() << "Case A";
+        arc_start_angle = 0;
+        arc_end_angle = 90;
+        left_side = true;
+    }
+    if(P1.x() < P2.x() && P1.y() > P2.y()){
+        qDebug() << "Case B";
+        arc_start_angle = 90;
+        arc_end_angle = 180;
+        left_side = false;
+    }
+    if(P1.x() < P2.x() && P1.y() < P2.y()){
+        qDebug() << "Case C";
+        arc_start_angle = 180;
+        arc_end_angle = 270;
+        left_side = false;
+    }
+    if(P1.x() > P2.x() && P1.y() < P2.y()){
+        qDebug() << "Case D";
+        arc_start_angle = 270;
+        arc_end_angle = 360;
+        left_side = true;
+    }
+    arc_span = arc_end_angle - arc_start_angle;
+
+    if(top_angle) {
+        top_span_angle = arc_span;
+        top_start_angle = arc_start_angle;
+        top_end_angle = arc_end_angle;
+    }
+    else{
+        bottom_span_angle = arc_span;
+        bottom_start_angle = arc_start_angle;
+        bottom_end_angle = arc_end_angle;
+    }
+
+    //qDebug() << "span " << arc_span << " start angle " << arc_start_angle << " end angle " << arc_end_angle;
 }

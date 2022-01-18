@@ -22,14 +22,16 @@ public:
     interactive_scene();
     explicit interactive_scene(QObject *parent = nullptr);
     explicit interactive_scene(const QRectF &sceneRect, QObject *parent = nullptr);
-    void setup_rectangles();
-    void setup_arcitem();
+    void setupRectangles();
+    void setupTopArc();
+    void setupBottomArc();
 signals:
 
 public slots:
 
 
 private:
+
     ClickableRect *green_rect;
     ClickableRect *blue_rect;
     ClickableRect *red_rect;
@@ -44,7 +46,8 @@ private:
     void mousePressEvent(QGraphicsSceneMouseEvent *event);
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
     void UpdateRectPos();
-    void UpdateArc();
+    void UpdateTopArc();
+    void UpdateBottomArc();
     QPointF mouse_press_pos;
     QPointF mouse_release_pos;
 
@@ -57,6 +60,13 @@ private:
     bool RED_RECT_BOOL = 0;
     bool BLUE_RECT_BOOL = 0;
     bool GREEN_RECT_BOOL = 0;
+    bool left_side;
+
+    int top_start_angle, top_end_angle, top_span_angle;
+    int bottom_start_angle, bottom_end_angle, bottom_span_angle;
+    bool top_angle;
+
+    void calculate_arc_angles(int opt);
 };
 
 #endif // INTERACTIVE_SCENE_H

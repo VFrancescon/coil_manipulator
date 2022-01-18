@@ -16,9 +16,6 @@ protected:
 //    void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
 //    void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
 
-    QVariant itemChange(GraphicsItemChange change, const QVariant &value) override;
-    QPointF UpdateCoordinates(QPointF pos);
-    QPointF curr_pos;
 
     /*
     Big Revelation: Drag and Drop events are for dragging and dropping THINGS

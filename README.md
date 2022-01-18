@@ -13,7 +13,7 @@
 * File (csv) and Manual input prototype written
 
 * Screenshots
-![GUI_Alpha1](images/frontend_alpha2.png)
+![GUI_Alpha3](images/frontend_alpha3.png)
 
 # Credits
 * [Geoffry Hunter](https://github.com/gbmhunter/CppLinuxSerial) for the Serial Comm C++ Class
