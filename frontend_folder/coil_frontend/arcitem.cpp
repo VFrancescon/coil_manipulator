@@ -33,4 +33,13 @@ void ArcItem::paint(QPainter * painter, const QStyleOptionGraphicsItem * option,
     D: start =270, end =360
     P1x > P2x
     P1y < P2y
+
+    EXTRA CASE
+    E: start =360, end =540
+    P1x = P2x
+    P1y > P2y
+
+    F: start =180, end =360
+    P1x = P2x
+    P1y < P2y
 */

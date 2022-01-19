@@ -1,7 +1,6 @@
 #include "interactive_scene.h"
 
 interactive_scene::interactive_scene(){
-
 }
 
 
@@ -54,16 +53,31 @@ void interactive_scene::setupTopArc(){
     QBrush redBrush(Qt::red);
     QPen outlinePen(Qt::black);
     outlinePen.setWidth(2);
+    outlinePen.setColor(Qt::red);
+//    QPen outlinePen1 = outlinePen;
+//    outlinePen1.setColor(Qt::blue);
 
     this->calculate_arc_angles(1);
     int h = abs((blue_rect_pos.y() - red_rect_pos.y()) * 2);
     int w = abs((blue_rect_pos.x() - red_rect_pos.x()) * 2);
 
+//    QRectF top_arc_rect(blue_rect_pos.x(), blue_rect_pos.y() - h/2 , w, h);
+//    ClickableRect * top_click_rect = new ClickableRect(top_arc_rect);
+//    top_click_rect->setPos(0,0);
+//    this->addItem(top_click_rect);
+//    //top_click_rect->setBrush(blueBrush);
+//    top_click_rect->setPen(outlinePen1);
+//    ArcItem *test_arc = new ArcItem(blue_rect_pos.x(), blue_rect_pos.y() - h/2 , w, h);
+//    test_arc->setSpanAngle(180*16);
+//    test_arc->setStartAngle(360*16);
+//    this->addItem(test_arc);
+//    test_arc->setPen(outlinePen);
+
+
     arc_top = new ArcItem(blue_rect_pos.x(), blue_rect_pos.y() - h/2 , w, h);
     arc_top->setSpanAngle(top_span_angle*16);
     arc_top->setStartAngle(top_start_angle*16);
     this->addItem(arc_top);
-    arc_top->setBrush(Qt::black);
     arc_top->setPen(outlinePen);
 
 
@@ -75,6 +89,7 @@ void interactive_scene::setupBottomArc(){
     QBrush redBrush(Qt::red);
     QPen outlinePen(Qt::black);
     outlinePen.setWidth(2);
+    outlinePen.setColor(Qt::blue);
 
     this->calculate_arc_angles(2);
     int h = abs((blue_rect_pos.y() - green_rect_pos.y()) * 2);
@@ -84,7 +99,6 @@ void interactive_scene::setupBottomArc(){
     arc_bottom->setSpanAngle(bottom_span_angle*16);
     arc_bottom->setStartAngle(bottom_start_angle*16);
     this->addItem(arc_bottom);
-    arc_bottom->setBrush(Qt::black);
     arc_bottom->setPen(outlinePen);
 }
 
@@ -164,6 +178,7 @@ void interactive_scene::UpdateTopArc()
     QBrush redBrush(Qt::red);
     QPen outlinePen(Qt::black);
     outlinePen.setWidth(2);
+    outlinePen.setColor(Qt::red);
 
     calculate_arc_angles(1);
     int h = abs((blue_rect_pos.y() - red_rect_pos.y()) * 2);
@@ -190,6 +205,7 @@ void interactive_scene::UpdateBottomArc()
     QBrush redBrush(Qt::red);
     QPen outlinePen(Qt::black);
     outlinePen.setWidth(2);
+    outlinePen.setColor(Qt::blue);
 
     calculate_arc_angles(2);
     int h = abs((blue_rect_pos.y() - green_rect_pos.y()) * 2);
@@ -250,6 +266,19 @@ void interactive_scene::calculate_arc_angles(int opt)
         arc_end_angle = 360;
         left_side = true;
     }
+    if(P1.x() == P2.x() && P1.y() > P2.y()){
+        arc_start_angle = 360;
+        arc_end_angle = 540;
+        left_side = false;
+
+    }
+    if(P1.x() == P2.x() && P1.y() < P2.y()){
+        arc_start_angle = 180;
+        arc_end_angle = 360;
+        left_side = false;
+
+    }
+
     arc_span = arc_end_angle - arc_start_angle;
 
     if(top_angle) {
