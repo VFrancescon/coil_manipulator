@@ -1,4 +1,4 @@
-# Helmz Coil Manipulator echo
+# Helmz Coil Manipulator
 
 # Features
 * Completely C/C++ Based

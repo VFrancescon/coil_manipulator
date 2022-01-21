@@ -29,36 +29,62 @@ struct input_message{
     uint8_t CONT4;
     uint8_t CHECK;
     char* msg;
+    std::vector<u_int8_t> instruction;
 
     uint8_t Check_Bit_Calc(input_message &input_struct){
         uint8_t CHECK = input_struct.SYNCH + input_struct.ADDR + input_struct.CODE + input_struct.LENGTH;
         //printf("From within function, check bit is: %02X\n", CHECK);
         return CHECK;
     }
-    char* InstructionAssembler(input_message &input_struct){
+    std::vector<u_int8_t> InstructionAssembler(input_message &input_struct){
         input_struct.CHECK = Check_Bit_Calc(input_struct);
-        char* command = new char[50] /* max message size should be 10byte, but just in case*/;
         uint8_t l = input_struct.LENGTH;
+        instruction.clear();
         if(l == 0x01){
-            sprintf(command, "%02X%02X%02X%02X%02X%02X", input_struct.SYNCH, input_struct.ADDR, input_struct.CODE,
-	        input_struct.LENGTH, input_struct.CONT1, input_struct.CHECK);
+            instruction.push_back(input_struct.SYNCH);
+            instruction.push_back(input_struct.ADDR);
+            instruction.push_back(input_struct.CODE);
+            instruction.push_back(input_struct.LENGTH);
+            instruction.push_back(input_struct.CONT1);
+            instruction.push_back(input_struct.CHECK);
         }
         else if(l == 0x02){
-            sprintf(command, "%02X%02X%02X%02X%02X%02X%02X", input_struct.SYNCH, input_struct.ADDR, input_struct.CODE,
-	        input_struct.LENGTH, input_struct.CONT1, input_struct.CONT2, input_struct.CHECK);
+            instruction.push_back(input_struct.SYNCH);
+            instruction.push_back(input_struct.ADDR);
+            instruction.push_back(input_struct.CODE);
+            instruction.push_back(input_struct.LENGTH);
+            instruction.push_back(input_struct.CONT1);
+            instruction.push_back(input_struct.CONT2);
+            instruction.push_back(input_struct.CHECK);
         }
         else if(l == 0x03){
-            sprintf(command, "%02X%02X%02X%02X%02X%02X%02X%02X", input_struct.SYNCH, input_struct.ADDR, input_struct.CODE,
-	        input_struct.LENGTH, input_struct.CONT1, input_struct.CONT2, input_struct.CONT3, input_struct.CHECK);
+            instruction.push_back(input_struct.SYNCH);
+            instruction.push_back(input_struct.ADDR);
+            instruction.push_back(input_struct.CODE);
+            instruction.push_back(input_struct.LENGTH);
+            instruction.push_back(input_struct.CONT1);
+            instruction.push_back(input_struct.CONT2);
+            instruction.push_back(input_struct.CONT3);
+            instruction.push_back(input_struct.CHECK);
         }
         else if(l == 0x04){
-            sprintf(command, "%02X%02X%02X%02X%02X%02X%02X%02X%02X", input_struct.SYNCH, input_struct.ADDR, input_struct.CODE,
-	        input_struct.LENGTH, input_struct.CONT1, input_struct.CONT2, input_struct.CONT3, input_struct.CONT4, input_struct.CHECK);
+            instruction.push_back(input_struct.SYNCH);
+            instruction.push_back(input_struct.ADDR);
+            instruction.push_back(input_struct.CODE);
+            instruction.push_back(input_struct.LENGTH);
+            instruction.push_back(input_struct.CONT1);
+            instruction.push_back(input_struct.CONT2);
+            instruction.push_back(input_struct.CONT3);
+            instruction.push_back(input_struct.CONT4);
+            instruction.push_back(input_struct.CHECK);
         }
         else{
-            sprintf(command, "%02X%02X%02X%02X%02X", input_struct.SYNCH, input_struct.ADDR, input_struct.CODE,
-	        input_struct.LENGTH, input_struct.CHECK);
+            instruction.push_back(input_struct.SYNCH);
+            instruction.push_back(input_struct.ADDR);
+            instruction.push_back(input_struct.CODE);
+            instruction.push_back(input_struct.LENGTH);
+            instruction.push_back(input_struct.CHECK);
         }
-        return command;
+        return instruction;
     }
 };
