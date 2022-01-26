@@ -134,9 +134,14 @@ void interactive_scene::mousePressEvent(QGraphicsSceneMouseEvent *event){
 void interactive_scene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event){
     this->mouse_release_pos = event->scenePos();
     qDebug() << "X pos released: " << mouse_release_pos.x() << " Y pos released: " << mouse_release_pos.y();
-    if(RED_RECT_BOOL){
-        this->red_rect->setPos(this->mouse_release_pos.x()-Rect_W_2, this->mouse_release_pos.y()-Rect_H_2);
 
+
+
+    if(RED_RECT_BOOL){
+        int y_set = this->mouse_release_pos.y()-Rect_H_2;
+        if( abs(this->mouse_release_pos.y()-this->red_rect_pos.y()) > 10 ) y_set = 10;
+
+        this->red_rect->setPos(this->mouse_release_pos.x()-Rect_W_2, y_set);
     }
     if(BLUE_RECT_BOOL){
         this->blue_rect->setPos(this->mouse_release_pos.x()-Rect_W_2, this->mouse_release_pos.y()-Rect_H_2);

@@ -11,6 +11,7 @@
 #include <iostream>
 #include <stdint.h>
 #include <string.h>
+#include <unistd.h>
 using namespace mn::CppLinuxSerial;
 
 std::string result = "AA012B0E0203000000138803E80000000000C5";
