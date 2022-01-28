@@ -3,6 +3,7 @@
 # Features
 * Completely C/C++ Based
 * Qt5 Frontend
+* Basler Pylon + OpenCV integration (prototype)
 
 # Current Progress
 * Integrated CppLinuxSerial Library (see credits) - Untested
