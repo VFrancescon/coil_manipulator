@@ -33,8 +33,11 @@ struct input_message{
     std::vector<u_int8_t> instruction;
 
     uint8_t Check_Bit_Calc(input_message &input_struct){
-        uint8_t CHECK = input_struct.SYNCH + input_struct.ADDR + input_struct.CODE + input_struct.LENGTH;
-        //printf("From within function, check bit is: %02X\n", CHECK);
+        uint16_t CALCULATION = input_struct.ADDR + input_struct.CODE + input_struct.LENGTH;
+        
+        CHECK = CALCULATION;
+        printf("From within function, check bit is: %02X\n", CHECK);
+        
         return CHECK;
     }
     std::vector<u_int8_t> InstructionAssembler(input_message &input_struct){

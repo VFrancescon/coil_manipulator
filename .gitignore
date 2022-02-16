@@ -1,5 +1,4 @@
 build/
-.vscode/
 build-coil_frontend-Desktop-Debug/
 frontend_folder/coil_frontend/moc_*
 frontend_folder/coil_frontend/*.o

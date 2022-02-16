@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "*.tcc": "cpp",
+        "ostream": "cpp",
+        "sstream": "cpp"
+    },
+    "C_Cpp.intelliSenseEngineFallback": "Enabled"
+}

@@ -21,7 +21,7 @@
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout_2">
-    <item row="1" column="0">
+    <item row="2" column="0">
      <widget class="QGroupBox" name="csvBox">
       <property name="enabled">
        <bool>true</bool>
@@ -121,7 +121,7 @@
       </layout>
      </widget>
     </item>
-    <item row="1" column="1">
+    <item row="2" column="1">
      <widget class="QGroupBox" name="groupBox">
       <property name="title">
        <string>Manual Controls</string>
@@ -278,19 +278,6 @@
       </layout>
      </widget>
     </item>
-    <item row="0" column="1">
-     <spacer name="verticalSpacer">
-      <property name="orientation">
-       <enum>Qt::Vertical</enum>
-      </property>
-      <property name="sizeHint" stdset="0">
-       <size>
-        <width>1216</width>
-        <height>383</height>
-       </size>
-      </property>
-     </spacer>
-    </item>
     <item row="0" column="0">
      <widget class="ClickableView" name="graphicsViewL1">
       <property name="sceneRect">
@@ -300,6 +287,13 @@
         <width>200.000000000000000</width>
         <height>300.000000000000000</height>
        </rectf>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="1">
+     <widget class="QVideoWidget" name="widget" native="true">
+      <property name="enabled">
+       <bool>true</bool>
       </property>
      </widget>
     </item>
@@ -342,6 +336,12 @@
    <class>ClickableView</class>
    <extends>QGraphicsView</extends>
    <header>clickableview.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QVideoWidget</class>
+   <extends>QWidget</extends>
+   <header>QVideoWidget</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources/>
