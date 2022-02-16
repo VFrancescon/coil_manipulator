@@ -14,7 +14,7 @@ int main(void){
 	std::cout << "Programme started successfully. Press Enter to continue";
 	std::cin.get();
 
-    SerialPort serialPort("/dev/ttyUSB0", BaudRate::B_9600, NumDataBits::EIGHT, Parity::EVEN, NumStopBits::ONE);
+    SerialPort serialPort("/dev/ttyUSB0", BaudRate::B_9600, NumDataBits::EIGHT, Parity::NONE, NumStopBits::ONE);
     serialPort.SetTimeout(5000); // Block when reading until any data is received
 	serialPort.Open();
 	std::cout << "Serial Port Class instantiated successfully. Press Enter to continue";
@@ -71,7 +71,7 @@ int main(void){
 	printf("\nRead data: " );
 
 	for(auto i:readData){
-		printf("%02X", i);
+		printf("%02X ", i);
 	}
 
 	// Close the serial port
