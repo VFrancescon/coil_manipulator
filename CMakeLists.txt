@@ -17,20 +17,29 @@ include_directories(include)
 include_directories( ${OpenCV_INCLUDE_DIRS} )
 include_directories( ${Pylon_INCLUDE_DIRS} )
 
-add_subdirectory(src/CppLinuxSerial)
-
+add_subdirectory(src/libs/CppLinuxSerial)
+add_subdirectory(src/libs/PSU)
 
 
 add_executable(initial_test "${CMAKE_SOURCE_DIR}/src/preliminary_tests/initial_serial_comm.cpp")
 add_executable( camera_test "${CMAKE_SOURCE_DIR}/src/opencv/camera_test.cpp" )
+add_executable( temp_test "${CMAKE_SOURCE_DIR}/src/preliminary_tests/temp_test.cpp" )
 
 
-target_link_libraries(initial_test PUBLIC CppLinuxSerial)
+target_link_libraries( initial_test PUBLIC CppLinuxSerial)
 target_link_libraries( camera_test ${OpenCV_LIBS} ${Pylon_LIBRARIES} )
+target_link_libraries( temp_test PUBLIC CppLinuxSerial PSU_LIB )
+
 
 target_include_directories(initial_test PUBLIC
                           "${CMAKE_SOURCE_DIR}"
-                          "${CMAKE_SOURCE_DIR}/src/CppLinuxSerial"
+                          "${CMAKE_SOURCE_DIR}/src/libs/CppLinuxSerial"
                           )
 
+target_include_directories( temp_test PUBLIC
+                        "${CMAKE_SOURCE_DIR}"
+                        "${CMAKE_SOURCE_DIR}/src/libs/CppLinuxSerial"
+                        "${CMAKE_SOURCE_DIR}/src/libs/PSU"
+
+)           
 
