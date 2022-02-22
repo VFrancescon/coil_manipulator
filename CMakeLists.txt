@@ -21,7 +21,7 @@ add_subdirectory(src/CppLinuxSerial)
 
 
 
-add_executable(initial_test "${CMAKE_SOURCE_DIR}/src/initial_serial_comm.cpp")
+add_executable(initial_test "${CMAKE_SOURCE_DIR}/src/preliminary_tests/initial_serial_comm.cpp")
 add_executable( camera_test "${CMAKE_SOURCE_DIR}/src/opencv/camera_test.cpp" )
 
 

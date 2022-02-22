@@ -7,7 +7,7 @@
 //! @details
 //!					SerialPort class is taken from another repo.
 
-#include <initial_serial_comm.h>
+#include <preliminary_tests/initial_serial_comm.h>
 using namespace mn::CppLinuxSerial;
 int main(void){
 
