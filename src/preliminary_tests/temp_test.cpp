@@ -45,8 +45,8 @@ void SysInfoDecoder(output_message &out){
 int main(void){
     std::cout << "Press enter to begin";
     std::cin.get();
-    std::string str = "dev/ttyUSB0";
-    DXKDP_PSU PSU(str);
+    std::string str = "/dev/ttyUSB0";
+    DXKDP_PSU PSU;
     
     output_message msgOut;
     PSU.PsuRead(msgOut);
