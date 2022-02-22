@@ -1,18 +1,30 @@
+//!
+//! @file 			instructions.h
+//! @author 		Vittorio Francescon <vittorio.francescon@gmail.com> 
+//! @created		22/02/2020
+//! @last-modified 	22/02/2022
+//! @brief			Header for hex-level instructions to the PSUs.
+//! @details
+//!					SerialPort class is taken from another repo.
+#ifndef INSTRUCTION_H_
+#define INSTRUCTION_H_
+
 #include <iostream>
 #include <stdint.h>
 #include <vector>
 
 struct input_message{
-
+    /*Default constructor for struct. Set addr to 0x01, Code to 0x2B, L to 0x00*/
     input_message(){
         this->ADDR = 0x01;
         this->CODE = 0x2B;
         this->LENGTH = 0x00;
         this->set_contents();
-        this->InstructionAssembler();
+        
     }
     
-    input_message(uint8_t addr, uint8_t code, uint8_t length){
+    /*Advanced Constructor. Order is Code, Addr(default 1), L(default1). Call set contents afterwards*/
+    input_message(uint8_t code, uint8_t addr=0x01, uint8_t length=0x00){
         this->ADDR = addr;
         this->CODE = code;
         this->LENGTH = length;
@@ -23,6 +35,7 @@ struct input_message{
         this->CONT2 = cont2;
         this->CONT3 = cont3;
         this->CONT4 = cont4;
+        this->InstructionAssembler();
     }
 
 
@@ -35,15 +48,13 @@ struct input_message{
     uint8_t CONT3 = 0x00;
     uint8_t CONT4 = 0x00;
     uint8_t CHECK;
-    std::vector<u_int8_t> instruction;
+    std::vector<uint8_t> instruction;
 
     uint8_t Check_Bit_Calc(){
         uint16_t CALCULATION = this->ADDR + this->CODE + this->LENGTH
-                                +this->CONT1 + +this->CONT2 + this->CONT3 + +this->CONT4;
+                            +this->CONT1 + +this->CONT2 + this->CONT3 + +this->CONT4;
         
         CHECK = CALCULATION;
-        //printf("From within function, check bit is: %02X\n", CHECK);
-        
         return CHECK;
     }
     void InstructionAssembler(){
@@ -104,3 +115,29 @@ struct input_message{
         }
     }
 };
+
+struct output_message{
+    uint8_t SYNCH;
+	uint8_t ADDR;
+	uint8_t CODE;
+	uint8_t LENGTH;
+    uint8_t CHECK;
+    uint8_t V_STEP;
+    uint8_t I_STEP;
+    uint8_t V_HIGH;
+    uint8_t V_LOW;
+    uint8_t I_HIGH;
+    uint8_t I_LOW;
+
+    // //actual declaration
+    std::vector<uint8_t> output;
+
+    /*Test input here*/
+    // std::vector<uint8_t> output = {
+    //     0xAA, 0x01, 0x2B, 0x0E, 0x02, 0x03, 0x00, 0x00, 0x00, 0x13, 0x88, 0x03, 0xE8, 0x00, 0x00, 0x00, 0x00, 0x00, 0xC5
+    // };
+
+};
+
+
+#endif

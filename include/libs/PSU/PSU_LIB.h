@@ -1,9 +1,9 @@
 //!
-//! @file 			initial_serial_comm.h
+//! @file 			PSU_LIB.h
 //! @author 		Vittorio Francescon <vittorio.francescon@gmail.com> 
-//! @created		07/12/2021
-//! @last-modified 	08/12/2021
-//! @brief			Header for Initial testing file for serial comms.
+//! @created		22/02/2020
+//! @last-modified 	22/02/2022
+//! @brief			Header for PSU Low-Level library.
 //! @details
 //!					SerialPort class is taken from another repo.
 
@@ -19,15 +19,15 @@ using namespace mn::CppLinuxSerial;
 class DXKDP_PSU{
 
 private:
-    
-
-    
-
+    void DXKDP_Setup();
 public:
     DXKDP_PSU();
-    DXKDP_PSU(std::string &COM_PORT, unsigned int addr);
-    std::unique_ptr<input_message> message;
-
-
-
+    DXKDP_PSU(std::string &COM_PORT);
+    ~DXKDP_PSU();
+    
+    
+    std::unique_ptr<SerialPort> SerialDevice;
+    
+    void PsuWrite(input_message msgIn);
+    void PsuRead(output_message msgOut);
 };
