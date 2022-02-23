@@ -7,7 +7,7 @@
 #include <cmath>
 #include <stdint.h>
 
-void SysInfoDecoder(output_message out);
+void SysInfoDecoder(output_message &out);
 
 int main(void);
 

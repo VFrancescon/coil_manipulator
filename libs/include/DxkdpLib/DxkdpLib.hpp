@@ -22,5 +22,5 @@ public:
     // std::unique_ptr<SerialPort> SerialDevice;
     
     void PsuWrite(input_message msgIn);
-    void PsuRead(output_message msgOut);
+    void PsuRead(output_message &msgOut);
 };

@@ -130,7 +130,9 @@ struct output_message{
     uint8_t I_LOW;
 
     // //actual declaration
-    std::vector<uint8_t> output;
+    std::vector<uint8_t> output1;
+    std::vector<uint8_t> output2;
+    std::vector<uint8_t> output3;
 
     /*Test input here*/
     // std::vector<uint8_t> output = {
