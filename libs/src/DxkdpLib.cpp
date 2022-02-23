@@ -1,22 +1,24 @@
 #include <DxkdpLib/DxkdpLib.hpp>
 
-DXKDP_PSU::DXKDP_PSU(){
+DXKDP_PSU::DXKDP_PSU() : serialPort("/dev/ttyUSB0", BaudRate::B_9600, NumDataBits::EIGHT, Parity::NONE, NumStopBits::ONE)
+{
     //default constructor, here for debugging mainly
     //will instantiate a power supply at ttyUSB0, addr 1
 
-    //std::cout << "Psu lib is being called\n";
+    std::cout << "Psu lib is being called\n";
     //std::unique_ptr<SerialPort> FirstPort("dev/ttyUSB0", );
     // std::unique_ptr<SerialPort> SerialDevice(
     //     new SerialPort("/dev/ttyUSB2", BaudRate::B_9600, NumDataBits::EIGHT, Parity::NONE, NumStopBits::ONE)
     //     );
-    SerialPort SerialDevice("/dev/ttyUSB0", BaudRate::B_9600, NumDataBits::EIGHT, Parity::NONE, NumStopBits::ONE);
+    //SerialPort RS232Device("/dev/ttyUSB0", BaudRate::B_9600, NumDataBits::EIGHT, Parity::NONE, NumStopBits::ONE);
 
-    SerialDevice.SetTimeout(500);
-    SerialDevice.Open();
-    std::cout << "Serial port has been opened\n";
+    this->serialPort.SetTimeout(500);
+    this->serialPort.Open();
+    std::cout << "Serial port has been opened";
 }
 
-DXKDP_PSU::DXKDP_PSU(std::string &COM_PORT){
+DXKDP_PSU::DXKDP_PSU(std::string COM_PORT) : serialPort("/dev/ttyUSB0", BaudRate::B_9600, NumDataBits::EIGHT, Parity::NONE, NumStopBits::ONE)
+{
     //default constructor, here for debugging mainly
     //will instantiate a power supply at ttyUSB0, addr 1
 
@@ -27,29 +29,28 @@ DXKDP_PSU::DXKDP_PSU(std::string &COM_PORT){
     // );
     // SerialPort SerialDevice(COM_PORT, BaudRate::B_9600, NumDataBits::EIGHT, Parity::NONE, NumStopBits::ONE);
     
-    SerialPort SerialDevice("/dev/ttyUSB0", BaudRate::B_9600, NumDataBits::EIGHT, Parity::NONE, NumStopBits::ONE);
-    SerialDevice.SetTimeout(500);
-    SerialDevice.Open();
     
-    
+    this->serialPort.SetTimeout(500);
+    this->serialPort.Open();
 
 }
 
 void DXKDP_PSU::DXKDP_Setup(){
-    SerialDevice.SetTimeout(500);
-    SerialDevice.Open();
+    this->serialPort.SetTimeout(500);
+    this->serialPort.Open();
     
 }
 
 void DXKDP_PSU::PsuWrite(input_message msgIn){
-    SerialDevice.WriteBinary(msgIn.instruction);
+    this->serialPort.WriteBinary(msgIn.instruction);
 }
 
 void DXKDP_PSU::PsuRead(output_message msgOut){
     std::cout << "\nPrint before read attemp\n";
-    SerialDevice.ReadBinary(msgOut.output);
+    //SerialDevice.ReadBinary(msgOut.output);
+    this->serialPort.ReadBinary(msgOut.output);
 }
 
 DXKDP_PSU::~DXKDP_PSU(){
-    SerialDevice.Close();
+    this->serialPort.Close();
 }

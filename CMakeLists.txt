@@ -17,15 +17,15 @@ include_directories(include)
 include_directories( ${OpenCV_INCLUDE_DIRS} )
 include_directories( ${Pylon_INCLUDE_DIRS} )
 
-
+## Two lines below allow libraries to be built.
 include_directories(libs/include)
 add_subdirectory(libs/src)
 
-
+add_executable(libtest "${CMAKE_SOURCE_DIR}/src/PSULib_test.cpp")
 add_executable(initial_test "${CMAKE_SOURCE_DIR}/src/initial_serial_comm.cpp")
 add_executable( camera_test "${CMAKE_SOURCE_DIR}/src/opencv/camera_test.cpp" )
 
-
+target_link_libraries(libtest LINK_PUBLIC DxkdpLib)
 target_link_libraries(initial_test LINK_PUBLIC CppLinuxSerial)
 target_link_libraries( camera_test ${OpenCV_LIBS} ${Pylon_LIBRARIES} )
 
