@@ -4,8 +4,6 @@
             "name": "Linux",
             "includePath": [
                 "${workspaceFolder}/**",
-                "${workspaceFolder}/include/libs/PSU",
-                "${workspaceFolder}/include/libs/",
                 "/opt/pylon",
                 "/opt/pylon/include"
             ],

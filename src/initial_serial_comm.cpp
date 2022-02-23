@@ -2,12 +2,12 @@
 //! @file 			initial_serial_comm.cpp
 //! @author 		Vittorio Francescon <vittorio.francescon@gmail.com> 
 //! @created		07/12/2021
-//! @last-modified 	22/02/2022
+//! @last-modified 	16/02/2022
 //! @brief			Initial testing file for serial comms.
 //! @details
 //!					SerialPort class is taken from another repo.
 
-#include <preliminary_tests/initial_serial_comm.h>
+#include <initial_serial_comm.h>
 using namespace mn::CppLinuxSerial;
 int main(void){
 

@@ -7,7 +7,7 @@
 //! @details
 //!					SerialPort class is taken from another repo.
 
-#include "libs/CppLinuxSerial/SerialPort.hpp"
+#include "CppLinuxSerial/SerialPort.hpp"
 #include <iostream>
 #include <stdint.h>
 #include <string.h>

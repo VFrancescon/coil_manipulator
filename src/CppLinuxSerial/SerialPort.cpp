@@ -26,8 +26,8 @@
 #include <iterator>
 
 // User includes
-#include "libs/CppLinuxSerial/Exception.hpp"
-#include "libs/CppLinuxSerial/SerialPort.hpp"
+#include "CppLinuxSerial/Exception.hpp"
+#include "CppLinuxSerial/SerialPort.hpp"
 
 #define    BOTHER 0010000
 
