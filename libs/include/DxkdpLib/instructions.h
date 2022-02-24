@@ -30,7 +30,7 @@ struct input_message{
 
     void set_contents(uint8_t cont1 = 0x00, uint8_t cont2 = 0x00, uint8_t cont3 = 0x00, uint8_t cont4 = 0x00){
         //int counter = 0;
-        std::cout << "\nFunction is called\n";
+        //std::cout << "\nFunction is called\n";
         this->CONT1 = cont1; 
         this->CONT2 = cont2;
         this->CONT3 = cont3;
@@ -47,11 +47,11 @@ struct input_message{
 
     void setLength(){
         int counter = 0;
-        if(cont1_set) counter++; printf("\n%02X ", this->CONT1);
-        if(cont2_set) counter++; printf("%02X ", this->CONT2);
-        if(cont3_set) counter++; printf("%02X ", this->CONT3);
-        if(cont4_set) counter++; printf("%02X \n", this->CONT4);
-        std::cout << "\nCounter is: " << counter;
+        if(cont1_set) counter++; //printf("\n%02X ", this->CONT1);
+        if(cont2_set) counter++; //printf("%02X ", this->CONT2);
+        if(cont3_set) counter++; //printf("%02X ", this->CONT3);
+        if(cont4_set) counter++; //printf("%02X \n", this->CONT4);
+        //std::cout << "\nCounter is: " << counter << "\n";
         this->LENGTH = counter;
     }
 

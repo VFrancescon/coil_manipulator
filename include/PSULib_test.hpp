@@ -18,13 +18,49 @@ std::vector<uint8_t> Encoder20(uint8_t PO_STATE = 0x00, uint8_t addr = 0x01);
 
 /*
 Constructs the input msg to set the Voltage.
-Voltage
-Any float to 2dp
+Voltage can e any float to 2dp
 defaults to 0 for safety
 addr is the address of the PSU
 Defaults to 1
 */
 std::vector<uint8_t> Encoder21(float Voltage=0, uint8_t addr=0x01);
+
+/*
+Constructs the input msg to set the Current.
+Current can be any float to 2dp
+defaults to 0 for safety
+addr is the address of the PSU
+Defaults to 1
+*/
+std::vector<uint8_t> Encoder22(float Current=0, uint8_t addr=0x01);
+
+/*
+Constructs the input msg to set the Current.
+Current can be any float to 2dp
+defaults to 0 for safety
+addr is the address of the PSU
+Defaults to 1
+*/
+std::vector<uint8_t> Encoder23(float Voltage=0, float Current=0, uint8_t addr=0x01);
+
+/*
+Constructs the input msg to set the Polarity.
+Set Voltage or Current to 1 for positive, 0 for negative
+Defaults to Positive
+*/
+std::vector<uint8_t> Encoder24(uint8_t VoltageP=0x01, uint8_t CurrentP=0x01, uint8_t addr=0x01);
+
+/*
+Constructs the input msg to view actual values.
+Use Decoder26 to write them in msgOut.
+*/
+std::vector<uint8_t> Encoder26(uint8_t addr=0x01);
+
+/*
+Constructs the input msg to view actual values.
+Use Decoder26 to write them in msgOut.
+*/
+std::vector<uint8_t> Encoder28(uint8_t addr=0x01);
 
 /*
 Takes Actual current V & I

@@ -10,9 +10,53 @@ std::vector<uint8_t> Encoder20(uint8_t PO_STATE, uint8_t addr){
 }
 
 std::vector<uint8_t> Encoder21(float Voltage, uint8_t addr){
-    std::cout << "\n\nVoltage is: " << Voltage << "\n";
+    //std::cout << "Voltage is: " << Voltage << "\n";
     input_message msgIn(0x21, addr);
     DecToHex(Voltage, V_conv, msgIn);
+    msgIn.InstructionAssembler();
+    return msgIn.instruction;
+}
+
+std::vector<uint8_t> Encoder22(float Current, uint8_t addr){
+    //std::cout << "Current is: " << Current << "\n";
+    input_message msgIn(0x22, addr);
+    DecToHex(Current, I_conv, msgIn);
+    msgIn.InstructionAssembler();
+    return msgIn.instruction;
+}
+
+std::vector<uint8_t> Encoder23(float Voltage, float Current, uint8_t addr){
+    //std::cout << "Current is: " << Current << "\n";
+    input_message msgIn(0x23, addr);
+    DecToHex(Voltage, V_conv, msgIn, 1);
+    DecToHex(Current, I_conv, msgIn, 2);
+    msgIn.InstructionAssembler();
+    return msgIn.instruction;
+}
+
+std::vector<uint8_t> Encoder24(uint8_t VoltageP, uint8_t CurrentP, uint8_t addr){
+    input_message msgIn(0x24, addr);
+    msgIn.cont1_set = 1;
+    msgIn.cont2_set = 2;
+    msgIn.set_contents(VoltageP, CurrentP);
+    //msgIn.InstructionAssembler();
+    return msgIn.instruction;
+}
+
+std::vector<uint8_t> Encoder26(uint8_t addr){
+    input_message msgIn(0x26, addr);
+    msgIn.InstructionAssembler();
+    return msgIn.instruction;
+}
+
+std::vector<uint8_t> Encoder28(uint8_t addr){
+    input_message msgIn(0x28, addr);
+    msgIn.InstructionAssembler();
+    return msgIn.instruction;
+}
+
+std::vector<uint8_t> Encoder2B(uint8_t addr){
+    input_message msgIn(0x2B, addr);
     msgIn.InstructionAssembler();
     return msgIn.instruction;
 }
@@ -40,10 +84,10 @@ void Decoder26(output_message &msgOut){
 }
 
 void Decoder28(output_message &msgOut){
-    std::cout << "\n----------------\n Concatenation\n\n";
-    std::cout << "\nSize of concatenated vector: " << msgOut.output3.size();
-    std::cout << "\nContents: ";
-    for(auto i : msgOut.output3) printf("%02X ", i);
+    // std::cout << "\n----------------\n Concatenation\n\n";
+    // std::cout << "\nSize of concatenated vector: " << msgOut.output3.size();
+    // std::cout << "\nContents: ";
+    // for(auto i : msgOut.output3) printf("%02X ", i);
 
     msgOut.ADDR = msgOut.output3[1];
     msgOut.CODE = msgOut.output3[2];
@@ -75,12 +119,10 @@ void Decoder2B(output_message &msgOut){
     /*Next 2 lines combine the vectors into something usable*/
     // msgOut.output3.insert(msgOut.output3.end(), msgOut.output1.begin(), msgOut.output1.end());
     // msgOut.output3.insert(msgOut.output3.end(), msgOut.output2.begin(), msgOut.output2.end());
-    std::cout << "\n----------------\n Concatenation\n\n";
-    std::cout << "\nSize of concatenated vector: " << msgOut.output3.size();
-    std::cout << "\nContents: ";
-    for(auto i : msgOut.output3) printf("%02X ", i);
-
-
+    // std::cout << "\n----------------\n Concatenation\n\n";
+    // std::cout << "\nSize of concatenated vector: " << msgOut.output3.size();
+    // std::cout << "\nContents: ";
+    // for(auto i : msgOut.output3) printf("%02X ", i);
 
     msgOut.ADDR = msgOut.output3[1];
     msgOut.CODE = msgOut.output3[2];
@@ -90,24 +132,7 @@ void Decoder2B(output_message &msgOut){
 
     V_conv = pow(10, -int(msgOut.V_STEP));
     I_conv = pow(10, -int(msgOut.I_STEP));
-    printf("\nVSTEP %02X hex, ISTEP %02X hex", msgOut.V_STEP, msgOut.I_STEP);
-    printf("\nV_Conv: %f  I_Conv: %f ", V_conv, I_conv);
 
-    msgOut.V_HIGH = msgOut.output3[9];
-    msgOut.V_LOW = msgOut.output3[10];
-
-    msgOut.I_HIGH = msgOut.output3[11];
-    msgOut.I_LOW = msgOut.output3[12];
-
-    // float VoltageFloat = (float)HexToDec(msgOut.V_HIGH, msgOut.V_LOW) * V_conv;
-    // std::cout << "\nCalculated in func, V float is: " << VoltageFloat;
-    // float CurrentFloat = (float)HexToDec(msgOut.I_HIGH, msgOut.I_LOW) * I_conv;
-    // std::cout << "\nCalculated in func, I float is: " << CurrentFloat;
-
-    ReadVoltage = HexToValue(msgOut.V_HIGH, msgOut.V_LOW, V_conv);
-    std::cout << "\nCalculated in func, V float is: " << ReadVoltage;
-    ReadCurrent = HexToValue(msgOut.I_HIGH, msgOut.I_LOW, I_conv);
-    std::cout << "\nCalculated in func, I float is: " << ReadCurrent;
 
 }
 
@@ -136,8 +161,8 @@ void DecToHex(float value, float Conv, input_message &msgIn, int entry){
     default:
         msgIn.CONT1 = (uint8_t)hexConverted;
         msgIn.CONT2 = (uint8_t)(hexConverted >> 8);
-        msgIn.cont3_set = 1;
-        msgIn.cont4_set = 1;
+        msgIn.cont1_set = 1;
+        msgIn.cont2_set = 1;
         break;
     }
 
@@ -161,24 +186,56 @@ int main(int argc, char *argv[]){
             
             // std::string str = "/dev/ttyUSB0";
             // DXKDP_PSU PSU(str);
-            V_conv = 0.01;
+            // V_conv = 0.01;
+            // I_conv = 0.01;
+            output_message msgOut;
+            Decoder2B(msgOut);
+
+            std::cout << "V_conv " << V_conv;
+            std::cout << "I_conv " << I_conv << "\n";
 
             std::vector<uint8_t> vect;
             vect = Encoder20(0x01);
             
-            std::cout << "\n20: Contents of input message:\n";
-            for(auto i: vect) printf("%02X ", i);
+            std::cout << "20: Contents of input message:\n";
+            for(auto i: vect) printf("%02X ", i); std::cout << "\n\n";
 
             vect.clear();
             vect = Encoder21(41.68);
-            std::cout << "\n21: Contents of input message:\n";
-            for(auto i: vect) printf("%02X ", i);
+            std::cout << "21: Contents of input message:\n";
+            for(auto i: vect) printf("%02X ", i); std::cout << "\n\n";
+
+            vect.clear();
+            vect = Encoder22(12.1);
+            std::cout << "22: Contents of input message:\n";
+            for(auto i: vect) printf("%02X ", i); std::cout << "\n";
+
+            vect.clear();
+            vect = Encoder23(29.1, 15.2);
+            std::cout << "23: Contents of input message:\n";
+            for(auto i: vect) printf("%02X ", i); std::cout << "\n";
+
+            vect.clear();
+            vect = Encoder23(0x01, 0x01);
+            std::cout << "23: Contents of input message:\n";
+            for(auto i: vect) printf("%02X ", i); std::cout << "\n";
+
+            vect.clear();
+            vect = Encoder24(0x01, 0x01);
+            std::cout << "24: Contents of input message:\n";
+            for(auto i: vect) printf("%02X ", i); std::cout << "\n";
+
+            vect.clear();
+            vect = Encoder26();
+            std::cout << "26: Contents of input message:\n";
+            for(auto i: vect) printf("%02X ", i); std::cout << "\n";
+
 
             // std::cout << "\nInput command: ";
             // for(auto i:msgIn.instruction) printf("%02X ", i);
             //PSU.PsuWrite(msgIn);
 
-            output_message msgOut;
+            // output_message msgOut;
             //PSU.PsuRead(msgOut);
             // Decoder2B(msgOut);
         break;
