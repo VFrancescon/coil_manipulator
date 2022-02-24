@@ -141,5 +141,10 @@ int main(int argc, char *argv[]);
 
 //MACROS ARE DECLARED HERE
 
-/**/
+/*Turns the Supply on, then off*/
 void PSU_ON_OFF(DXKDP_PSU &PSU);
+
+/*Brute forces all combinations for polarity*/
+void PolarityBruteforce(DXKDP_PSU &PSU);
+
+void PoCtrl(DXKDP_PSU &PSU, uint8_t po_state);
