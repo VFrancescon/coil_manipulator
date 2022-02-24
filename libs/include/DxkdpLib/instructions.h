@@ -19,23 +19,40 @@ struct input_message{
         this->ADDR = 0x01;
         this->CODE = 0x2B;
         this->LENGTH = 0x00;
-        this->set_contents();
         
     }
     
     /*Advanced Constructor. Order is Code, Addr(default 1), L(default1). Call set contents afterwards*/
-    input_message(uint8_t code, uint8_t addr=0x01, uint8_t length=0x00){
+    input_message(uint8_t code, uint8_t addr=0x01){
         this->ADDR = addr;
         this->CODE = code;
-        this->LENGTH = length;
     }
 
     void set_contents(uint8_t cont1 = 0x00, uint8_t cont2 = 0x00, uint8_t cont3 = 0x00, uint8_t cont4 = 0x00){
-        this->CONT1 = cont1;
+        //int counter = 0;
+        std::cout << "\nFunction is called\n";
+        this->CONT1 = cont1; 
         this->CONT2 = cont2;
         this->CONT3 = cont3;
         this->CONT4 = cont4;
+
+        // if(this->CONT1 != 0x00) counter++; printf("%02X ", this->CONT1);
+        // if(this->CONT2 != 0x00) counter++; printf("%02X ", this->CONT2);
+        // if(this->CONT3 != 0x00) counter++; printf("%02X ", this->CONT3);
+        // if(this->CONT4 != 0x00) counter++; printf("%02X ", this->CONT4);
+        // std::cout << "\nCounter is: " << counter;
+        // this->LENGTH = counter;
         this->InstructionAssembler();
+    }
+
+    void setLength(){
+        int counter = 0;
+        if(cont1_set) counter++; printf("\n%02X ", this->CONT1);
+        if(cont2_set) counter++; printf("%02X ", this->CONT2);
+        if(cont3_set) counter++; printf("%02X ", this->CONT3);
+        if(cont4_set) counter++; printf("%02X \n", this->CONT4);
+        std::cout << "\nCounter is: " << counter;
+        this->LENGTH = counter;
     }
 
 
@@ -49,6 +66,7 @@ struct input_message{
     uint8_t CONT4 = 0x00;
     uint8_t CHECK;
     std::vector<uint8_t> instruction;
+    bool cont1_set = 0, cont2_set = 0, cont3_set = 0, cont4_set = 0;
 
     void Check_Bit_Calc(){
         uint16_t CALCULATION = this->ADDR + this->CODE + this->LENGTH
@@ -58,6 +76,7 @@ struct input_message{
         
     }
     void InstructionAssembler(){
+        setLength();
         Check_Bit_Calc();
         uint8_t l = this->LENGTH;
         instruction.clear();
@@ -128,6 +147,8 @@ struct output_message{
     uint8_t V_LOW;
     uint8_t I_HIGH;
     uint8_t I_LOW;
+    uint8_t PO_STATE;
+    uint8_t CC_OP;
 
     // //actual declaration
     std::vector<uint8_t> output1;
