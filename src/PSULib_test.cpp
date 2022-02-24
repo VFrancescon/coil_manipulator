@@ -177,8 +177,8 @@ int main(int argc, char *argv[]){
     float cmd_line;
     input_message msgIn;
     std::string str = "/dev/ttyUSB0";
-    DXKDP_PSU PSU(str);
-    //DXKDP_PSU PSU();
+    //DXKDP_PSU PSU(str);
+    DXKDP_PSU PSU;
 
     switch(argc)
     {
@@ -200,7 +200,7 @@ int main(int argc, char *argv[]){
         }
             
     default:
-            
+        
             // std::string str = "/dev/ttyUSB0";
             // DXKDP_PSU PSU(str);
             // V_conv = 0.01;
@@ -255,6 +255,7 @@ int main(int argc, char *argv[]){
             // output_message msgOut;
             //PSU.PsuRead(msgOut);
             // Decoder2B(msgOut);
+            PSU_ON_OFF(PSU);
             std::cout << "No arguments given\n";
         break;
     }
@@ -269,18 +270,22 @@ int main(int argc, char *argv[]){
 void PSU_ON_OFF(DXKDP_PSU &PSU){
     std::vector<uint8_t> input_vector = Encoder20(0x01);
     PSU.PsuWrite(input_vector);
-    std::vector<uint8_t> ack = PSU.PsuRead(ack);
-    for(auto i: ack) printf("PO=1 returned: %02X\n", i);
+    output_message msgOut;
+    PSU.PsuRead(msgOut);
+    for(auto i: msgOut.output1) printf("PO=1 returned: %02X\n", i);
+    //std::vector<uint8_t> inbetween = PSU.PsuRead(inbetween);;
+    //std::vector<uint8_t> ack = inbetween;
+    for(auto i: msgOut.output1) printf("PO=1 returned: %02X\n", i);
 
     std::cout << "Press enter to continue";
     std::cin.get();
 
-    input_vector.clear();
-    ack.clear();
+    //input_vector.clear();
+    msgOut.output1.clear();
     input_vector = Encoder20(0x00);
     PSU.PsuWrite(input_vector);
-    ack = PSU.PsuRead(ack);
-    for(auto i: ack) printf("PO=0 returned: %02X\n", i);
+    PSU.PsuRead(msgOut);
+    for(auto i: msgOut.output1) printf("PO=0 returned: %02X\n", i);
 
 }
 

@@ -56,7 +56,7 @@ void DXKDP_PSU::PsuRead(output_message &msgOut){
     //for(auto i : msgOut.output1) printf("%02X ", i);
 
     //std::cout << "\n-----------------\nSecond try\n";
-    this->serialPort.ReadBinary(msgOut.output2);
+    //this->serialPort.ReadBinary(msgOut.output2);
     //std::cout << "\nResult: ";
     //for(auto i : msgOut.output2) printf("%02X ", i);
 
@@ -67,6 +67,8 @@ void DXKDP_PSU::PsuRead(output_message &msgOut){
 }
 
 std::vector<uint8_t> DXKDP_PSU::PsuRead(std::vector<uint8_t> output){
+    
+    std::cout << "Before read binary call";
     this->serialPort.ReadBinary(output);
 }
 
