@@ -1,5 +1,17 @@
 # Helmz Coil Manipulator
 
+# Build Instructions
+1. Clone and install [CppLinuxSerial](https://github.com/gbmhunter/CppLinuxSerial) following the instructions given there.
+2. Install the [Pylon SDK](https://www.baslerweb.com/en/sales-support/downloads/software-downloads/) with mpg4 addon.
+3. In ~/coil_manipulator
+```
+mkdir build && cd build
+cmake ..
+sudo make install
+```
+4. You are ready to go!
+
+
 # Features
 * Completely C/C++ Based
 * Qt5 Frontend
