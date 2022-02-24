@@ -176,11 +176,17 @@ int main(int argc, char *argv[]){
     std::cin.get();
     float cmd_line;
     input_message msgIn;
+    std::string str = "/dev/ttyUSB0";
+    DXKDP_PSU PSU(str);
+    //DXKDP_PSU PSU();
+
     switch(argc)
     {
     case 2:
-            cmd_line = atof(argv[1]);
-            DecToHex(cmd_line, 0.01, msgIn);
+            if(strtol(argv[1], NULL, 16) == 0x20){
+                PSU_ON_OFF(PSU);
+            }
+            else std::cout << "not 0x20\n";
         break;
     default:
             
@@ -245,5 +251,23 @@ int main(int argc, char *argv[]){
 
 
     std::cout << "\nEnd of program.\n";
+
+}
+
+void PSU_ON_OFF(DXKDP_PSU &PSU){
+    std::vector<uint8_t> input_vector = Encoder20(0x01);
+    PSU.PsuWrite(input_vector);
+    std::vector<uint8_t> ack = PSU.PsuRead(ack);
+    for(auto i: ack) printf("PO=1 returned: %02X\n", i);
+
+    std::cout << "Press enter to continue";
+    std::cin.get();
+
+    input_vector.clear();
+    ack.clear();
+    input_vector = Encoder20(0x00);
+    PSU.PsuWrite(input_vector);
+    ack = PSU.PsuRead(ack);
+    for(auto i: ack) printf("PO=0 returned: %02X\n", i);
 
 }

@@ -2,6 +2,7 @@
 #include <DxkdpLib/instructions.h>
 
 #include <cstdlib>
+#include <stdlib.h>
 #include <cmath>
 #include <stdint.h>
 
@@ -138,3 +139,7 @@ bool CCState;
 
 int main(int argc, char *argv[]);
 
+//MACROS ARE DECLARED HERE
+
+/**/
+void PSU_ON_OFF(DXKDP_PSU &PSU);

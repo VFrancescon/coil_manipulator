@@ -23,4 +23,6 @@ public:
     
     void PsuWrite(input_message msgIn);
     void PsuRead(output_message &msgOut);
+    void PsuWrite(std::vector<uint8_t> input);
+    std::vector<uint8_t> PsuRead(std::vector<uint8_t> output);
 };

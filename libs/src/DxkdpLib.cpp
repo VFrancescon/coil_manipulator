@@ -42,6 +42,10 @@ void DXKDP_PSU::PsuWrite(input_message msgIn){
     this->serialPort.WriteBinary(msgIn.instruction);
 }
 
+void DXKDP_PSU::PsuWrite(std::vector<uint8_t> input){
+    this->serialPort.WriteBinary(input);
+}
+
 void DXKDP_PSU::PsuRead(output_message &msgOut){
     //std::cout << "\nPrint before read attemp\n";
     //SerialDevice.ReadBinary(msgOut.output);
@@ -60,6 +64,10 @@ void DXKDP_PSU::PsuRead(output_message &msgOut){
     // this->serialPort.ReadBinary(msgOut.output3);
     // std::cout << "\nResult: ";
     // for(auto i : msgOut.output3) printf("%02X ", i);
+}
+
+std::vector<uint8_t> DXKDP_PSU::PsuRead(std::vector<uint8_t> output){
+    this->serialPort.ReadBinary(output);
 }
 
 DXKDP_PSU::~DXKDP_PSU(){
