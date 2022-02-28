@@ -243,6 +243,7 @@ int main(int argc, char *argv[]){
 }
 
 void PSU_ON_OFF(DXKDP_PSU &PSU){
+    output_message msgOut;
     std::vector<uint8_t> input_vector = Encoder20(0x01);
     PSU.PsuWrite(input_vector);
     std::vector<uint8_t> ack = PSU.PsuRead();
@@ -251,8 +252,9 @@ void PSU_ON_OFF(DXKDP_PSU &PSU){
     std::cout << "Press enter to continue";
     std::cin.get();
 
-    input_vector.clear();
-    ack.clear();
+    //input_vector.clear();
+    
+    msgOut.output1.clear();
     input_vector = Encoder20(0x00);
     PSU.PsuWrite(input_vector);
     ack = PSU.PsuRead();
