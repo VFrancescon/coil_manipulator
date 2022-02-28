@@ -184,12 +184,12 @@ int main(int argc, char *argv[]){
 
     uint8_t result;
     std::cout << "argc is: " << argc << "\n";
+    
     if(argc > 1) cmdIn1 = strtol(argv[1], NULL, 16);
-    //if(argc > 2) cmdIn2 = strtol(argv[2], NULL, 16);
     if(argc > 2) cmdIn2 = atof(argv[2]);
     if(argc > 3) cmdIn3 = atof(argv[3]);
 
-    //printf("cmdIn1= %02X, cmdIn2= %f\n", cmdIn1, cmdIn2);
+    
     output_message msgOut;
     PSU.PsuRead(msgOut);
     Decoder2B(msgOut);
@@ -213,20 +213,20 @@ int main(int argc, char *argv[]){
     case 3:
         if(cmdIn1 == 0x20){
             if((int)cmdIn2 == 0x01){
-                result = PoCtrl(PSU, 0x01);
+                PoCtrl(PSU, 0x01);
             }
-            else result = PoCtrl(PSU, 0x00);
+            else PoCtrl(PSU, 0x00);
         }
         else if(cmdIn1 == 0x21){
-            result = WriteVoltage(PSU, cmdIn2);
+            WriteVoltage(PSU, cmdIn2);
         }
         else if(cmdIn1 == 0x22){
-            result = WriteCurrent(PSU, cmdIn2);
+            WriteCurrent(PSU, cmdIn2);
         }
         break;
     case 4:
         if(cmdIn1 == 0x23){
-            result = WriteVI(PSU, cmdIn2, cmdIn3);
+            WriteVI(PSU, cmdIn2, cmdIn3);
         }
         break;
 
@@ -235,9 +235,6 @@ int main(int argc, char *argv[]){
         break;
     }
     
-
-
-
     std::cout << "\nEnd of program.\n";
 
 }
@@ -261,6 +258,37 @@ void PSU_ON_OFF(DXKDP_PSU &PSU){
     for(auto i: ack) printf("PO=0 returned: %02X\n", i);
 
 }
+
+void PoCtrl(DXKDP_PSU &PSU, uint8_t po_state){
+    std::vector<uint8_t> input_vector = Encoder20(po_state);
+    PSU.PsuWrite(input_vector);
+    std::vector<uint8_t> ack = PSU.PsuRead();
+
+}
+
+void WriteVoltage(DXKDP_PSU &PSU, float targetV, uint8_t addr){
+    std::vector<uint8_t> input_vector = Encoder21(targetV, addr);
+    for(auto i: input_vector) printf("%02X ", i);
+    PSU.PsuWrite(input_vector);
+    std::vector<uint8_t> ack = PSU.PsuRead();
+}
+
+void WriteCurrent(DXKDP_PSU &PSU, float targetI, uint8_t addr){
+    std::vector<uint8_t> input_vector = Encoder22(targetI, addr);
+    for(auto i: input_vector) printf("%02X ", i);
+    PSU.PsuWrite(input_vector);
+    std::vector<uint8_t> ack = PSU.PsuRead();
+    
+}
+
+void WriteVI(DXKDP_PSU &PSU, float targetV, float targetI, uint8_t addr){
+    std::vector<uint8_t> input_vector = Encoder23(targetV, targetI, addr);
+    for(auto i: input_vector) printf("%02X ", i);
+    PSU.PsuWrite(input_vector);
+    std::vector<uint8_t> ack = PSU.PsuRead();
+    
+}
+
 
 void PolarityBruteforce(DXKDP_PSU &PSU){
     std::vector<uint8_t> input_vector = Encoder24(0x01, 0x01);
@@ -297,38 +325,4 @@ void PolarityBruteforce(DXKDP_PSU &PSU){
     PSU.PsuWrite(input_vector);
     ack = PSU.PsuRead();
     for(auto i: ack) printf("V=1 I=0 returned: %02X\n", i);
-}
-
-uint8_t PoCtrl(DXKDP_PSU &PSU, uint8_t po_state){
-    std::vector<uint8_t> input_vector = Encoder20(po_state);
-    PSU.PsuWrite(input_vector);
-    std::vector<uint8_t> ack = PSU.PsuRead();
-    return ack[0];
-
-}
-
-uint8_t WriteVoltage(DXKDP_PSU &PSU, float targetV, uint8_t addr){
-    std::vector<uint8_t> input_vector = Encoder21(targetV, addr);
-    for(auto i: input_vector) printf("%02X ", i);
-    PSU.PsuWrite(input_vector);
-    std::vector<uint8_t> ack = PSU.PsuRead();
-    return ack[0];
-    // return 0x06;
-}
-
-uint8_t WriteCurrent(DXKDP_PSU &PSU, float targetI, uint8_t addr){
-    std::vector<uint8_t> input_vector = Encoder22(targetI, addr);
-    for(auto i: input_vector) printf("%02X ", i);
-    PSU.PsuWrite(input_vector);
-    std::vector<uint8_t> ack = PSU.PsuRead();
-    return ack[0];
-    // return 0x06;
-}
-
-uint8_t WriteVI(DXKDP_PSU &PSU, float targetV, float targetI, uint8_t addr){
-    std::vector<uint8_t> input_vector = Encoder23(targetV, targetI, addr);
-    for(auto i: input_vector) printf("%02X ", i);
-    PSU.PsuWrite(input_vector);
-    std::vector<uint8_t> ack = PSU.PsuRead();
-    return ack[0];
 }
