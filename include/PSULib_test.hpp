@@ -149,6 +149,7 @@ void PolarityBruteforce(DXKDP_PSU &PSU);
 
 void PoCtrl(DXKDP_PSU &PSU, uint8_t po_state);
 
+void GetSysInfo(DXKDP_PSU &PSU, output_message &msgOut, uint8_t addr=0x01);
 void WriteVoltage(DXKDP_PSU &PSU, float targetV, uint8_t addr=0x01);
 void WriteCurrent(DXKDP_PSU &PSU, float targetI, uint8_t addr=0x01);
 void WriteVI(DXKDP_PSU &PSU, float targetV, float targetI, uint8_t addr=0x01);

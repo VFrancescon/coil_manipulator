@@ -62,6 +62,8 @@ std::vector<uint8_t> Encoder2B(uint8_t addr){
 }
 
 void Decoder26(output_message &msgOut){
+    
+
     std::cout << "\n----------------\n Concatenation\n\n";
     std::cout << "\nSize of concatenated vector: " << msgOut.output3.size();
     std::cout << "\nContents: ";
@@ -116,13 +118,18 @@ void Decoder2B(output_message &msgOut){
     // std::cout << "\nContents of second output: ";
     // for(auto i : msgOut.output2) printf("%02X ", i);
     
+    // std::cout << "Output 1";
+    // for(auto i: msgOut.output1) printf("%02X ", i);
+    // std::cout << "\nOutput 2";
+    // for(auto i: msgOut.output2) printf("%02X ", i);
+
     /*Next 2 lines combine the vectors into something usable*/
     msgOut.output3.insert(msgOut.output3.end(), msgOut.output1.begin(), msgOut.output1.end());
     msgOut.output3.insert(msgOut.output3.end(), msgOut.output2.begin(), msgOut.output2.end());
-    std::cout << "\n----------------\n Concatenation\n\n";
-    std::cout << "\nSize of concatenated vector: " << msgOut.output3.size();
-    std::cout << "\nContents: ";
-    for(auto i : msgOut.output3) printf("%02X ", i);
+    // std::cout << "\n----------------\n Concatenation\n\n";
+    // std::cout << "\nSize of concatenated vector: " << msgOut.output3.size();
+    // std::cout << "\nContents: ";
+    // for(auto i : msgOut.output3) printf("%02X ", i);
 
     msgOut.ADDR = msgOut.output3[1];
     msgOut.CODE = msgOut.output3[2];
@@ -171,6 +178,13 @@ void DecToHex(float value, float Conv, input_message &msgIn, int entry){
 
 }
 
+void GetSysInfo(DXKDP_PSU &PSU, output_message &msgOut, uint8_t addr){
+    std::vector<uint8_t> input_vector = Encoder2B(addr);
+    PSU.PsuWrite(input_vector);
+    PSU.PsuRead(msgOut);
+    Decoder2B(msgOut);
+}
+
 int main(int argc, char *argv[]){
     std::cout << "Press enter to begin";
     std::cin.get();
@@ -182,18 +196,18 @@ int main(int argc, char *argv[]){
     long cmdIn1;
     float cmdIn2, cmdIn3;
 
-    uint8_t result;
-    std::cout << "argc is: " << argc << "\n";
+    //uint8_t result;
+    //std::cout << "argc is: " << argc << "\n";
     
     if(argc > 1) cmdIn1 = strtol(argv[1], NULL, 16);
     if(argc > 2) cmdIn2 = atof(argv[2]);
     if(argc > 3) cmdIn3 = atof(argv[3]);
 
     
+
     output_message msgOut;
-    PSU.PsuRead(msgOut);
-    Decoder2B(msgOut);
-    std::cout << "Vconv = " << V_conv << " Iconv = " << I_conv << "\n";
+    GetSysInfo(PSU, msgOut, 0x01);
+    // std::cout << "Vconv = " << V_conv << " Iconv = " << I_conv << "\n";
     
     // V_conv = 0.01;
     // I_conv = 0.01;
@@ -239,12 +253,15 @@ int main(int argc, char *argv[]){
 
 }
 
+
+
+
 void PSU_ON_OFF(DXKDP_PSU &PSU){
     output_message msgOut;
     std::vector<uint8_t> input_vector = Encoder20(0x01);
     PSU.PsuWrite(input_vector);
-    std::vector<uint8_t> ack = PSU.PsuRead();
-    for(auto i: ack) printf("PO=1 returned: %02X\n", i);
+    //std::vector<uint8_t> ack = PSU.PsuRead();
+    //for(auto i: ack) printf("PO=1 returned: %02X\n", i);
 
     std::cout << "Press enter to continue";
     std::cin.get();
@@ -254,30 +271,34 @@ void PSU_ON_OFF(DXKDP_PSU &PSU){
     msgOut.output1.clear();
     input_vector = Encoder20(0x00);
     PSU.PsuWrite(input_vector);
-    ack = PSU.PsuRead();
-    for(auto i: ack) printf("PO=0 returned: %02X\n", i);
+    //ack = PSU.PsuRead();
+    // for(auto i: ack) printf("PO=0 returned: %02X\n", i);
 
 }
 
 void PoCtrl(DXKDP_PSU &PSU, uint8_t po_state){
     std::vector<uint8_t> input_vector = Encoder20(po_state);
     PSU.PsuWrite(input_vector);
-    std::vector<uint8_t> ack = PSU.PsuRead();
+    //std::vector<uint8_t> ack = PSU.PsuRead();
 
 }
 
 void WriteVoltage(DXKDP_PSU &PSU, float targetV, uint8_t addr){
     std::vector<uint8_t> input_vector = Encoder21(targetV, addr);
+    std::cout << "input vector is: ";
     for(auto i: input_vector) printf("%02X ", i);
     PSU.PsuWrite(input_vector);
-    std::vector<uint8_t> ack = PSU.PsuRead();
+    // std::vector<uint8_t> ack = PSU.PsuRead();
+    //output_message msgOut;
+    //PSU.PsuRead(msgOut);
+    //for(auto i: msgOut.output1) printf("%02X ", i);
 }
 
 void WriteCurrent(DXKDP_PSU &PSU, float targetI, uint8_t addr){
     std::vector<uint8_t> input_vector = Encoder22(targetI, addr);
     for(auto i: input_vector) printf("%02X ", i);
     PSU.PsuWrite(input_vector);
-    std::vector<uint8_t> ack = PSU.PsuRead();
+    // std::vector<uint8_t> ack = PSU.PsuRead();
     
 }
 
@@ -285,7 +306,7 @@ void WriteVI(DXKDP_PSU &PSU, float targetV, float targetI, uint8_t addr){
     std::vector<uint8_t> input_vector = Encoder23(targetV, targetI, addr);
     for(auto i: input_vector) printf("%02X ", i);
     PSU.PsuWrite(input_vector);
-    std::vector<uint8_t> ack = PSU.PsuRead();
+    // std::vector<uint8_t> ack = PSU.PsuRead();
     
 }
 
