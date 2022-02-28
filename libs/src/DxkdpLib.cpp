@@ -66,7 +66,8 @@ void DXKDP_PSU::PsuRead(output_message &msgOut){
     // for(auto i : msgOut.output3) printf("%02X ", i);
 }
 
-std::vector<uint8_t> DXKDP_PSU::PsuRead(std::vector<uint8_t> output){
+std::vector<uint8_t> DXKDP_PSU::PsuRead(){
+    std::vector<uint8_t> output;
     this->serialPort.ReadBinary(output);
 }
 

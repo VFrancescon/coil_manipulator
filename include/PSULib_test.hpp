@@ -147,4 +147,8 @@ void PSU_ON_OFF(DXKDP_PSU &PSU);
 /*Brute forces all combinations for polarity*/
 void PolarityBruteforce(DXKDP_PSU &PSU);
 
-void PoCtrl(DXKDP_PSU &PSU, uint8_t po_state);
+uint8_t PoCtrl(DXKDP_PSU &PSU, uint8_t po_state);
+
+uint8_t WriteVoltage(DXKDP_PSU &PSU, float targetV, uint8_t addr=0x01);
+uint8_t WriteCurrent(DXKDP_PSU &PSU, float targetI, uint8_t addr=0x01);
+uint8_t WriteVI(DXKDP_PSU &PSU, float targetV, float targetI, uint8_t addr=0x01);
