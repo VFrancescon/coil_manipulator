@@ -175,15 +175,17 @@ int main(int argc, char *argv[]){
     float cmdIn2, cmdIn3;
 
     //uint8_t result;
-    //std::cout << "argc is: " << argc << "\n";
+    // std::cout << "argc is: " << argc << "\n";
     
     if(argc > 1) cmdIn1 = strtol(argv[1], NULL, 16);
     if(argc > 2) cmdIn2 = atof(argv[2]);
     if(argc > 3) cmdIn3 = atof(argv[3]);
 
+    std::cout << "in1: " << argv[1] << " in2: " << argv[2] << "\n";
+    std::cout << "in1: " << cmdIn1 << " in2: " << cmdIn2 << "\n";
     
 
-    output_message msgOut;
+    
     
     V_conv = PSU.Vconv;
     I_conv = PSU.Iconv;
@@ -268,7 +270,13 @@ void PSU_ON_OFF(DXKDP_PSU &PSU){
 
 void PoCtrl(DXKDP_PSU &PSU, uint8_t po_state){
     std::vector<uint8_t> input_vector = Encoder20(po_state);
+    for(auto i: input_vector) printf("%02X ", i);
     PSU.PsuWrite(input_vector);
+    output_message msgOut;
+    PSU.PsuRead(msgOut);
+    for(auto i: msgOut.output1) printf("\nResult: %02X ", i);
+    
+
     //std::vector<uint8_t> ack = PSU.PsuRead();
 
 }
@@ -337,6 +345,7 @@ void PolarityBruteforce_Mixed(DXKDP_PSU &PSU){
     input_vector.clear();
     
     input_vector = Encoder24(0x00, 0x01);
+    PSU.PsuWrite(input_vector);
     PSU.PsuRead(msgOut);
     std::cout << "00 01, ACK: ";
     for(auto i: msgOut.output1) printf("%02X ", i);
@@ -347,7 +356,7 @@ void PolarityBruteforce(DXKDP_PSU &PSU){
     PSU.PsuWrite(input_vector);
     output_message msgOut;
     PSU.PsuRead(msgOut);
-    std::cout << "00 00, ACK: ";
+    std::cout << "\n00 00, ACK: ";
     for(auto i: msgOut.output1) printf("%02X ", i);
 
     std::cout << "Press enter to continue";
@@ -358,10 +367,10 @@ void PolarityBruteforce(DXKDP_PSU &PSU){
     input_vector = Encoder24(0x01, 0x01);
     PSU.PsuWrite(input_vector);
     PSU.PsuRead(msgOut);
-    std::cout << "01 01, ACK: ";
+    std::cout << "\n01 01, ACK: ";
     for(auto i: msgOut.output1) printf("%02X ", i);
 
-    std::cout << "Press enter to continue";
+    std::cout << "\nPress enter to continue";
     std::cin.get();
 
     input_vector.clear();
@@ -372,13 +381,33 @@ void PolarityBruteforce(DXKDP_PSU &PSU){
     std::cout << "02 02, ACK: ";
     for(auto i: msgOut.output1) printf("%02X ", i);
     
-    std::cout << "Press enter to continue";
+    std::cout << "\nPress enter to continue";
     std::cin.get();
 
     input_vector.clear();
     
     input_vector = Encoder24(0x03, 0x03);
+    PSU.PsuWrite(input_vector);
     PSU.PsuRead(msgOut);
     std::cout << "03 03, ACK: ";
     for(auto i: msgOut.output1) printf("%02X ", i);
+}
+
+void square_wave(DXKDP_PSU &PSU){
+    std::vector<uint8_t> input_vector1;
+    std::vector<uint8_t> input_vector2;
+
+    input_vector1 = Encoder23(15.0, 15.0);
+    input_vector2 = Encoder23(0, 0);
+
+    std::cout << "ready to go. Press enter";
+    std::cin.get();    
+
+    for(int i = 0; i < 50; i++){
+        PSU.PsuWrite(input_vector1);
+        usleep(500000);
+        PSU.PsuWrite(input_vector2);
+        usleep(500000);
+        
+    }
 }
