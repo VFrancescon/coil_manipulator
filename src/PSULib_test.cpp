@@ -134,7 +134,8 @@ float HexToValue(uint8_t MSB, uint8_t LSB, float Conv){
 }
 
 void DecToHex(float value, float Conv, input_message &msgIn, int entry){
-    uint16_t hexConverted = int(value/Conv);
+    float intermediate = value/Conv;
+    uint16_t hexConverted = int(intermediate);
     switch (entry)
     {
     case 2:
@@ -168,7 +169,7 @@ void DecToHex(float value, float Conv, input_message &msgIn, int entry){
 int main(int argc, char *argv[]){
     std::cout << "Press enter to begin";
     std::cin.get();
-    std::string str = "/dev/ttyUSB0";
+    std::string str = "/dev/ttyUSB3";
     DXKDP_PSU PSU(str, 0.01, 0.01);
     //DXKDP_PSU PSU();
     long cmdIn1;
