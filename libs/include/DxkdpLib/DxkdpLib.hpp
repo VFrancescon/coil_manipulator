@@ -14,12 +14,15 @@ class DXKDP_PSU{
 private:
     void DXKDP_Setup();
 public:
+    /*default constructor, here for debugging mainly
+    will instantiate a power supply at ttyUSB0, addr 1*/
     DXKDP_PSU();
     DXKDP_PSU(std::string COM_PORT);
+    DXKDP_PSU(std::string COM_PORT, float V_conv, float I_conv);
     ~DXKDP_PSU();
     SerialPort serialPort;
     
-    // std::unique_ptr<SerialPort> SerialDevice;
+    float Vconv = 0.01, Iconv = 0.01;
     
     void PsuWrite(input_message msgIn);
     void PsuRead(output_message &msgOut);

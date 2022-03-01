@@ -78,7 +78,8 @@ void Decoder28(output_message &msgOut);
 Takes Voltage, Current and Step Size from the PSUs.
 A bit unsure what the voltage actually represents as of now.
 */
-void Decoder2B(output_message &msgOut);
+/*Scrapped because we do not need that info*/
+//void Decoder2B(output_message &msgOut);
 
 /*Conversion functions*/
 
@@ -145,11 +146,15 @@ int main(int argc, char *argv[]);
 void PSU_ON_OFF(DXKDP_PSU &PSU);
 
 /*Brute forces all combinations for polarity*/
+void PolarityBruteforce_Mixed(DXKDP_PSU &PSU);
 void PolarityBruteforce(DXKDP_PSU &PSU);
 
 void PoCtrl(DXKDP_PSU &PSU, uint8_t po_state);
 
-void GetSysInfo(DXKDP_PSU &PSU, output_message &msgOut, uint8_t addr=0x01);
+/*Scrapped because we do not need that info*/
+//void GetSysInfo(DXKDP_PSU &PSU, output_message &msgOut, uint8_t addr=0x01);
+
+
 void WriteVoltage(DXKDP_PSU &PSU, float targetV, uint8_t addr=0x01);
 void WriteCurrent(DXKDP_PSU &PSU, float targetI, uint8_t addr=0x01);
 void WriteVI(DXKDP_PSU &PSU, float targetV, float targetI, uint8_t addr=0x01);
