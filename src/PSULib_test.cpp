@@ -227,6 +227,9 @@ int main(int argc, char *argv[]){
         break;
     case 4:
         if(cmdIn1 == 0x23){
+            /*If this line gives you an error, please ignore it.
+            Intellisense is really dumb it turns out
+            */
             WriteVI(PSU, cmdIn2, cmdIn3);
         }
         break;
