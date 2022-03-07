@@ -5,7 +5,7 @@ using namespace mn::CppLinuxSerial;
 class Teslameter{
 private:
     void TeslameterSetup();
-    ~Teslameter();
+    
 
     std::string autoRange = "SENS:FIEL:RANG:AUTO 1";
     std::string fieldTesla = "UNIT:FIEL TESL";
@@ -18,6 +18,7 @@ public:
 
     Teslameter();
     Teslameter(std::string COM);
+    ~Teslameter();
 
     float SingleAxisReading(int AXIS);
     std::vector<float> AllAxisReading();
