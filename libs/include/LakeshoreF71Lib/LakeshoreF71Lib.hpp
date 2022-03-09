@@ -22,4 +22,5 @@ public:
 
     float SingleAxisReading(int AXIS);
     std::vector<float> AllAxisReading();
+    std::string SimpleSingleAxis();
 };

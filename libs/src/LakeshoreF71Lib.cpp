@@ -1,10 +1,10 @@
 #include <LakeshoreF71Lib/LakeshoreF71Lib.hpp>
 
-Teslameter::Teslameter() : serialPort("/dev/ttyUSB0", BaudRate::B_115200, NumDataBits::EIGHT, Parity::NONE, NumStopBits::ONE) {
+Teslameter::Teslameter() : serialPort("/dev/ttyUSB0", BaudRate::B_115200, NumDataBits::EIGHT, Parity::NONE, NumStopBits::ONE, FlowControl::HARDWARE) {
     this->TeslameterSetup();
 }
 
-Teslameter::Teslameter(std::string COM) : serialPort(COM, BaudRate::B_115200, NumDataBits::EIGHT, Parity::NONE, NumStopBits::ONE) {
+Teslameter::Teslameter(std::string COM) : serialPort(COM, BaudRate::B_115200, NumDataBits::EIGHT, Parity::NONE, NumStopBits::ONE, FlowControl::HARDWARE) {
     this->TeslameterSetup();
 }
 
@@ -61,14 +61,24 @@ void Teslameter::TeslameterSetup(){
     this->serialPort.SetTimeout(-1);
     this->serialPort.Open();
 
-    std::string setupCmd = autoRange + ";:" + fieldTesla + ";" + confirmed;
-    std::string readValue;
+    // std::string setupCmd = autoRange + ";:" + fieldTesla + ";" + confirmed;
+    // std::string readValue;
 
-    this->serialPort.Write(setupCmd);
-    this->serialPort.Read(readValue);
-    if(std::stoi(readValue) != 1) std::cout << "Error. Could not set up range and units\n";
+    // this->serialPort.Write(setupCmd);
+    // this->serialPort.Read(readValue);
+    // if(std::stoi(readValue) != 1) std::cout << "Error. Could not set up range and units\n";
     
 
+}
+
+std::string Teslameter::SimpleSingleAxis(){
+    std::string input, output;
+
+    input = "SENS:FIEL:RANG:AUTO 1;:UNIT:FIEL TESLA;:FETC:FIEL:DC? X;*OPC?";
+    this->serialPort.Write(input);
+    this->serialPort.Read(output);
+
+    return output;
 }
 
 Teslameter::~Teslameter(){
