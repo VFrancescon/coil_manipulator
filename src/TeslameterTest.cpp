@@ -21,7 +21,7 @@ int main(int argc, char* argv[]){
     //from logic analyzer, seems like LF= \0
     //possibly with a newline as well
     //we will attempt both now
-    std::string test_message = "FETC:FIEL:DC? X;*OPC;";
+    std::string test_message = "FETC:FIEL:DC? X;*OPC?";
     std::string line_feed = "\n\0";
     std::string input = test_message + line_feed;
     // std::vector<uint8_t> output;

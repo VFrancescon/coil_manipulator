@@ -7,11 +7,12 @@ private:
     void TeslameterSetup();
     
 
-    std::string autoRange = "SENS:FIEL:RANG:AUTO 1";
-    std::string fieldTesla = "UNIT:FIEL TESL";
-    std::string fetchField = "FETC:FIEL:DC?";
+    std::string autoRange   = "SENS:FIEL:RANG:AUTO 1";
+    std::string fieldTesla  = "UNIT:FIEL TESL";
+    std::string fetchField  = "FETC:FIEL:DC? ";
 
-    std::string confirmed = "*OPC";
+    std::string confirmed   = "*OPC?";
+    std::string lineFeed    = "\n\0";
 
 public:
     SerialPort serialPort;
