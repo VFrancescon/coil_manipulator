@@ -12,7 +12,7 @@ int main(int argc, char* argv[]){
     std::cin.get();
     output_struct out;   
     SerialPort serialDevice("/dev/ttyUSB0", BaudRate::B_115200, NumDataBits::EIGHT, Parity::NONE, NumStopBits::ONE, FlowControl::HARDWARE);
-    serialDevice.SetTimeout(500);
+    serialDevice.SetTimeout(-1);
     serialDevice.Open();
 
     std::cout << "Serial port opened successfully. Press enter to continue";
@@ -21,15 +21,17 @@ int main(int argc, char* argv[]){
     //from logic analyzer, seems like LF= \0
     //possibly with a newline as well
     //we will attempt both now
-    std::string test_message = "FETC:FIEL:DC? X;\n\0";
+    std::string test_message = "FETC:FIEL:DC? X;*OPC;";
+    std::string line_feed = "\n\0";
+    std::string input = test_message + line_feed;
     // std::vector<uint8_t> output;
     std::string output;
     
-    serialDevice.Write(test_message);
+    serialDevice.Write(input);
     std::cout << "\nMessage written.\n";
 
     
-    usleep(500000);
+    //usleep(500000);
 
 
     // serialDevice.ReadBinary(output);
