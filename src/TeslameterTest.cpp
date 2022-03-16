@@ -18,13 +18,14 @@ int main(int argc, char* argv[]){
     std::cout << "Serial port opened successfully. Press enter to continue";
     std::cin.get();
 
-    std::string test_message = "FETC:FIEL:DC? X;";
-    std::string line_feed = "\r\0x0a\10\n";
+    //from logic analyzer, seems like LF= \0
+    //possibly with a newline as well
+    //we will attempt both now
+    std::string test_message = "FETC:FIEL:DC? X;\n\0";
     // std::vector<uint8_t> output;
     std::string output;
     
     serialDevice.Write(test_message);
-    serialDevice.Write(line_feed);
     std::cout << "\nMessage written.\n";
 
     
