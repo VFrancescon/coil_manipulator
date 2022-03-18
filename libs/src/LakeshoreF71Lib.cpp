@@ -52,7 +52,17 @@ std::vector<float> Teslameter::AllAxisReading(){
 
     std::cout << "Read value: " << readValue;
 
+    int FirstValueIndex = readValue.find(";");
+    int SecondValueIndex = readValue.find(";",FirstValueIndex+1);
+    int ThirdValueIndex = readValue.find(";",SecondValueIndex+1);
+    if(std::stoi(readValue.substr(ThirdValueIndex+1,1)) != 1) return;
+
     std::vector<float> returned_value;
+    returned_value.push_back(stof(readValue.substr(0,FirstValueIndex)));
+    returned_value.push_back(stof(readValue.substr(FirstValueIndex+1,SecondValueIndex)));
+    returned_value.push_back(stof(readValue.substr(SecondValueIndex+1,ThirdValueIndex)));
+    for(auto i : returned_value) std::cout << " " << i;
+
     return returned_value;
 }
 
