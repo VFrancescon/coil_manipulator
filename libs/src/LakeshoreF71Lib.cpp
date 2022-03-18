@@ -9,20 +9,20 @@ Teslameter::Teslameter(std::string COM) : serialPort(COM, BaudRate::B_115200, Nu
 }
 
 
-float Teslameter::SingleAxisReading(int AXIS){
+float Teslameter::SingleAxisReading(Teslameter::AXIS Axis){
     std::string AxisReading, readValue;
-    switch(AXIS){
-        case 0:
+    switch(Axis){
+        case AXIS::X:
             std::cout << "X axis reading\n";
             AxisReading = fetchField + "X;" + confirmed + lineFeed;
         break;
         
-        case 1:
+        case AXIS::Y:
             std::cout << "Y axis reading\n";
             AxisReading = fetchField + "Y;" + confirmed + lineFeed;
         break;
 
-        case 2:
+        case AXIS::Z:
             std::cout << "Z axis reading\n";
             AxisReading = fetchField + "Z;" + confirmed + lineFeed;
         break;
@@ -55,7 +55,7 @@ std::vector<float> Teslameter::AllAxisReading(){
     int FirstValueIndex = readValue.find(";");
     int SecondValueIndex = readValue.find(";",FirstValueIndex+1);
     int ThirdValueIndex = readValue.find(";",SecondValueIndex+1);
-    if(std::stoi(readValue.substr(ThirdValueIndex+1,1)) != 1) return;
+    if(std::stoi(readValue.substr(ThirdValueIndex+1,1)) != 1) std::cout << "ERROR!";
 
     std::vector<float> returned_value;
     returned_value.push_back(stof(readValue.substr(0,FirstValueIndex)));

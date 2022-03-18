@@ -20,8 +20,18 @@ public:
     Teslameter();
     Teslameter(std::string COM);
     ~Teslameter();
+    
+    enum class AXIS{
+        X,
+        Y,
+        Z
+    };
 
-    float SingleAxisReading(int AXIS);
+    // float SingleAxisReading(int Axis);
+    float SingleAxisReading(Teslameter::AXIS Axis);
     std::vector<float> AllAxisReading();
     std::string SimpleSingleAxis();
+
+
+    
 };
