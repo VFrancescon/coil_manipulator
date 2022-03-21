@@ -1,9 +1,14 @@
 # Helmz Coil Manipulator
 
 # Build Instructions
-1. Clone and install [CppLinuxSerial](https://github.com/gbmhunter/CppLinuxSerial) following the instructions given there.
+1. Clone and install [CppLinuxSerial](https://github.com/VFrancescon/CppLinuxSerial) following the instructions given there.*
 2. Install the [Pylon SDK](https://www.baslerweb.com/en/sales-support/downloads/software-downloads/) with mpg4 addon.
 3. In ~/coil_manipulator
+
+
+\*PLEASE NOTE:
+We use my fork of the library as the original repo currently do not support setting flow control at run time.
+I put a merge request out and hopefullythey will soon and we can resume to using their release branch.
 ```
 mkdir build && cd build
 cmake ..
