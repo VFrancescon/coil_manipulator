@@ -16,22 +16,27 @@ sudo make install
 ```
 4. You are ready to go!
 
+***NOTE***
+
+`sudo make install` is only required if the files in the libs/ directory are modified.
+
+        That is because the libraries are installed on the system in /usr/local/include. Which allows you to include the libraries direclty into any application written for the system, only needing to link_libraries in the CMake.
+
+Else, you can just run `make` optionally specifying which executable to compile specifically.
+Example: `make initial_test` or `make all`
 
 # Features
 * Completely C/C++ Based
 * Qt5 Frontend
 * Basler Pylon + OpenCV integration (prototype)
+* Low level library written for Serial Comm to PSUs
+* Low level library written for SCPI Comm to Teslameter (Lakeshore F71)
+* Low Level library written for Serial Comm to Linear Actuator
 
-# Current Progress
-* Integrated CppLinuxSerial Library (see credits)
-* Formatted message can be sent
-* Reception Verified
-* Comprehensive backend to be developed
-* Most of the documentation transcribed on Notion
-* Visual manipulation of tentacle in progress
-* File (csv) and Manual input prototype written
+# Currently in Progress
+* Middleware Layer that abstracts all low-level libraries.
 
-* Screenshots
+# Screenshots
 ![GUI_Alpha3](images/frontend_alpha3.png)
 ![Serial_Comm](images/FirstSerialSuccess.png)
 # Credits

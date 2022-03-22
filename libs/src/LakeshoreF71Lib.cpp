@@ -81,16 +81,6 @@ void Teslameter::TeslameterSetup(){
 
 }
 
-std::string Teslameter::SimpleSingleAxis(){
-    std::string input, output;
-
-    input = "SENS:FIEL:RANG:AUTO 1;:UNIT:FIEL TESLA;:FETC:FIEL:DC? X;*OPC?" + lineFeed;
-    this->serialPort.Write(input);
-    this->serialPort.Read(output);
-
-    return output;
-}
-
 Teslameter::~Teslameter(){
     this->serialPort.Close();
 }
