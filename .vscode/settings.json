@@ -61,7 +61,8 @@
         "cfenv": "cpp",
         "cinttypes": "cpp",
         "typeindex": "cpp",
-        "variant": "cpp"
+        "variant": "cpp",
+        "hash_map": "cpp"
     },
     "C_Cpp.intelliSenseEngineFallback": "Enabled"
 }

@@ -121,12 +121,16 @@ public:
     void PsuWrite(std::vector<uint8_t> input);
     
     /*Sets Polarity polarity of Supplu PSU*/
-    void setPolarity(DXKDP_PSU &PSU, uint8_t polarity, uint8_t addr=0x01);
+    void setPolarity(uint8_t polarity, uint8_t addr=0x01);
 
-    void PoCtrl(DXKDP_PSU &PSU, uint8_t po_state);
+    void PoCtrl(uint8_t po_state);
 
-    void WriteVoltage(DXKDP_PSU &PSU, float targetV, uint8_t addr=0x01);
-    void WriteCurrent(DXKDP_PSU &PSU, float targetI, uint8_t addr=0x01);
-    void WriteVI(DXKDP_PSU &PSU, float targetV, float targetI, uint8_t addr=0x01);
+    void WriteVoltage(float targetV, uint8_t addr=0x01);
+    void WriteCurrent(float targetI, uint8_t addr=0x01);
+    void WriteVI(float targetV, float targetI, uint8_t addr=0x01);
+
+    bool POstate;
+    float ReadVoltage, ReadCurrent;
+
 
 };
