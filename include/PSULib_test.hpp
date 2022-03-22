@@ -142,21 +142,12 @@ int main(int argc, char *argv[]);
 
 //MACROS ARE DECLARED HERE
 
-/*Turns the Supply on, then off*/
-void PSU_ON_OFF(DXKDP_PSU &PSU);
 
-/*Brute forces all combinations for polarity*/
-void PolarityBruteforce_Mixed(DXKDP_PSU &PSU);
-void PolarityBruteforce(DXKDP_PSU &PSU);
+/*Sets Polarity polarity of Supplu PSU*/
+void setPolarity(DXKDP_PSU &PSU, uint8_t polarity, uint8_t addr=0x01);
 
 void PoCtrl(DXKDP_PSU &PSU, uint8_t po_state);
-
-/*Scrapped because we do not need that info*/
-//void GetSysInfo(DXKDP_PSU &PSU, output_message &msgOut, uint8_t addr=0x01);
-
 
 void WriteVoltage(DXKDP_PSU &PSU, float targetV, uint8_t addr=0x01);
 void WriteCurrent(DXKDP_PSU &PSU, float targetI, uint8_t addr=0x01);
 void WriteVI(DXKDP_PSU &PSU, float targetV, float targetI, uint8_t addr=0x01);
-
-void square_wave(DXKDP_PSU &PSU);

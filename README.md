@@ -16,11 +16,15 @@ sudo make install
 ```
 4. You are ready to go!
 
-***NOTE***
+### Note
 
 `sudo make install` is only required if the files in the libs/ directory are modified.
 
-        That is because the libraries are installed on the system in /usr/local/include. Which allows you to include the libraries direclty into any application written for the system, only needing to link_libraries in the CMake.
+```
+That is because the libraries are installed on the system in /usr/local/include. 
+Which allows you to include the libraries direclty into any application written for the system. 
+Only needing to link_libraries in the CMAKE.
+```
 
 Else, you can just run `make` optionally specifying which executable to compile specifically.
 Example: `make initial_test` or `make all`

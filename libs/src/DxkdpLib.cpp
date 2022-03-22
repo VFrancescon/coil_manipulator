@@ -23,7 +23,7 @@ DXKDP_PSU::DXKDP_PSU(std::string COM_PORT, float V_conv, float I_conv) : serialP
 }
 
 void DXKDP_PSU::DXKDP_Setup(){
-    this->serialPort.SetTimeout(24499);
+    this->serialPort.SetTimeout(-1);
     this->serialPort.Open();
     
 }
