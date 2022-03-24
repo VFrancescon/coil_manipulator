@@ -35,11 +35,12 @@ public:
     MiddlewareLayer();
 
     MiddlewareLayer(std::string PSUX_PORT, std::string PSUY_PORT, std::string PSUZ_PORT, std::string TMETER_PORT, std::string LINACT_PORT );
-    // ~MiddlewareLayer();
+    ~MiddlewareLayer();
 
     void TurnOnSupply();
     void TurnOffSupply();
     void initialSetup();
     void set3DVector(std::vector<float> I_X, std::vector<float> I_Y, std::vector<float> I_Z);
+    float getXField();
 
 };

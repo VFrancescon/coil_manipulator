@@ -12,6 +12,8 @@ MiddlewareLayer::MiddlewareLayer(){
 
     std::unique_ptr<Teslameter> T_Meter = std::make_unique<Teslameter>("/dev/ttyUSB3");
     std::unique_ptr<LinearActuator> LinAct = std::make_unique<LinearActuator>("/dev/ttyUSB4");
+
+    this->initialSetup();
     
 }
 
@@ -45,12 +47,14 @@ void MiddlewareLayer::TurnOffSupply(){
 }
 
 void MiddlewareLayer::initialSetup(){
-    std::thread thread_x(&DXKDP_PSU::WriteVoltage, *PSU_X, 60, 0x01);
-    std::thread thread_y(&DXKDP_PSU::WriteVoltage, *PSU_Y, 60, 0x01);
-    std::thread thread_z(&DXKDP_PSU::WriteVoltage, *PSU_Z, 60, 0x01);
+    std::thread thread_x(&DXKDP_PSU::WriteVI, *PSU_X, 60, 0.00, 0x01);
+    std::thread thread_y(&DXKDP_PSU::WriteVI, *PSU_Y, 60, 0.00, 0x01);
+    std::thread thread_z(&DXKDP_PSU::WriteVI, *PSU_Z, 60, 0.00, 0x01);
     thread_x.join();
     thread_y.join();
     thread_z.join();
+
+    this->TurnOnSupply();
 }
 
 void MiddlewareLayer::set3DVector(std::vector<float> I_X, std::vector<float> I_Y, std::vector<float> I_Z){
@@ -61,5 +65,14 @@ void MiddlewareLayer::set3DVector(std::vector<float> I_X, std::vector<float> I_Y
         thread_x.join();
         thread_y.join();
         thread_z.join();
+        sleep(1);
     }
+}
+
+float MiddlewareLayer::getXField(){
+    return T_Meter->SingleAxisReading(Teslameter::AXIS::X);
+}
+
+MiddlewareLayer::~MiddlewareLayer(){
+    this->TurnOffSupply();
 }
