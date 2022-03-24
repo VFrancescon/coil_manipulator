@@ -1,5 +1,8 @@
 #include <middleware_test.h>
 
+//TESTING BRANCH
+//We keep the most basic version of the test file here so I can verify the class, but still develop
+
 int main(void){
     std::vector<float> input_current;
     MiddlewareLayer mid;
