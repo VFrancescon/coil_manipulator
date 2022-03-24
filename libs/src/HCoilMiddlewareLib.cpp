@@ -62,10 +62,12 @@ void MiddlewareLayer::set3DVector(std::vector<float> I_X, std::vector<float> I_Y
         std::thread thread_x(&DXKDP_PSU::WriteCurrent, *PSU_X, I_X[i], 0x01);
         std::thread thread_y(&DXKDP_PSU::WriteCurrent, *PSU_Y, I_Y[i], 0x01);
         std::thread thread_z(&DXKDP_PSU::WriteCurrent, *PSU_Z, I_Z[i], 0x01);
+        std::thread thread_i(&LinearActuator::LinearExtend, *LinAct);
         thread_x.join();
         thread_y.join();
         thread_z.join();
-        sleep(1);
+        // sleep(1);
+        std::cin.get();
     }
 }
 
@@ -73,6 +75,11 @@ float MiddlewareLayer::getXField(){
     return T_Meter->SingleAxisReading(Teslameter::AXIS::X);
 }
 
+void MiddlewareLayer::Introducer1mm(){
+    this->LinAct->LinearExtend();
+}
+
 MiddlewareLayer::~MiddlewareLayer(){
     this->TurnOffSupply();
+    this->LinAct->LinearStop();
 }

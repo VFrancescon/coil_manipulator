@@ -1,3 +1,9 @@
 #include <HCoilMiddlewareLib/HCoilMiddlewareLib.hpp>
+#include <sstream>
+#include <fstream>
+#include <string>
 
-int main(void);
+std::vector<std::string> row;
+std::vector<float> bx, by, bz;
+
+int main();

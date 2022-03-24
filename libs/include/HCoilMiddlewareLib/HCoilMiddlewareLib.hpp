@@ -42,5 +42,6 @@ public:
     void initialSetup();
     void set3DVector(std::vector<float> I_X, std::vector<float> I_Y, std::vector<float> I_Z);
     float getXField();
+    void Introducer1mm();
 
 };
