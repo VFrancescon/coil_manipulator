@@ -4,8 +4,7 @@ int main(int argc, char* argv[]){
     
     std::string filename = "/home/vittorio/coil_manipulator/Uopt2_Nav2_OPT2RE.csv";
     if(argc == 2) {
-        std::string arg = argv[1];
-        filename = "/home/vittorio/coil_manipulator/" + arg;
+        filename = argv[1];
         }
     
     std::ifstream file(filename, std::ios::in);

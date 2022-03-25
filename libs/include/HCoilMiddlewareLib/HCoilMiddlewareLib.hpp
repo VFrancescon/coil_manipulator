@@ -8,7 +8,8 @@
 class MiddlewareLayer{
 
 private:
-
+    int stepper_count;
+    void PolarityCheck(float input, int PSU_CHOSER);
 public:
     /*
     3x PSUs
