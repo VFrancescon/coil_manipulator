@@ -6,4 +6,4 @@
 std::vector<std::string> row;
 std::vector<float> bx, by, bz;
 
-int main();
+int main(int argc, char* argv[]);

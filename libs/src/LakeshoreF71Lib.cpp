@@ -1,5 +1,5 @@
 #include <LakeshoreF71Lib/LakeshoreF71Lib.hpp>
-
+#include <unistd.h>
 Teslameter::Teslameter() : serialPort("/dev/ttyUSB0", BaudRate::B_115200, NumDataBits::EIGHT, Parity::NONE, NumStopBits::ONE, FlowControl::HARDWARE) {
     this->TeslameterSetup();
 }
@@ -13,7 +13,7 @@ float Teslameter::SingleAxisReading(Teslameter::AXIS Axis){
     std::string AxisReading, readValue;
     switch(Axis){
         case AXIS::X:
-            std::cout << "X axis reading\n";
+            // std::cout << "X axis reading\n";
             AxisReading = fetchField + "X;" + confirmed + lineFeed;
         break;
         
@@ -34,9 +34,15 @@ float Teslameter::SingleAxisReading(Teslameter::AXIS Axis){
     }
 
     this->serialPort.Write(AxisReading);
+    //sleep for 100ms. Apparently the teslameter needs some time to reply
+    usleep(100000);
+    // std::cout << "available data: " << this->serialPort.Available() << "\n";
+
     this->serialPort.Read(readValue);
 
     int index = readValue.find(";");
+    // std::cout << "wrote value: " << AxisReading << "\n";
+    // std::cout << "value read: " << readValue << "\n";
     if(std::stoi(readValue.substr(index+1,1)) != 1) return 0.0;
 
     return std::stof(readValue.substr(0, index));

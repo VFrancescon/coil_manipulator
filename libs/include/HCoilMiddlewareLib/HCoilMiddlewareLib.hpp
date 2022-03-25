@@ -16,12 +16,18 @@ public:
     1x Linear Actuator
     */
     // std::shared_ptr<Device> device;
-    std::unique_ptr<DXKDP_PSU> PSU_X;
-    std::unique_ptr<DXKDP_PSU> PSU_Y;
-    std::unique_ptr<DXKDP_PSU> PSU_Z;
+    // std::unique_ptr<DXKDP_PSU> PSU_X;
+    // std::unique_ptr<DXKDP_PSU> PSU_Y;
+    // std::unique_ptr<DXKDP_PSU> PSU_Z;
 
-    std::unique_ptr<Teslameter> T_Meter;
-    std::unique_ptr<LinearActuator> LinAct; 
+    // std::unique_ptr<Teslameter> T_Meter;
+    // std::unique_ptr<LinearActuator> LinAct; 
+    DXKDP_PSU PSU_X;
+    DXKDP_PSU PSU_Y;
+    DXKDP_PSU PSU_Z;
+
+    Teslameter T_Meter;
+    LinearActuator LinAct;
 
     /*
     Default constructor.
@@ -42,6 +48,5 @@ public:
     void initialSetup();
     void set3DVector(std::vector<float> I_X, std::vector<float> I_Y, std::vector<float> I_Z);
     float getXField();
-    void Introducer1mm();
 
 };
