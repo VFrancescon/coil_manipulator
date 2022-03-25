@@ -2,14 +2,25 @@
 #include <LakeshoreF71Lib/LakeshoreF71Lib.hpp>
 #include <LinActuatorLib/LinActuatorLib.hpp>
 #include <thread>
-
-
+#include <fstream>
+#include <chrono>
 
 class MiddlewareLayer{
 
 private:
     int stepper_count;
     void PolarityCheck(float input, int PSU_CHOSER);
+    std::ofstream outputFile;
+    std::string filename = "../output.csv";
+    int row_count = 1;
+    float frequency = 1.75;
+
+    int period_us = 1/frequency*1000000;
+    
+    float cal_x = 0.54;
+    float cal_y = 1.135;
+    float cal_z = 0.65;
+
 public:
     /*
     3x PSUs
@@ -49,5 +60,6 @@ public:
     void initialSetup();
     void set3DVector(std::vector<float> I_X, std::vector<float> I_Y, std::vector<float> I_Z);
     float getXField();
+    void writeXField();
 
 };

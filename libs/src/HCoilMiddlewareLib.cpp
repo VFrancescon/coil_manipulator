@@ -73,8 +73,10 @@ void MiddlewareLayer::initialSetup(){
     thread_x.join();
     thread_y.join();
     thread_z.join();
-
+    this->outputFile.open(filename, std::ios::out);
+    this->outputFile << "Recorded Bx\n";
     this->TurnOnSupply();
+
 }
 
 void MiddlewareLayer::set3DVector(std::vector<float> I_X, std::vector<float> I_Y, std::vector<float> I_Z){
@@ -88,16 +90,22 @@ void MiddlewareLayer::set3DVector(std::vector<float> I_X, std::vector<float> I_Y
         th_y.join();
         th_z.join();
 
-        std::thread thread_x(&DXKDP_PSU::WriteCurrent, &PSU_X, abs(I_X[i]), 0x01);
-        std::thread thread_y(&DXKDP_PSU::WriteCurrent, &PSU_Y, abs(I_Y[i]), 0x01);
-        std::thread thread_z(&DXKDP_PSU::WriteCurrent, &PSU_Z, abs(I_Z[i]), 0x01);
+        std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
+        std::thread thread_x(&DXKDP_PSU::WriteCurrent, &PSU_X, abs(I_X[i])/cal_x, 0x01);
+        std::thread thread_y(&DXKDP_PSU::WriteCurrent, &PSU_Y, abs(I_Y[i])/cal_y, 0x01);
+        std::thread thread_z(&DXKDP_PSU::WriteCurrent, &PSU_Z, abs(I_Z[i])/cal_z, 0x01);
+        std::thread thread_te(&MiddlewareLayer::writeXField, this);
         // std::thread thread_i(&LinearActuator::LinearExtend, &LinAct);
         thread_x.join();
         thread_y.join();
         thread_z.join();
+        thread_te.join();
+        std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+        int duration_us = int(std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count());
+        int sleep_us = period_us = duration_us;
         // thread_i.join();
-
-        sleep(1);
+        std::cout << "going to sleep for: " << sleep_us<< "us\n";
+        usleep(sleep_us);
     }
 }
 
@@ -123,8 +131,13 @@ float MiddlewareLayer::getXField(){
     return T_Meter.SingleAxisReading(Teslameter::AXIS::X);
 }
 
+void MiddlewareLayer::writeXField(){
+    this->outputFile << row_count++ << "," << this->getXField() << "\n";
+}
+
 MiddlewareLayer::~MiddlewareLayer(){
     this->TurnOffSupply();
+    this->outputFile.close();
     // for(int i = stepper_count; i = 0; i--){
     //     this->LinAct.LinearContract();
     // }
