@@ -177,11 +177,11 @@ void DXKDP_PSU::DecToHex(float value, float Conv, input_message &msgIn, int entr
 
 void DXKDP_PSU::PoCtrl(uint8_t po_state){
     std::vector<uint8_t> input_vector = this->Encoder20(po_state);
-    for(auto i: input_vector) printf("%02X ", i);
+    // for(auto i: input_vector) printf("%02X ", i);
     this->PsuWrite(input_vector);
     output_message msgOut;
     this->PsuRead(msgOut);
-    for(auto i: msgOut.output1) printf("\nResult: %02X ", i);
+    // for(auto i: msgOut.output1) printf("\nResult: %02X ", i);
 
 }
 
@@ -197,17 +197,17 @@ void DXKDP_PSU::WriteVoltage(float targetV, uint8_t addr){
 
 void DXKDP_PSU::WriteCurrent(float targetI, uint8_t addr){
     std::vector<uint8_t> input_vector = this->Encoder22(targetI, addr);
-    for(auto i: input_vector) printf("%02X ", i);
+    // for(auto i: input_vector) printf("%02X ", i);
     this->PsuWrite(input_vector);
     output_message msgOut;
     this->PsuRead(msgOut);
-    for(auto i: msgOut.output1) printf("\nResult: %02X ", i);
+    // for(auto i: msgOut.output1) printf("\nResult: %02X ", i);
     
 }
 
 void DXKDP_PSU::WriteVI(float targetV, float targetI, uint8_t addr){
     std::vector<uint8_t> input_vector = this->Encoder23(targetV, targetI, addr);
-    for(auto i: input_vector) printf("%02X ", i);
+    // for(auto i: input_vector) printf("%02X ", i);
     this->PsuWrite(input_vector);
     output_message msgOut;
     this->PsuRead(msgOut);

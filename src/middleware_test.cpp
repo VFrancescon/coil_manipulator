@@ -10,10 +10,12 @@ int main(void){
         input_current.push_back(0.01+i*0.01);
     }
  
+    // input_current.push_back(0.0);
 
-    std::cout << "Everything initialised properly.\nWe will write current to all PSUs starting at 0.01, 20 steps.\nPress enter to begin";
+    std::cout << "\nEverything initialised properly.\nWe will write current to all PSUs starting at 0.01, 20 steps.\nPress enter to begin";
     std::cin.get();
     
+    // mid.TurnOffSupply();
     mid.set3DVector(input_current, input_current, input_current);
-    std::cout << "Field in X direction at the end of writing loop: " << mid.getXField();
+    std::cout << "Field in X direction at the end of writing loop: " << mid.getXField() << "\n";
 }
