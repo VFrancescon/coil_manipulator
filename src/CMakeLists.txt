@@ -1,0 +1,11 @@
+add_executable( PsuLibTest "PSULib_test.cpp")
+add_executable( initial_test "initial_serial_comm.cpp")
+add_executable( camera_test "opencv/camera_test.cpp" )
+add_executable( teslameter_test "TeslameterTest.cpp")
+add_executable( middleware_test "middleware_test.cpp")
+
+target_link_libraries( PsuLibTest LINK_PUBLIC DxkdpLib )
+target_link_libraries( initial_test LINK_PUBLIC CppLinuxSerial )
+target_link_libraries( camera_test ${OpenCV_LIBS} ${Pylon_LIBRARIES} )
+target_link_libraries( teslameter_test LINK_PUBLIC LakeshoreF71Lib )
+target_link_libraries( middleware_test LINK_PUBLIC HCoilMiddlewareLib )

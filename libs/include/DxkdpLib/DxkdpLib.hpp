@@ -1,5 +1,5 @@
 #include "CppLinuxSerial/SerialPort.hpp"
-#include "instructions.h"
+#include "instructions.hpp"
 #include <iostream>
 #include <stdint.h>
 #include <string.h>

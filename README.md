@@ -1,20 +1,38 @@
 # Helmz Coil Manipulator
 
-# Build Instructions
-1. Clone and install [CppLinuxSerial](https://github.com/VFrancescon/CppLinuxSerial) following the instructions given there.*
-2. Install the [Pylon SDK](https://www.baslerweb.com/en/sales-support/downloads/software-downloads/) with mpg4 addon.
-3. In ~/coil_manipulator
+# Dependencies
 
+## Functional
+
+* Clone and install [CppLinuxSerial](https://github.com/VFrancescon/CppLinuxSerial) following the instructions given there.*
+* Install the [Pylon SDK](https://www.baslerweb.com/en/sales-support/downloads/software-downloads/) with mpg4 addon.
 
 \*PLEASE NOTE:
 We use my fork of the library as the original repo currently do not support setting flow control at run time.
 I put a merge request out and hopefullythey will soon and we can resume to using their release branch.
+
+## Documentation
+
+* [Doxygen](https://www.doxygen.nl/download.html#srcbin)
+* [Sphinx](https://www.sphinx-doc.org/en/master/usage/installation.html#linux)
+* [RTD Sphinx Theme](https://sphinx-rtd-theme.readthedocs.io/en/stable/)
+* [Breathe Sphinx Add-in](https://breathe.readthedocs.io/en/latest/)
+
+\*NOTE: Follow [this](https://devblogs.microsoft.com/cppblog/clear-functional-c-documentation-with-sphinx-breathe-doxygen-cmake/) guide for detailed instructions
+
+# Build Instructions
+
+1. In ~/coil_manipulator
+
+2. Execute
+
+
 ```
 mkdir build && cd build
 cmake ..
 sudo make install
 ```
-4. You are ready to go!
+3. You are ready to go!
 
 ### Note
 
