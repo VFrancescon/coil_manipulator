@@ -19,7 +19,8 @@ file(MAKE_DIRECTORY ${DOXYGEN_OUTPUT_DIR}) #Doxygen won't create this for us
 add_custom_command( OUTPUT ${DOXYGEN_INDEX_FILE}
                     DEPENDS ${DXKDP_H}
                     COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYFILE_OUT}
-                    MAIN_DEPENDENCY ${DOXYFILE_OUT} ${DOXYFILE_IN}
+                    WORKING_DIRECTORY ${CMAKE_INCLUDE_CURRENT_DIR}
+                    MAIN_DEPENDENCY Doxyfile
                     COMMENT "Generating Docs")   
 
 add_custom_target(Doxygen ALL DEPENDS ${DOXYGEN_INDEX_FILE})
