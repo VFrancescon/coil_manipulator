@@ -56,7 +56,7 @@ private:
     std::vector<uint8_t> Shtdwn_vect = {Shtdwn};
 
 public:
-    SerialPort serialPort;
+    SerialPort serialPort; //!< serial Port object for serial communication
 
     /**
      * @brief Default Constructor, takes standard COM Port ttyUSB0, 1 DOF.

@@ -88,7 +88,10 @@ struct input_message{
     uint8_t CONT4 = 0x00; //!< Contents 4 byte
     uint8_t CHECK; //!< Check byte
     std::vector<uint8_t> instruction; //!< Vector containing all (relevant) above bytes
-    bool cont1_set = 0, cont2_set = 0, cont3_set = 0, cont4_set = 0; //!< Content set flags, needed for SetLength
+    bool cont1_set = 0; //!< Content set flags, needed for SetLength
+    bool cont2_set = 0; //!< Content set flags, needed for SetLength
+    bool cont3_set = 0; //!< Content set flags, needed for SetLength
+    bool cont4_set = 0; //!< Content set flags, needed for SetLength
 
     /**
      * @brief Calculates check byte
@@ -189,8 +192,8 @@ struct output_message{
     uint8_t PO_STATE; //!< Power output state byte
     uint8_t CC_OP; //!< Constant Current output state byte
 
-    std::vector<uint8_t> output1;
-    std::vector<uint8_t> output3;
+    std::vector<uint8_t> output1; //!< vector containing raw read data
+    std::vector<uint8_t> output3; //!< vector containing processed read data. Unused at the moment.
 
 };
 

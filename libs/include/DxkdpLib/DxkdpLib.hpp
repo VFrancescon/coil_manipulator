@@ -206,7 +206,8 @@ public:
     ~DXKDP_PSU();
     SerialPort serialPort; //!< serial Port object. See CppLinuxSerial.
     
-    float Vconv = 0.01, Iconv = 0.01; //!< Minimum voltage and current values.
+    float Vconv = 0.01; //!< Minimum voltage increment
+    float Iconv = 0.01; //!< Minimum current increment
     
     /**
      * @brief Writes instruction to serialPort.
@@ -276,7 +277,8 @@ public:
     void WriteVI(float targetV, float targetI, uint8_t addr=0x01);
 
     bool POstate; //!< Current PO state.
-    float ReadVoltage, ReadCurrent; //!< Read Voltages and Currents.
+    float ReadVoltage; //!< Read Voltages and Currents.
+    float ReadCurrent; //!< Read Voltages and Currents.
 
 
 };
