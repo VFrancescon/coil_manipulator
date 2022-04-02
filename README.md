@@ -14,11 +14,8 @@ I put a merge request out and hopefullythey will soon and we can resume to using
 ## Documentation
 
 * [Doxygen](https://www.doxygen.nl/download.html#srcbin)
-* [Sphinx](https://www.sphinx-doc.org/en/master/usage/installation.html#linux)
-* [RTD Sphinx Theme](https://sphinx-rtd-theme.readthedocs.io/en/stable/)
-* [Breathe Sphinx Add-in](https://breathe.readthedocs.io/en/latest/)
 
-\*NOTE: Follow [this](https://devblogs.microsoft.com/cppblog/clear-functional-c-documentation-with-sphinx-breathe-doxygen-cmake/) guide for detailed instructions
+\*NOTE: Follow [this](https://devblogs.microsoft.com/cppblog/clear-functional-c-documentation-with-sphinx-breathe-doxygen-cmake/) guide for detailed instructions. It was decided Sphinx was not worth it, so we only need the Doxygen section.
 
 # Build Instructions
 

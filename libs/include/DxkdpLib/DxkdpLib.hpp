@@ -1,3 +1,12 @@
+/**
+ * @file DxkdpLib.hpp
+ * @author Vittorio Francescon <vittorio.francescon@gmail.com>
+ * @brief Contains library for PSU Usage. Instantiates input_message and output_message as required.
+ * @version 1.0
+ * @date 2022-04-02
+ * 
+ */
+
 #include "CppLinuxSerial/SerialPort.hpp"
 #include "instructions.hpp"
 #include <iostream>
