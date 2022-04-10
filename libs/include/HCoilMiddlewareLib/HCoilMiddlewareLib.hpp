@@ -1,25 +1,55 @@
+/**
+ * @file HCoilMiddlewareLib.hpp
+ * @author Vittorio Francescon (vittorio.francescon@gmail.com)
+ * @brief Middleware Library. Abstracts usage of other Low-Level libraries as much as possible.
+ * @version 1.0
+ * @date 10-04-2022
+ * 
+ * 
+ */
+
 #include <DxkdpLib/DxkdpLib.hpp>
 #include <LakeshoreF71Lib/LakeshoreF71Lib.hpp>
 #include <LinActuatorLib/LinActuatorLib.hpp>
 #include <thread>
 #include <fstream>
 #include <chrono>
-
+/**
+ * @class MiddlewareLayer
+ * @brief Middleware for Low-Level Control
+ * 
+ * Best efforts have been made to keep this all void-returner so Multithreading is easy.
+ * 
+ * Note: CSV parsing is not included here. Currently it's contained in the driver code, it will probably get a class of its own eventually.
+ * 
+ * @todo Fix calibration factor. I believe the data being read is in mT, but we treat it as T. 
+ * Also look into implementing Smart Pointers. Add error flags everywhere.
+ */
 class MiddlewareLayer{
 
 private:
-    int stepper_count;
+    /**
+     * @brief Checks the Polarity required for a given input and sets it as required.
+     * 
+     * Eventually we will be able to flip the polarity only when required, but that requires some info off the manufacturer we do not have yet.
+     * 
+     * @param input input value, read from wherever.
+     * @param PSU_CHOSER determins which PSU to work on. 0->X, 1->Y, 2->Z
+     */
     void PolarityCheck(float input, int PSU_CHOSER);
-    std::ofstream outputFile;
-    std::string filename = "../output.csv";
-    int row_count = 1;
-    float frequency = 1.75;
 
-    int period_us = 1/frequency*1000000;
+    int stepper_count; //!< keeps track of how many extensions/retractions happened to the stepper motor.
     
-    float cal_x = 0.54;
-    float cal_y = 1.135;
-    float cal_z = 0.65;
+    std::ofstream outputFile; //!< Output file object
+    
+    int row_count = 1; //!< keeps track of how many rows have been printed to outputFile.
+    float frequency = 1.75; //!< frequency of the system.
+
+    int period_us = 1/frequency*1000000; //!< period in microseconds, derived from the frequency.
+    
+    float cal_x = 0.54; //!< Bx calibration factor
+    float cal_y = 1.135; //!< By calibration factor
+    float cal_z = 0.65; //!< Bz calibration factor
 
 public:
     /*
@@ -34,15 +64,16 @@ public:
 
     // std::unique_ptr<Teslameter> T_Meter;
     // std::unique_ptr<LinearActuator> LinAct; 
-    DXKDP_PSU PSU_X;
-    DXKDP_PSU PSU_Y;
-    DXKDP_PSU PSU_Z;
+    DXKDP_PSU PSU_X; //!< X-axis instance of DXKDP_PSU
+    DXKDP_PSU PSU_Y; //!< Y-axis instance of DXKDP_PSU
+    DXKDP_PSU PSU_Z; //!< Z-axis instance of DXKDP_PSU
 
-    Teslameter T_Meter;
-    LinearActuator LinAct;
+    Teslameter T_Meter; //!< Instance of Teslameter
+    LinearActuator LinAct; //!< Instance of LinearActuator
 
-    /*
-    Default constructor.
+    /**
+    @brief Default constructor. Calls TurnOnSupply.
+    
     Assumes the following COM Ports:
     0 -> PSUX
     1 -> PSUY
@@ -52,14 +83,74 @@ public:
     */
     MiddlewareLayer();
 
+    /**
+     * @brief Construct a new Middleware Layer object. Allows to pick the COM Port for each device. Calls TurnOnSupply.
+     * 
+     * @param PSUX_PORT X-axis PSU port.
+     * @param PSUY_PORT Y-axis PSU port.
+     * @param PSUZ_PORT Z-axis PSU port.
+     * @param TMETER_PORT Teslamter port.
+     * @param LINACT_PORT Introducer port.
+     */
     MiddlewareLayer(std::string PSUX_PORT, std::string PSUY_PORT, std::string PSUZ_PORT, std::string TMETER_PORT, std::string LINACT_PORT );
+    
+    /**
+     * @brief Destroy the Middleware Layer object
+     * 
+     * Calls TurnOffSupply. Closes outputFile.
+     */
     ~MiddlewareLayer();
 
+    /**
+     * @brief Turns on Supplies.
+     * 
+     */
     void TurnOnSupply();
+
+    /**
+     * @brief Sets output V to 0, Turns off Supplies. 
+     * 
+     * Notes: Serial objects all destroy themselves from their own constructors, so it should all be taken care of implicitly.
+     * 
+     * Unwinding of the Linear Actuator should go here, if the device worked.
+     * 
+     */
     void TurnOffSupply();
+    
+    /**
+     * @brief Sets output V to 60. Opens and sets up outputFile csv. Calls TurnOnSupply.
+     * 
+     */
     void initialSetup();
+
+    /**
+     * @brief Checks polarity required for each input. Sets current accordingly. 
+     * 
+     * See cal_x , cal_y and cal_z for the respective factors. The voltage is locked at 60V and we set the current only to be faster.
+     * 
+     * Also times execution and displays how much time was left for the given frequency.
+     * 
+     * 
+     * @param I_X Vector containing all desired X fields
+     * @param I_Y Vector containing all desired Y fields
+     * @param I_Z Vector containing all desired Z fields
+     */
     void set3DVector(std::vector<float> I_X, std::vector<float> I_Y, std::vector<float> I_Z);
+    
+    /**
+     * @brief Reads Field in X direction.
+     * 
+     * Once the tri-axis probe arrives, we will need to expand (or duplicate) this method.
+     * 
+     * @return read field in whatever Units are set in the Teslamter constructor.
+     */
     float getXField();
+
+    /**
+     * @brief Writes X field to csv file.
+     * 
+     */
     void writeXField();
 
+    std::string filename = "../output.csv"; //!< default file name.
 };

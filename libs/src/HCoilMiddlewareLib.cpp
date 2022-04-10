@@ -91,9 +91,9 @@ void MiddlewareLayer::set3DVector(std::vector<float> I_X, std::vector<float> I_Y
         th_z.join();
 
         std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
-        std::thread thread_x(&DXKDP_PSU::WriteCurrent, &PSU_X, abs(I_X[i])/cal_x, 0x01);
-        std::thread thread_y(&DXKDP_PSU::WriteCurrent, &PSU_Y, abs(I_Y[i])/cal_y, 0x01);
-        std::thread thread_z(&DXKDP_PSU::WriteCurrent, &PSU_Z, abs(I_Z[i])/cal_z, 0x01);
+        std::thread thread_x(&DXKDP_PSU::WriteCurrent, &PSU_X, abs(I_X[i])*cal_x, 0x01);
+        std::thread thread_y(&DXKDP_PSU::WriteCurrent, &PSU_Y, abs(I_Y[i])*cal_y, 0x01);
+        std::thread thread_z(&DXKDP_PSU::WriteCurrent, &PSU_Z, abs(I_Z[i])*cal_z, 0x01);
         std::thread thread_te(&MiddlewareLayer::writeXField, this);
         // std::thread thread_i(&LinearActuator::LinearExtend, &LinAct);
         thread_x.join();
@@ -104,7 +104,7 @@ void MiddlewareLayer::set3DVector(std::vector<float> I_X, std::vector<float> I_Y
         int duration_us = int(std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count());
         int sleep_us = period_us = duration_us;
         // thread_i.join();
-        std::cout << "going to sleep for: " << sleep_us<< "us\n";
+        std::cout << "going to sleep for: " << sleep_us << "us\n";
         usleep(sleep_us);
     }
 }
