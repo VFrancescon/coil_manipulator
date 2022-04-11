@@ -7,3 +7,6 @@ frontend_folder/coil_frontend/coil_frontend
 frontend_folder/coil_frontend/.qmake.stash
 frontend_folder/coil_frontend/coil_frontend.pro.user.*
 frontend_folder/coil_frontend/Makefile
+/docs/html
+/docs/latex
+/cmake/FindSphinx.cmake
