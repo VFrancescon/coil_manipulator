@@ -1,3 +1,4 @@
+# set(DOXYGEN_EXECUTABLE "")
 find_package(Doxygen REQUIRED)
 
 get_target_property(DXKDP_H_DIR DxkdpLib INTERFACE_INCLUDE_DIRECTORIES)
