@@ -42,8 +42,14 @@ Which allows you to include the libraries direclty into any application written 
 Only needing to link_libraries in the CMAKE.
 ```
 
-Else, you can just run `make` optionally specifying which executable to compile specifically.
+Else, you can just run `make` optionally specifying which executable to compile.
 Example: `make initial_test` or `make all`
+
+The Doxygen documentation can be built with `make Doxygen`. Once built, it can be accessed by opening the index.html file generated with your favourite browser.
+
+E.g. (assuming you are in build/ and have compiled the project fully):
+
+`firefox docs/html/index.html`
 
 # Features
 * Completely C/C++ Based
