@@ -7,6 +7,10 @@
 //! @details
 //!					SerialPort class is taken from another repo.
 
+/*
+Current Iteration tests the stepper motor
+*/
+
 #include <initial_serial_comm.h>
 using namespace mn::CppLinuxSerial;
 int main(void){
@@ -15,24 +19,49 @@ int main(void){
 	std::cin.get();
 
     SerialPort serialPort("/dev/ttyUSB0", BaudRate::B_9600, NumDataBits::EIGHT, Parity::NONE, NumStopBits::ONE);
-    serialPort.SetTimeout(5000); // Block when reading until any data is received
+    serialPort.SetTimeout(-1); // Block when reading until any data is received
 	serialPort.Open();
 	std::cout << "Serial Port Class instantiated successfully. Press Enter to continue";
 	std::cin.get();
-
-	
-	input_message SYS_INFO;
-	SYS_INFO.ADDR = 0x01;
-	SYS_INFO.CODE = 0x2B;
-	SYS_INFO.LENGTH = 0x00;
-	//SYS_INFO.CHECK = SYS_INFO.Check_Bit_Calc(SYS_INFO);
-	SYS_INFO.instruction = SYS_INFO.InstructionAssembler(SYS_INFO);
-	printf("Full command: \n");
-	for(auto i:SYS_INFO.instruction) printf("%02X ", i);
+	bool running = true;
+	std::string str;
+	while(running){
+		std::cout << "Enter 1 to extend, 2 to contract, 3 to shutdown: ";
+		std::cin >> str;
+		int input = stoi(str);
+		std::string output;
+		
+		switch(input){
+			case 1:
+				serialPort.Write("1\0");
+				// serialPort.Read(output);
+			break;
+			case 2:
+				serialPort.Write("2\0");
+				// serialPort.Read(output);
+			break;
+			case 3:
+				serialPort.Write("3\0");
+				// serialPort.Read(output);
+				running = false;
+			break;
+			default:
+				running = false;
+			break;
+		}
+	}
+	// input_message SYS_INFO;
+	// SYS_INFO.ADDR = 0x01;
+	// SYS_INFO.CODE = 0x2B;
+	// SYS_INFO.LENGTH = 0x00;
+	// //SYS_INFO.CHECK = SYS_INFO.Check_Bit_Calc(SYS_INFO);
+	// SYS_INFO.instruction = SYS_INFO.InstructionAssembler(SYS_INFO);
+	// printf("Full command: \n");
+	// for(auto i:SYS_INFO.instruction) printf("%02X ", i);
 	
 	// uint8_t a = 0x00;
 	// SYS_INFO.instruction.push_back(a);
-	serialPort.WriteBinary(SYS_INFO.instruction);
+	// serialPort.WriteBinary(SYS_INFO.instruction);
 	// SYS_INFO.instruction.push_back(a);
 	// 	for(auto i:SYS_INFO.instruction){
 	// 		printf("%02X ", i);
@@ -60,19 +89,19 @@ int main(void){
 	// std::cout << "\nMessage has been sent.\n";
 
 	// // Read some data back (will block until at least 1 byte is received due to the SetTimeout(-1) call above)
-	std::vector<uint8_t> readData;
-	serialPort.ReadBinary(readData);
+	// std::vector<uint8_t> readData;
+	// serialPort.ReadBinary(readData);
 	//for(int i = 0; i < 10; i++) serialPort.ReadBinary(readData);
 	// std::string readString;
 	// serialPort.Read(readString);
 	// std::cout << readString << "\n";
 
-	std::cout << "\nSize of readData: " << readData.size();
-	printf("\nRead data: " );
+	// std::cout << "\nSize of readData: " << readData.size();
+	// printf("\nRead data: " );
 
-	for(auto i:readData){
-		printf("%02X ", i);
-	}
+	// for(auto i:readData){
+	// 	printf("%02X ", i);
+	// }
 
 	// Close the serial port
 	serialPort.Close();

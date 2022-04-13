@@ -9,15 +9,15 @@ LinearActuator::LinearActuator(std::string COM) : serialPort(COM, BaudRate::B_96
 }
 
 void LinearActuator::LinearExtend(){
-    this->serialPort.WriteBinary(Ext1mm_vect);
+    this->serialPort.Write(Ext1mm);
 }
 
 void LinearActuator::LinearContract(){
-    this->serialPort.WriteBinary(Ctr1mm_vect);
+    this->serialPort.Write(Ctr1mm);
 }
 
 void LinearActuator::LinearStop(){
-    this->serialPort.WriteBinary(Shtdwn_vect);
+    this->serialPort.Write(Shtdwn);
 }
 
 void LinearActuator::ActuatorSetup(){

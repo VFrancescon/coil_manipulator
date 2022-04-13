@@ -30,30 +30,10 @@ private:
     void ActuatorSetup();
 
    
-    uint8_t Ext1mm = 49; //!< Value to extend by 1mm .
-    uint8_t Ctr1mm = 50; //!< Value to contract by 1mm.
-    uint8_t Shtdwn = 51; //!< Value to shut down the system.
+    std::string Ext1mm = "1\0"; //!< Value to extend by 1mm .
+    std::string Ctr1mm = "2\0"; //!< Value to contract by 1mm.
+    std::string Shtdwn = "3\0"; //!< Value to shut down the system.
 
-
-    /**
-     * @brief 
-     * Because of how CppLinuxSerial is built, we need a vector for each instruction.
-     * The introducer instructions are simple enough we might as well build them once
-     * and let them be.
-     */
-    std::vector<uint8_t> Ext1mm_vect = {Ext1mm};
-
-    /**
-     * @brief 
-     * Look at Ext1mm_vect.
-     */
-    std::vector<uint8_t> Ctr1mm_vect = {Ctr1mm};
-    
-    /**
-     * @brief 
-     * Look at Ext1mm_vect.
-     */
-    std::vector<uint8_t> Shtdwn_vect = {Shtdwn};
 
 public:
     SerialPort serialPort; //!< serial Port object for serial communication
