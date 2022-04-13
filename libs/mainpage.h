@@ -1,6 +1,6 @@
-/*! \mainpage Index Page
+/*! @mainpage Index Page
  *
- * \section intro_sec Introduction
+ * @section intro_sec Introduction
  *
  * Set of libraries covering all the Low-Level control of a set of (currently) 3 DXKDP Power Supplies connected to a a Tri-axis Helmholtz Coil.
  *
@@ -8,7 +8,7 @@
  * 
  * All communication is handled through Serial and is abstracted to the Middleware Library MiddlewareLayer.
  *
- * \section install_sec Installation
+ * @section install_sec Installation
  *
  * 1. [Clone the Repo](https://github.com/VFrancescon/coil_manipulator)
  * 
@@ -21,4 +21,16 @@
  * 5. Libraries are now installed onto the system and can be used from whereever in the system.
  *
  * 6. See src/ for examples.
+ * 
+ * @section psu_doc_remarks PSU Functions not Included
+ * 
+ * | Command | Function |
+ * | :-----: | :------: |
+ * | 0x25    | Read protection parameters  |
+ * | 0x27    | Set protection paramters    |
+ * | 0x29    | Set a new PSU Address       |
+ * | 0x30    | Toggle local/remote control |
+ * 
+ * 
+ * 
  */

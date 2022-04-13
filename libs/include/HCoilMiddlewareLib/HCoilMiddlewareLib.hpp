@@ -5,7 +5,6 @@
  * @version 1.0
  * @date 10-04-2022
  * 
- * 
  */
 
 #include <DxkdpLib/DxkdpLib.hpp>
@@ -41,8 +40,10 @@ private:
     int stepper_count; //!< keeps track of how many extensions/retractions happened to the stepper motor.
     
     std::ofstream outputFile; //!< Output file object
+    std::ofstream leftoverTimeFile; //!< Leftover time file object
     
     int row_count = 1; //!< keeps track of how many rows have been printed to outputFile.
+    int leftoverTime_count = 1; //!< keeps track of how many rows have been printed to outputFile
     float frequency = 1.75; //!< frequency of the system.
 
     int period_us = 1/frequency*1000000; //!< period in microseconds, derived from the frequency.

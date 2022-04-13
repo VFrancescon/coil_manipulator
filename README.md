@@ -15,6 +15,8 @@ I put a merge request out and hopefullythey will soon and we can resume to using
 
 * [Doxygen](https://www.doxygen.nl/download.html#srcbin)
 
+* [graphvic](http://www.graphviz.org/download/)
+
 \*NOTE: Follow [this](https://devblogs.microsoft.com/cppblog/clear-functional-c-documentation-with-sphinx-breathe-doxygen-cmake/) guide for detailed instructions. It was decided Sphinx was not worth it, so we only need the Doxygen section.
 Also, for compatibility, install from source. The bins and apt packages hate working on ubuntu 18.
 

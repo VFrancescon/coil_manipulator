@@ -74,7 +74,11 @@ void MiddlewareLayer::initialSetup(){
     thread_y.join();
     thread_z.join();
     this->outputFile.open(filename, std::ios::out);
-    this->outputFile << "Recorded Bx\n";
+    this->outputFile << "Reading, Bx\n";
+
+    this->leftoverTimeFile.open("../leftovertime.csv", std::ios::out);
+    this->leftoverTimeFile << "Reading, Leftover time(us), Frequency\n";
+
     this->TurnOnSupply();
 
 }
@@ -83,12 +87,31 @@ void MiddlewareLayer::set3DVector(std::vector<float> I_X, std::vector<float> I_Y
     this->stepper_count = I_X.size();
     for(int i = 0; i < I_X.size(); i++){
 
+        /*
+        Single threaded polarity check below
+
+        this->PolarityCheck(I_X[i], 0);
+        this->PolarityCheck(I_Y[i], 1);
+        this->PolarityCheck(I_Z[i], 2);
+
+        */
+
         std::thread th_x(&MiddlewareLayer::PolarityCheck, this, I_X[i], 0);
         std::thread th_y(&MiddlewareLayer::PolarityCheck, this, I_Y[i], 1);
         std::thread th_z(&MiddlewareLayer::PolarityCheck, this, I_Z[i], 2);
         th_x.join();
         th_y.join();
         th_z.join();
+
+
+        /*
+        Single threaded Write Current Below
+        this->PSU_X.WriteCurrent(abs(I_X[i]));
+        this->PSU_Y.WriteCurrent(abs(I_Y[i]));
+        this->PSU_Z.WriteCurrent(abs(I_Z[i]));
+        this->writeXField();
+        */
+        
 
         std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
         std::thread thread_x(&DXKDP_PSU::WriteCurrent, &PSU_X, abs(I_X[i])*cal_x, 0x01);
@@ -104,7 +127,8 @@ void MiddlewareLayer::set3DVector(std::vector<float> I_X, std::vector<float> I_Y
         int duration_us = int(std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count());
         int sleep_us = period_us = duration_us;
         // thread_i.join();
-        std::cout << "going to sleep for: " << sleep_us << "us\n";
+        std::cout << "going to sleep for: " << sleep_us*1000 << "ms\n";
+        leftoverTimeFile << leftoverTime_count << "," << sleep_us << "," << 1/sleep_us << "\n";
         usleep(sleep_us);
     }
 }
