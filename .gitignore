@@ -10,3 +10,4 @@ frontend_folder/coil_frontend/Makefile
 /docs/html
 /docs/latex
 /cmake/FindSphinx.cmake
+leftovertime*

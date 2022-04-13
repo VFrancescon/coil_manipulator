@@ -17,10 +17,23 @@ include_directories(include)
 include_directories( ${OpenCV_INCLUDE_DIRS} )
 include_directories( ${Pylon_INCLUDE_DIRS} )
 
+add_executable( PsuLibTest "src/PSULib_test.cpp")
+add_executable( initial_test "src/initial_serial_comm.cpp")
+add_executable( camera_test "src/opencv/camera_test.cpp" )
+add_executable( teslameter_test "src/TeslameterTest.cpp")
+add_executable( middleware_test "src/middleware_test.cpp")
+target_link_libraries( PsuLibTest LINK_PUBLIC DxkdpLib )
+target_link_libraries( initial_test LINK_PUBLIC CppLinuxSerial )
+target_link_libraries( camera_test ${OpenCV_LIBS} ${Pylon_LIBRARIES} )
+target_link_libraries( teslameter_test LINK_PUBLIC LakeshoreF71Lib )
+target_link_libraries( middleware_test LINK_PUBLIC HCoilMiddlewareLib )
+
+
+
 ## Two lines below allow libraries to be built.
 include_directories(libs/include)
 add_subdirectory(libs/src)
-add_subdirectory(src)
+# add_subdirectory(src)
 add_subdirectory(docs)
 
 

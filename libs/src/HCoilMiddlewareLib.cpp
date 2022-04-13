@@ -102,7 +102,9 @@ void MiddlewareLayer::set3DVector(std::vector<float> I_X, std::vector<float> I_Y
         th_x.join();
         th_y.join();
         th_z.join();
-
+        // this->PolarityCheck(I_X[i], 0);
+        // this->PolarityCheck(I_Y[i], 1);
+        // this->PolarityCheck(I_Z[i], 2);
 
         /*
         Single threaded Write Current Below
@@ -110,6 +112,7 @@ void MiddlewareLayer::set3DVector(std::vector<float> I_X, std::vector<float> I_Y
         this->PSU_Y.WriteCurrent(abs(I_Y[i]));
         this->PSU_Z.WriteCurrent(abs(I_Z[i]));
         this->writeXField();
+        this->LinAct.LinearExtend();
         */
         
 
@@ -118,17 +121,19 @@ void MiddlewareLayer::set3DVector(std::vector<float> I_X, std::vector<float> I_Y
         std::thread thread_y(&DXKDP_PSU::WriteCurrent, &PSU_Y, abs(I_Y[i])*cal_y, 0x01);
         std::thread thread_z(&DXKDP_PSU::WriteCurrent, &PSU_Z, abs(I_Z[i])*cal_z, 0x01);
         std::thread thread_te(&MiddlewareLayer::writeXField, this);
-        // std::thread thread_i(&LinearActuator::LinearExtend, &LinAct);
+        std::thread thread_i(&LinearActuator::LinearExtend, &LinAct);
         thread_x.join();
         thread_y.join();
         thread_z.join();
         thread_te.join();
+        thread_i.join();
+        
         std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
         int duration_us = int(std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count());
         int sleep_us = period_us = duration_us;
-        // thread_i.join();
-        std::cout << "going to sleep for: " << sleep_us*1000 << "ms\n";
-        leftoverTimeFile << leftoverTime_count << "," << sleep_us << "," << 1/sleep_us << "\n";
+        
+        std::cout << "going to sleep for: " << sleep_us/1000 << "ms\n";
+        leftoverTimeFile << leftoverTime_count << "," << sleep_us << "," << 1/float(sleep_us)*1000000 << "\n";
         usleep(sleep_us);
     }
 }
@@ -162,8 +167,12 @@ void MiddlewareLayer::writeXField(){
 MiddlewareLayer::~MiddlewareLayer(){
     this->TurnOffSupply();
     this->outputFile.close();
-    // for(int i = stepper_count; i = 0; i--){
-    //     this->LinAct.LinearContract();
-    // }
-    // this->LinAct.LinearStop();
+    this->leftoverTimeFile.close();
+    // std::cout << "Row count: " << this->row_count;
+    for(int i = 0; i < this->row_count; i++){
+        this->LinAct.LinearContract();
+        std::cout << "i= " << i << "\n";
+    }
+    this->LinAct.LinearStop();
+    std::cout << "Shutting down\n";
 }

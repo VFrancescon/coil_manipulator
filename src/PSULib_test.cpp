@@ -4,7 +4,7 @@
 int main(int argc, char *argv[]){
     std::cout << "Press enter to begin";
     std::cin.get();
-    std::string str = "/dev/ttyUSB1";
+    std::string str = "/dev/ttyUSB3";
     DXKDP_PSU PSU(str, 0.01, 0.01);
     long cmdIn1;
     float cmdIn2, cmdIn3;

@@ -3,7 +3,7 @@
 
 
 int main(int argc, char* argv[]){
-    Teslameter tmeter;
+    Teslameter tmeter("/dev/ttyUSB4");
     std::cout << "Programme started. Press enter to instantiate teslameter class.";
     std::cin.get();
 

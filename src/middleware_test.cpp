@@ -1,7 +1,6 @@
 #include <middleware_test.h>
 
 int main(int argc, char* argv[]){
-    
     std::string filename = "/home/vittorio/coil_manipulator/Uopt2_Nav2_OPT2RE.csv";
     if(argc == 2) {
         filename = argv[1];
@@ -12,7 +11,6 @@ int main(int argc, char* argv[]){
     
     getline(file,line);
 
-    
     while(std::getline(file, line)){
         int counter = 0;
         std::stringstream sstr(line);
@@ -25,9 +23,8 @@ int main(int argc, char* argv[]){
             counter++;
         }
     }
-    
+    // MiddlewareLayer mid("/dev/ttyUSB2","/dev/ttyUSB3", "/dev/ttyUSB1", "/dev/ttyUSB4", "/dev/ttyUSB0");
     MiddlewareLayer mid;
-    
 
     // std::cout << "Everything initialised properly.\nWe will write current to all PSUs starting at 0.01, 20 steps.\nPress enter to begin";
     std::cout << "Press enter to begin stepping through the csv";
