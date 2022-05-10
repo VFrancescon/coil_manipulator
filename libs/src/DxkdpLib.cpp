@@ -181,12 +181,9 @@ void DXKDP_PSU::PoCtrl(uint8_t po_state){
     this->PsuWrite(input_vector);
     output_message msgOut;
     this->PsuRead(msgOut);
-    if(msgOut.output1[0] == 0x06) return;
-    else{
-        std::cout << "There was an error in PoCtrl. aborting";
-        // exit(-1);
-    }
-
+    if(msgOut.output1[0] != 0x06) {
+        THROW_EXCEPT("PowerOut setting did not return 0x06. Aborting");
+    } else return;
 }
 
 void DXKDP_PSU::WriteVoltage(float targetV, uint8_t addr){
@@ -197,11 +194,9 @@ void DXKDP_PSU::WriteVoltage(float targetV, uint8_t addr){
     output_message msgOut;
     this->PsuRead(msgOut);
     // for(auto i: msgOut.output1) printf("\nResult: %02X ", i);
-    if(msgOut.output1[0] == 0x06) return;
-    else{
-        std::cout << "There was an error in WriteVoltage. aborting";
-        // exit(-1);
-    }
+    if(msgOut.output1[0] != 0x06) {
+        THROW_EXCEPT("WriteVoltage setting did not return 0x06. Aborting");
+    } else return;
 }
 
 void DXKDP_PSU::WriteCurrent(float targetI, uint8_t addr){
@@ -210,12 +205,9 @@ void DXKDP_PSU::WriteCurrent(float targetI, uint8_t addr){
     this->PsuWrite(input_vector);
     output_message msgOut;
     this->PsuRead(msgOut);
-    if(msgOut.output1[0] == 0x06) return;
-    else{
-        std::cout << "There was an error in WriteCurrent. aborting";
-        for(auto i: input_vector) printf(" %02X", i);
-        // exit(-1);
-    }
+    if(msgOut.output1[0] != 0x06) {
+        THROW_EXCEPT("WriteCurrent setting did not return 0x06. Aborting");
+    } else return;
     
 }
 
@@ -225,11 +217,9 @@ void DXKDP_PSU::WriteVI(float targetV, float targetI, uint8_t addr){
     this->PsuWrite(input_vector);
     output_message msgOut;
     this->PsuRead(msgOut);
-    if(msgOut.output1[0] == 0x06) return;
-    else{
-        std::cout << "There was an error in WriteVI. aborting";
-        // exit(-1);
-    }
+    if(msgOut.output1[0] != 0x06) {
+        THROW_EXCEPT("Write VI setting did not return 0x06. Aborting");
+    } else return;
     
 }
 
@@ -239,9 +229,7 @@ void DXKDP_PSU::setPolarity(uint8_t polarity, uint8_t addr){
     this->PsuWrite(input_vector);
     output_message msgOut;
     this->PsuRead(msgOut);
-    if(msgOut.output1[0] == 0x06) return;
-    else{
-        std::cout << "There was an error in setPolarity. aborting";
-        // exit(-1);
-    }
+    if(msgOut.output1[0] != 0x06) {
+        THROW_EXCEPT("Polarity setting did not return 0x06. Aborting");
+    } else return;
 }

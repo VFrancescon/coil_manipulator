@@ -17,7 +17,7 @@ file(GLOB_RECURSE MDLWR_LIB_SRC
 # STEP 2: Include headers
 
 file(GLOB_RECURSE PSU_LIB_HEADERS
-        "${CMAKE_SOURCE_DIR}/include/libs/DxkdpLib/DxkdpLib.hpp")
+        "${CMAKE_SOURCE_DIR}/include/libs/DxkdpLib/*.hpp")
 
 file(GLOB_RECURSE LIN_ACT_LIB_HEADERS
         "${CMAKE_SOURCE_DIR}/include/libs/LinActuatorLib/LinActuatorLib.hpp")

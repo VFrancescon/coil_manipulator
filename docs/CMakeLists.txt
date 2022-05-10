@@ -36,3 +36,5 @@ add_custom_command( OUTPUT ${DOXYGEN_INDEX_FILE}
                     VERBATIM)   
 
 add_custom_target(Doxygen ALL DEPENDS ${DOXYGEN_INDEX_FILE})
+
+SET_TARGET_PROPERTIES(Doxygen PROPERTIES EXCLUDE_FROM_ALL True)

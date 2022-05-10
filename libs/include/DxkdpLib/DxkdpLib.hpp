@@ -9,6 +9,8 @@
 
 #include "CppLinuxSerial/SerialPort.hpp"
 #include "instructions.hpp"
+#include <system_error>
+#include <errno.h>	
 #include <iostream>
 #include <stdint.h>
 #include <string.h>
@@ -24,6 +26,8 @@
  * 
  * Uses input_message and output_message structs to construct messages based on function parameters.
  * Uses CppLinuxSerial to communicate with the PSU through RS232 Serial.
+ * 
+ * Note: Exceptions are thrown using the THROW_EXCEPT macro, which is in the CppLinuxSerial Repo.
  */
 
 using namespace mn::CppLinuxSerial;
