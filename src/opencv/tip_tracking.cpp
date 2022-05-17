@@ -15,10 +15,12 @@ int main(void){
     int rows,cols;
     while(1){
         cap >> img;
+        
         rows = img.rows * 3 / 8;
         cols = img.cols * 3 / 8;
 
         resize(img, img, Size(rows, cols), INTER_LINEAR);
+        
         if(img.empty()) break;
 
         //create a greyscale copy of the image
@@ -50,41 +52,53 @@ int main(void){
         hierarchy.clear();
         findContours(skeleton, contours, hierarchy, RETR_LIST, CHAIN_APPROX_SIMPLE);
         
-        //draw the contour on the image for visualisation purposes
-        drawContours(img, contours, -1, Scalar(255,255,0), 1, LINE_8, hierarchy);
+        //draw the skeleton on the image for visualisation purposes
+        drawContours(img, contours, -1, Scalar(255,255,0), CV_FILLED, LINE_8, hierarchy);
         
-        //find rightmost point of the skeleton contour
-        Point extRight = (
-            *std::max_element(contours[0].begin(), contours[0].end(),
-                        [](const Point& lhs, const Point& rhs) {
-                            return (lhs.x < rhs.x);}
-        ));
+        //store all points of the skeleton into a vector
+        std::vector<Point> cntLine;
+        findNonZero(skeleton, cntLine);
+        Point endpoint;
 
-        //mark the rightmost point
-        circle(img, extRight, 4, Scalar(255,0,0), FILLED);
-        putText(img, "extRight", extRight, FONT_HERSHEY_COMPLEX_SMALL, 1.0, Scalar(255,0,0));
+        //iterate over all points
+        for(auto i: cntLine){
+            int neighbor_counter = 0;
+            for(int j = -1; j < 2; j++){
+                for(int k = -1; k < 2; k++){
+                    if(j == 0 && k == 0) continue;
+                    //count neighbors immediately adjecent
+                    if( (int) skeleton.at<uchar>(i.y+k, i.x+j) > 0  ) neighbor_counter++;
+                }
+            }
+            //last point to measure 1 neighbor exactly must be the end of the line
+            if(neighbor_counter == 1) endpoint = i;
+        }
 
-        //find downmost point of the skeleton contour
-        Point extDown = (
-            *std::max_element(contours[0].begin(), contours[0].end(),
-                        [](const Point& lhs, const Point& rhs) {
-                            return (lhs.y < rhs.y);}
-        ));
+        // std::cout << "Endpoint at: " << endpoint.x << " , " << endpoint.y << "\n";
+        circle(img, endpoint, 4, Scalar(0,0,255), FILLED);
+        putText(img, "Endpoint", endpoint, FONT_HERSHEY_COMPLEX_SMALL, 1.0, Scalar(0,0,255));
 
-        //mark the downmost point
-        circle(img, extDown, 4, Scalar(0,0,255), FILLED);
-        putText(img, "extDown", extDown, FONT_HERSHEY_COMPLEX_SMALL, 1.0, Scalar(0,0,255));
+        // Scalar tipCol(0,0,255);
+        // //find rightmost point of the skeleton contour
+        // Point extRight = (
+        //     *std::max_element(contours[0].begin(), contours[0].end(),
+        //                 [](const Point& lhs, const Point& rhs) {
+        //                     return (lhs.x < rhs.x);}
+        // ));
 
-        //find rightmost downmost point of the skeleton contour
-        Point extDownRight = (
-            *std::max_element(contours[0].begin(), contours[0].end(),
-                        [](const Point& lhs, const Point& rhs) {
-                            return (lhs.x < rhs.x && lhs.y < rhs.y);}
-        ));
+        // if(extRight.y <= 10) {
+        //     extRight = (
+        //     *std::max_element(contours[0].begin(), contours[0].end(),
+        //                 [](const Point& lhs, const Point& rhs) {
+        //                     return (lhs.y < rhs.y);}
+        //     ));
+        //     tipCol = (120,120,255);
+        // }
 
-        //mark the down-rightmost point
-        circle(img, extDownRight, 4, Scalar(0,255,255), FILLED);
-        putText(img, "extDownRight", extDownRight, FONT_HERSHEY_COMPLEX_SMALL, 1.0, Scalar(0,255,255));
+        // //mark the rightmost point
+        // circle(img, extRight, 4, tipCol, FILLED);
+        // putText(img, "Tip", extRight, FONT_HERSHEY_COMPLEX_SMALL, 1.0, tipCol);
+
 
         //show the results
         imshow("Tip detection", img);
