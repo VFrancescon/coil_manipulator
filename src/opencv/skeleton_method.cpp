@@ -2,11 +2,15 @@
 #include <algorithm>
 #include <opencv2/ximgproc.hpp>
 
+#include <../../a-star/source/AStar.hpp>
+
+
 using namespace cv;
+Mat IntroducerMask(Mat src);
 
 int main(void){
     
-    std::string image_path = "/home/vittorio/coil_manipulator/src/opencv/RAL_DEMO_SC2.png";
+    std::string image_path = "/home/vittorio/coil_manipulator/src/opencv/RAL_DEMO_SC.png";
     Mat img = imread(image_path, IMREAD_COLOR);
 
     if(img.empty())
@@ -15,12 +19,13 @@ int main(void){
         return 1;
     }
 
-    Mat canny, threshold_img, img_copy, skeleton, cnts_bin;
+    Mat threshold_img, img_copy, skeleton, cnts_bin;
     int rows,cols;
-    rows = img.rows /2;
-    cols = img.cols /2;
+    rows = img.rows / 8 * 3;
+    cols = img.cols / 8 * 3;
 
     resize(img, img, Size(rows,cols), INTER_LINEAR);
+    Mat introducer_mask = IntroducerMask(img);
 
     //create a greyscale copy of the image
     cvtColor(img, img_copy, COLOR_BGR2GRAY);
@@ -28,7 +33,9 @@ int main(void){
     //apply blur and threshold so that only the tentacle is visible
     blur(img_copy, img_copy, Size(5,5));
     threshold(img_copy, threshold_img, 50, 255, THRESH_BINARY); 
-    
+    // Mat contourMAT = Mat::zeros(threshold_img.size(), CV_8UC1);;
+    // threshold_img.copyTo(contourMAT, introducer_mask);
+
     //set up vectors for findContours to output to
     std::vector<std::vector<Point> > contours;
     std::vector<Vec4i> hierarchy;
@@ -53,96 +60,87 @@ int main(void){
     
     //draw the contour on the image for visualisation purposes
     drawContours(img, contours, -1, Scalar(255,255,0), CV_FILLED, LINE_8, hierarchy);
-    // std::cout << "size of skeleton contour is: " << contours.size() << "\n";
     
-    
-
-    //find rightmost point of the skeleton contour
-    // Point extRight = (
-    //     *std::max_element(contours[0].begin(), contours[0].end(),
-    //                 [](const Point& lhs, const Point& rhs) {
-    //                     return (lhs.x < rhs.x);}
-    // ));
-
-    // //mark the rightmost point
-    // circle(img, extRight, 4, Scalar(0,0,255), FILLED);
-    // putText(img, "extRight", extRight, FONT_HERSHEY_COMPLEX_SMALL, 1.0, Scalar(255,255,255));
-
-
-    //Trying to track the endpoint of a contour
     std::vector<Point> cntLine;
-    // Mat cntMat;
-    // // bitwise_not(skeleton, skeleton);
     findNonZero(skeleton, cntLine);
-    // std::cout << "size of cntLine " << cntLine.size() << "\n";
-    // // // bitwise_not(skeleton, skeleton);
-    // Point endpoint;
-    // for(auto i: cntLine){
-    //     int neighbor_counter = 0;
-    //     if( (int) skeleton.at<uchar>(i.x-1, i.y+1) > 0 ) neighbor_counter++; 
-    //     if( (int) skeleton.at<uchar>(i.x+0, i.y+1) > 0 ) neighbor_counter++;
-    //     if( (int) skeleton.at<uchar>(i.x+1, i.y+1) > 0 ) neighbor_counter++;
-    //     if( (int) skeleton.at<uchar>(i.x-1, i.y+0) > 0 ) neighbor_counter++;
-    //     if( (int) skeleton.at<uchar>(i.x+1, i.y+0) > 0 ) neighbor_counter++;
-    //     if( (int) skeleton.at<uchar>(i.x-1, i.y-1) > 0 ) neighbor_counter++;
-    //     if( (int) skeleton.at<uchar>(i.x+0, i.y-1) > 0 ) neighbor_counter++;
-    //     if( (int) skeleton.at<uchar>(i.x+1, i.y-1) > 0 ) neighbor_counter++;
-    //     std::cout << "point x: " << i.x << " y: " << i.y << " neighbor count " << neighbor_counter << "\n";
-    //     std::cout << "straight below: " << (int) skeleton.at<uchar>(i.x+0, i.y+1) << "\n";
-    //     if(neighbor_counter == 1) endpoint = i;
-    // }
-    // std::cout << "Endpoint at: " << endpoint.x << " " << endpoint.y<< "\n";
-    // circle(img, endpoint, 4, Scalar(255,255,255), FILLED);
 
-    // std::cout << "\nnon-zero count: " << cntLine.size() << " and point count " << point_cnt << "\n";
     Point endpoint;
     for(auto i: cntLine){
-        // std::cout << "\n\nNEW POINT: " << i.x << " " << i.y << " holds " << (int) skeleton.at<uchar>(i.y, i.x) <<"\n\n";
         int neighbor_counter = 0;
         for(int j = -1; j < 2; j++){
             for(int k = -1; k < 2; k++){
                 if(j == 0 && k == 0) continue;
-                // std::cout << "point: " << i.x + j << " , " << i.y+k << " ";
-                // // std::cout << "value: " << (int) skeleton.at<uchar>(i.x+j, i.y+k) << "\n";
-                // printf("value %d\n", skeleton.at<uchar>(i.y+k, i.x+j));
                 if( (int) skeleton.at<uchar>(i.y+k, i.x+j) > 0  ) neighbor_counter++;
             }
         }
         if(neighbor_counter == 1) endpoint = i;
     }
 
-    std::cout << "Endpoint at: " << endpoint.x << " , " << endpoint.y << "\n";
+    // std::cout << "Endpoint at: " << endpoint.x << " , " << endpoint.y << "\n";
     circle(img, endpoint, 4, Scalar(0,0,255), FILLED);
-    putText(img, "Endpoint", endpoint, FONT_HERSHEY_COMPLEX_SMALL, 1.0, Scalar(0,0,255));
+    // putText(img, "Endpoint", endpoint, FONT_HERSHEY_COMPLEX_SMALL, 1.0, Scalar(0,0,255));
 
-    //Line to goal section
-    // Point Goal(300,300);
-    // circle(img, Goal, 4, Scalar(0,0,255), FILLED);
-    // putText(img, "Goal", Goal, FONT_HERSHEY_COMPLEX_SMALL, 1.0, Scalar(0,0,255));
-
-    // line(img, extRight, Goal, Scalar(0,255,255), 1, LINE_8);
-    // std::cout << "dx " << abs(extRight.x - Goal.x) << " dy " << abs(extRight.y - Goal.y) << "\n";
-    
-
-
-    
-    
-    // LineIterator it(img, extRight, Goal, 8);
-    
-    
-    // for(int i = 0; i < it.count; i++, ++it)
-    // {
-    //     Point pt= it.pos(); 
-    //     // std::cout << "Coordinates;";
-    // }
-    //show the results
     imshow("Tip detection", img);
-    // imshow("Skeleton", skeleton);
-    // imshow("cntmat", cntMat);
-    
+    // imshow("mask", introducer_mask);
     char c= (char)waitKey(0);
 
-    
+
+    AStar::Generator generator;
+    generator.setWorldSize({img.rows, img.cols});
+    generator.setHeuristic(AStar::Heuristic::euclidean);
+    generator.setDiagonalMovement(true);
+
+    auto path = generator.findPath({endpoint.x, endpoint.y}, {500,500});
+    std::vector<Point> goalPath;
+    for(auto i: path){
+        goalPath.push_back(Point(i.x, i.y));
+    }
+    for(auto i: goalPath){
+        circle(img, i, 2, Scalar(255,0,0), FILLED);
+    }
     destroyAllWindows();
     return 0;
+}
+
+
+Mat IntroducerMask(Mat src){
+    Mat src_GRAY, element;
+    //create a greyscale copy of the image
+
+
+    cvtColor(src, src_GRAY, COLOR_BGR2GRAY);
+    
+    //apply blur and threshold so that only the tentacle is visible
+    blur(src_GRAY, src_GRAY, Size(5,5));
+    threshold(src_GRAY, src_GRAY, 60, 255, THRESH_BINARY_INV); 
+    
+    element = getStructuringElement(MORPH_DILATE, Size(3,3), Point(1,1) );
+    dilate(src_GRAY, src_GRAY, element);
+
+
+    std::vector<Point> corners;
+    goodFeaturesToTrack(src_GRAY, corners, 6, 0.01, 10);
+    Point Top1Corner(600,600), Top2Corner(600,600), BottomCorner(0,0);
+    
+    for(int i = 0; i < corners.size(); i++){
+        if(Top1Corner.y >= corners[i].y) {
+            Top2Corner = Top1Corner;
+            Top1Corner = corners[i];
+        }
+        if(BottomCorner.y < corners[i].y) BottomCorner = corners[i]; 
+    }
+    std::cout << "Top Corners at: " << Top1Corner << " and " << Top2Corner << "\n";
+    
+    int xCenter = std::min(Top1Corner.x, Top2Corner.x);
+    int yCenter = std::min(Top1Corner.y, Top2Corner.y);
+    int xWidth = abs( Top2Corner.x - Top1Corner.x);
+    int yWidth = xWidth*2;
+
+    Rect rect(Top1Corner.x*0.95, Top1Corner.y-xWidth, xWidth*1.25, yWidth);
+    // Rect rect(RectCenter, Size(xWidth, yWidth));
+    rectangle( src_GRAY, rect, Scalar(0), FILLED);
+
+    bitwise_not(src_GRAY, src_GRAY);
+    return src_GRAY;
+
 }
