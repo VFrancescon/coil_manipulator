@@ -4,7 +4,6 @@ Git submodules make it easier to include other version controlled repos into the
 
 A record of the submodules used is stored in: .gitmodules
 
-
 # Usage
 
 To add a submodule, use (ideally in the /submodules directory):

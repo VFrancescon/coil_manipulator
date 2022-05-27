@@ -83,26 +83,22 @@ int main(void){
     
 
     AStar::Vec2i origin, destination, wordlsize;
-    origin.x = endpoint.x;
-    origin.y = endpoint.y;
-
-    destination.x = 500;
-    destination.y = 500;
-
     wordlsize.x = img.rows;
     wordlsize.y = img.cols;
-
-    
 
     AStar::Generator generator;
     generator.setWorldSize(wordlsize);
     generator.setHeuristic(AStar::Heuristic::euclidean);
     generator.setDiagonalMovement(true);
-
-    
+    Point goal(400,400);
+    circle(img, goal, 4, Scalar(0,0,0), FILLED);
+    origin = endpoint;    
+    destination = goal;
 
 
     AStar::CoordinateList path = generator.findPath(origin, destination);
+    std::vector<Point> cvPath = AStar::Vec2iToCvPointList(path);
+    polylines(img, cvPath, false, Scalar(255,255,255), 2);
     // std::vector<Point> goalPath;
     // for(auto i: path){
     //     goalPath.push_back(Point(i.x, i.y));

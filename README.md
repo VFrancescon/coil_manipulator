@@ -4,20 +4,30 @@
 
 ## Functional
 
-* Clone and install [CppLinuxSerial](https://github.com/VFrancescon/CppLinuxSerial) following the instructions given there.*
+
 * Install the [Pylon SDK](https://www.baslerweb.com/en/sales-support/downloads/software-downloads/) with mpg4 addon.
+* [OpenCV](https://opencv.org/releases/)
+* [CppLinuxSerial](https://github.com/VFrancescon/CppLinuxSerial)*
+* [A-Star](https://github.com/VFrancescon/a-star)*
 
 \*PLEASE NOTE:
-We use my fork of the library as the original repo currently do not support setting flow control at run time.
-I put a merge request out and hopefullythey will soon and we can resume to using their release branch.
+Both those repos have been forked to introduce some extra functionality. Pull requests are out and the original repos will be restored in the guides when appropriate. 
+
+Both repos are also included as submodules. Therefore, upon cloning, include them using:
+
+`git submodule init`
+
+`git submodule update`
+
+Then follow install instructions for each repo (CppLinuxSerial) only for now.
 
 ## Documentation
 
 * [Doxygen](https://www.doxygen.nl/download.html#srcbin)
 
-* [graphvic](http://www.graphviz.org/download/)
+* [graphviz](http://www.graphviz.org/download/)
 
-\*NOTE: Follow [this](https://devblogs.microsoft.com/cppblog/clear-functional-c-documentation-with-sphinx-breathe-doxygen-cmake/) guide for detailed instructions. It was decided Sphinx was not worth it, so we only need the Doxygen section.
+\*NOTE: Follow [this](https://devblogs.microsoft.com/cppblog/clear-functional-c-documentation-with-sphinx-breathe-doxygen-cmake/) guide for detailed Doxygen instructions. It was decided Sphinx was not worth it, so we only need the Doxygen section.
 Also, for compatibility, install from source. The bins and apt packages hate working on ubuntu 18.
 
 # Build Instructions
@@ -25,7 +35,6 @@ Also, for compatibility, install from source. The bins and apt packages hate wor
 1. In ~/coil_manipulator
 
 2. Execute
-
 
 ```
 mkdir build && cd build
@@ -60,12 +69,15 @@ E.g. (assuming you are in build/ and have compiled the project fully):
 * Low level library written for Serial Comm to PSUs
 * Low level library written for SCPI Comm to Teslameter (Lakeshore F71)
 * Low Level library written for Serial Comm to Linear Actuator
+* Functional (Barebones) middle-ware layer to control the above components
 
 # Currently in Progress
-* Middleware Layer that abstracts all low-level libraries.
+* Image processing and control module
 
 # Screenshots
 ![GUI_Alpha3](images/frontend_alpha3.png)
 ![Serial_Comm](images/FirstSerialSuccess.png)
+
 # Credits
 * [Geoffry Hunter](https://github.com/gbmhunter/CppLinuxSerial) for the Serial Comm C++ Class
+* [Damian Barczyński](https://github.com/daancode/a-star) for the C++ A* implementation

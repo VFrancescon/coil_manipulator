@@ -1,3 +1,6 @@
 [submodule "submodules/a-star"]
 	path = submodules/a-star
 	url = git@github.com:VFrancescon/a-star.git
+[submodule "submodules/CppLinuxSerial"]
+	path = submodules/CppLinuxSerial
+	url = git@github.com:VFrancescon/CppLinuxSerial.git
