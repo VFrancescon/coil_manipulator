@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <opencv2/ximgproc.hpp>
 #include <opencv2/video.hpp>
+#include <a-star/source/AStar.hpp>
 
 using namespace cv;
 
@@ -36,7 +37,9 @@ Mat IntroducerMask(Mat src);
 
 
 int main(void){
-    
+    AStar::Generator generator;
+
+
     VideoCapture cap("/home/vittorio/coil_manipulator/src/opencv/BothRoutes_INOUT_V1.mp4");
     if(!cap.isOpened()){
 	    std::cout << "Error opening video stream or file" << "\n";
@@ -50,7 +53,15 @@ int main(void){
     cap >> img;
     rows = img.rows * 3 / 8;
     cols = img.cols * 3 / 8;
-    
+
+    AStar::Vec2i worldSize;
+    worldSize.x = rows;
+    worldSize.y = cols;
+    generator.setWorldSize(worldSize);
+    generator.setHeuristic(AStar::Heuristic::manhattan);
+    generator.setDiagonalMovement(true);
+    Point Goal(300,300);
+
     //make image smaller 
     resize(img, img, Size(rows, cols), INTER_LINEAR);
     // VideoWriter video_out("output.avi", CV_FOURCC('M', 'J', 'P', 'G'), 10, 
@@ -58,6 +69,9 @@ int main(void){
     Mat intr_mask = Mat::zeros(img.size(), CV_8UC1);
     intr_mask = IntroducerMask(img);
 
+    AStar::Vec2i origin, destination;
+    destination = Goal;
+    std::vector<Point> cvPath;
     // std::cout << "image size: " << img.rows << " " << img.cols << "\n";
 
     while(1){
@@ -133,6 +147,10 @@ int main(void){
         circle(img, endpoint, 4, Scalar(0,0,255), FILLED);
         // putText(img, "Endpoint", endpoint, FONT_HERSHEY_COMPLEX_SMALL, 1.0, Scalar(0,0,255)); 
         /*endpoint of the contour ends here*/
+        origin = endpoint;
+        auto asPath = generator.findPath(origin, destination);
+        cvPath = AStar::Vec2iToCvPointList(asPath);
+        polylines(img, cvPath, false, Scalar(0,0,0), 2);
 
         //show the results
         imshow("Tip detection", img);
