@@ -2,7 +2,7 @@
 #include <algorithm>
 #include <opencv2/ximgproc.hpp>
 
-#include <../../a-star/source/AStar.hpp>
+#include <a-star/source/AStar.hpp>
 
 
 using namespace cv;
@@ -25,7 +25,7 @@ int main(void){
     cols = img.cols / 8 * 3;
 
     resize(img, img, Size(rows,cols), INTER_LINEAR);
-    Mat introducer_mask = IntroducerMask(img);
+    // Mat introducer_mask = IntroducerMask(img);
 
     //create a greyscale copy of the image
     cvtColor(img, img_copy, COLOR_BGR2GRAY);
@@ -80,24 +80,41 @@ int main(void){
     circle(img, endpoint, 4, Scalar(0,0,255), FILLED);
     // putText(img, "Endpoint", endpoint, FONT_HERSHEY_COMPLEX_SMALL, 1.0, Scalar(0,0,255));
 
-    imshow("Tip detection", img);
-    // imshow("mask", introducer_mask);
-    char c= (char)waitKey(0);
+    
 
+    AStar::Vec2i origin, destination, wordlsize;
+    origin.x = endpoint.x;
+    origin.y = endpoint.y;
+
+    destination.x = 500;
+    destination.y = 500;
+
+    wordlsize.x = img.rows;
+    wordlsize.y = img.cols;
+
+    
 
     AStar::Generator generator;
-    generator.setWorldSize({img.rows, img.cols});
+    generator.setWorldSize(wordlsize);
     generator.setHeuristic(AStar::Heuristic::euclidean);
     generator.setDiagonalMovement(true);
 
-    auto path = generator.findPath({endpoint.x, endpoint.y}, {500,500});
-    std::vector<Point> goalPath;
-    for(auto i: path){
-        goalPath.push_back(Point(i.x, i.y));
-    }
-    for(auto i: goalPath){
-        circle(img, i, 2, Scalar(255,0,0), FILLED);
-    }
+    
+
+
+    AStar::CoordinateList path = generator.findPath(origin, destination);
+    // std::vector<Point> goalPath;
+    // for(auto i: path){
+    //     goalPath.push_back(Point(i.x, i.y));
+    // }
+    // for(auto i: goalPath){
+    //     circle(img, i, 2, Scalar(255,0,0), FILLED);
+    // }
+    
+    
+    imshow("Tip detection", img);
+    // imshow("mask", introducer_mask);
+    char c= (char)waitKey(0);
     destroyAllWindows();
     return 0;
 }

@@ -1,3 +1,3 @@
 [submodule "submodules/a-star"]
 	path = submodules/a-star
-	url = https://github.com/daancode/a-star
+	url = git@github.com:VFrancescon/a-star.git
