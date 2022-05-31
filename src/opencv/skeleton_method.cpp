@@ -1,16 +1,17 @@
 #include <opencv/tip_tracking.h>
 #include <algorithm>
 #include <opencv2/ximgproc.hpp>
-
+#include <math.h>
 #include <a-star/source/AStar.hpp>
-
+#define PI 3.14159265
 
 using namespace cv;
 Mat IntroducerMask(Mat src);
+std::vector<std::string> decodePath(std::vector<Point> path_);
 
 int main(void){
     
-    std::string image_path = "/home/vittorio/coil_manipulator/src/opencv/RAL_DEMO_SC.png";
+    std::string image_path = "/home/vittorio/coil_manipulator/src/opencv/test_shape.png";
     Mat img = imread(image_path, IMREAD_COLOR);
 
     if(img.empty())
@@ -26,6 +27,16 @@ int main(void){
 
     resize(img, img, Size(rows,cols), INTER_LINEAR);
     // Mat introducer_mask = IntroducerMask(img);
+
+    AStar::Vec2i origin, destination, wordlsize;
+    wordlsize.x = img.rows;
+    wordlsize.y = img.cols;
+
+    AStar::Generator generator;
+    generator.setWorldSize(wordlsize);
+    generator.setHeuristic(AStar::Heuristic::euclidean);
+    generator.setDiagonalMovement(true);
+    Point goal(60,60);
 
     //create a greyscale copy of the image
     cvtColor(img, img_copy, COLOR_BGR2GRAY);
@@ -82,15 +93,7 @@ int main(void){
 
     
 
-    AStar::Vec2i origin, destination, wordlsize;
-    wordlsize.x = img.rows;
-    wordlsize.y = img.cols;
-
-    AStar::Generator generator;
-    generator.setWorldSize(wordlsize);
-    generator.setHeuristic(AStar::Heuristic::euclidean);
-    generator.setDiagonalMovement(true);
-    Point goal(400,400);
+    
     circle(img, goal, 4, Scalar(0,0,0), FILLED);
     origin = endpoint;    
     destination = goal;
@@ -98,7 +101,8 @@ int main(void){
 
     AStar::CoordinateList path = generator.findPath(origin, destination);
     std::vector<Point> cvPath = AStar::Vec2iToCvPointList(path);
-    polylines(img, cvPath, false, Scalar(255,255,255), 2);
+    std::reverse(cvPath.begin(), cvPath.end());
+    polylines(img, cvPath, false, Scalar(255,0,0), 2);
     // std::vector<Point> goalPath;
     // for(auto i: path){
     //     goalPath.push_back(Point(i.x, i.y));
@@ -106,7 +110,11 @@ int main(void){
     // for(auto i: goalPath){
     //     circle(img, i, 2, Scalar(255,0,0), FILLED);
     // }
-    
+    std::vector<std::string> InstructionPath = decodePath(cvPath);
+    // for(auto i: InstructionPath) std::cout << i << "\n";
+    for(int i = 0; i < InstructionPath.size(); i++){
+        std::cout << "From : " << cvPath[i] << " to: " << cvPath[i+1] << " direction: " << InstructionPath[i] << "\n";
+    }
     
     imshow("Tip detection", img);
     // imshow("mask", introducer_mask);
@@ -156,4 +164,32 @@ Mat IntroducerMask(Mat src){
     bitwise_not(src_GRAY, src_GRAY);
     return src_GRAY;
 
+}
+
+
+std::vector<std::string> decodePath(std::vector<Point> path_){
+    std::vector<std::string> decodedInstructions;
+    int dx, dy, angleD, dxdy;
+    double angleF;
+    for(int i = 0; i < path_.size(); i++){
+        if( i + 1 == path_.size()) break;
+        dx = path_[i+1].x - path_[i].x;
+        dy = path_[i+1].y - path_[i].y;
+        if(dy == 0) {
+            angleD = 90;
+            decodedInstructions.push_back("Horizontal");
+        }
+        else {
+            dxdy = dx/dy;
+            angleF = atan(dxdy) * 180 / PI;
+            angleD = (int) angleF;
+            if(angleD > 0) decodedInstructions.push_back("Right");
+            else if ( angleD < 0 ) decodedInstructions.push_back("Left");
+            else if ( angleD == 0 ) decodedInstructions.push_back("Down");
+            // std::cout << "tan(" << dx << " , " <<  dy << ") = " <<  angleD << "\n";
+        }
+        
+    }
+    return decodedInstructions;    
+    
 }
