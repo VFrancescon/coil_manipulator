@@ -1,8 +1,8 @@
 #include <opencv/tip_tracking.h>
 #include <algorithm>
 #include <opencv2/ximgproc.hpp>
-#include <math.h>
 #include <a-star/source/AStar.hpp>
+#include <math.h>
 #define PI 3.14159265
 
 using namespace cv;
