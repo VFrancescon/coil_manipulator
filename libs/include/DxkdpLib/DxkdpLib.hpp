@@ -232,7 +232,7 @@ public:
     void PsuRead(output_message &msgOut);
 
     /**
-     * @brief Overloaded version of PSU Write. Broken, do not use.
+     * @brief Overloaded version of \ref PSUWrite. Broken, do not use.
      * 
      * @param input vector containing the instruction.
      */

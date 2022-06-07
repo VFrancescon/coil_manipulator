@@ -12,15 +12,19 @@
  *
  * 1. [Clone the Repo](https://github.com/VFrancescon/coil_manipulator)
  * 
- * 2. mkdir build && cd build
+ * 2. `git submodule init`
  * 
- * 3. sudo make
+ * 3. `git submodule update`
+ * 
+ * 4. mkdir build && cd build
+ * 
+ * 5. sudo make
  *
- * 4. sudo make install
+ * 6. sudo make install
  *
- * 5. Libraries are now installed onto the system and can be used from whereever in the system.
+ * 7. Libraries are now installed onto the system and can be used from wherever in the system.
  *
- * 6. See src/ for examples.
+ * 8. See src/ for examples.
  * 
  * @section psu_doc_remarks PSU Functions not Included
  * 
