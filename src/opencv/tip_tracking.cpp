@@ -64,8 +64,8 @@ int main(void){
 
     //make image smaller 
     resize(img, img, Size(rows, cols), INTER_LINEAR);
-    VideoWriter video_out("output.avi", CV_FOURCC('M', 'J', 'P', 'G'), 10, 
-                Size(rows, cols));
+    // VideoWriter video_out("output.avi", CV_FOURCC('M', 'J', 'P', 'G'), 10, 
+    //             Size(img.rows * 3 / 8, img.cols * 3 / 8));
     Mat intr_mask = Mat::zeros(img.size(), CV_8UC1);
     intr_mask = IntroducerMask(img);
 
@@ -150,12 +150,11 @@ int main(void){
         origin = endpoint;
         auto asPath = generator.findPath(origin, destination);
         cvPath = AStar::Vec2iToCvPointList(asPath);
-        circle(img, Goal, 4, Scalar(255,0,255), FILLED);
-        polylines(img, cvPath, false, Scalar(255,255,255), 2);
+        polylines(img, cvPath, false, Scalar(0,0,0), 2);
 
         //show the results
         imshow("Tip detection", img);
-        video_out.write(img);
+        // video_out.write(img);
         
         char c= (char)waitKey(10);
         if(c==27) break;
