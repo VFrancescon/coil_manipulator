@@ -16,15 +16,16 @@
  * 
  * 3. `git submodule update`
  * 
- * 4. mkdir build && cd build
+ * 4. `mkdir build && cd build`
  * 
- * 5. sudo make
+ * 5. `sudo make`
  *
- * 6. sudo make install
+ * 6. `sudo make install`
  *
  * 7. Libraries are now installed onto the system and can be used from wherever in the system.
  *
  * 8. See src/ for examples.
+ * 
  * 
  * @section psu_doc_remarks PSU Functions not Included
  * 

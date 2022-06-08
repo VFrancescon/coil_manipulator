@@ -27,15 +27,7 @@
 class MiddlewareLayer{
 
 private:
-    /**
-     * @brief Checks the Polarity required for a given input and sets it as required.
-     * 
-     * Eventually we will be able to flip the polarity only when required, but that requires some info off the manufacturer we do not have yet.
-     * 
-     * @param input input value, read from wherever.
-     * @param PSU_CHOSER determins which PSU to work on. 0->X, 1->Y, 2->Z
-     */
-    void PolarityCheck(float input, int PSU_CHOSER);
+
 
     int stepper_count; //!< keeps track of how many extensions/retractions happened to the stepper motor.
     
@@ -52,7 +44,22 @@ private:
     float cal_y = 1.135; //!< By calibration factor
     float cal_z = 0.65; //!< Bz calibration factor
 
+    
+
 public:
+
+    /**
+     * @brief Enum class allowing to choose which PSU to operate on.
+     * 
+     */
+    enum class PSU_ENUM{
+        X1, //!< First X axis PSU
+        X2, //!< Second X axis PSU
+        Y1, //!< First Y axis PSU
+        Y2, //!< Second Y axis PSU 
+        Z1, //!< First Z axis PSU
+        Z2  //!< Second Z axis PSU
+        };
     /*
     3x PSUs
     1x Teslameter
@@ -65,9 +72,13 @@ public:
 
     // std::unique_ptr<Teslameter> T_Meter;
     // std::unique_ptr<LinearActuator> LinAct; 
-    DXKDP_PSU PSU_X; //!< X-axis instance of DXKDP_PSU
-    DXKDP_PSU PSU_Y; //!< Y-axis instance of DXKDP_PSU
-    DXKDP_PSU PSU_Z; //!< Z-axis instance of DXKDP_PSU
+    DXKDP_PSU PSU_X1; //!< X1-axis instance of DXKDP_PSU
+    DXKDP_PSU PSU_Y1; //!< Y1-axis instance of DXKDP_PSU
+    DXKDP_PSU PSU_Z1; //!< Z1-axis instance of DXKDP_PSU
+
+    DXKDP_PSU PSU_X2; //!< X2-axis instance of DXKDP_PSU
+    DXKDP_PSU PSU_Y2; //!< Y2-axis instance of DXKDP_PSU
+    DXKDP_PSU PSU_Z2; //!< Z2-axis instance of DXKDP_PSU
 
     Teslameter T_Meter; //!< Instance of Teslameter
     LinearActuator LinAct; //!< Instance of LinearActuator
@@ -138,6 +149,66 @@ public:
      */
     void set3DVector(std::vector<float> I_X, std::vector<float> I_Y, std::vector<float> I_Z);
     
+    /**
+     * @brief Sets output current to X1
+     * 
+     * @param current_ vector of floats containing all desired X fields.
+     * @param psu_ PSU_ENUM containing the chosen power supply.
+     */
+    void setX1Vector(std::vector<float> current_);
+
+    /**
+     * @brief Sets output current to Y1 PSU
+     * 
+     * @param current_ vector of floats containing all desired X fields.
+     * @param psu_ PSU_ENUM containing the chosen power supply.
+     */
+    void setY1Vector(std::vector<float> current_);
+
+
+    /**
+     * @brief Sets output current to Z1 PSU
+     * 
+     * @param current_ vector of floats containing all desired X fields.
+     * @param psu_ PSU_ENUM containing the chosen power supply.
+     */
+    void setZ1Vector(std::vector<float> current_);
+
+        /**
+     * @brief Sets output current to X2 PSU
+     * 
+     * @param current_ vector of floats containing all desired X fields.
+     * @param psu_ PSU_ENUM containing the chosen power supply.
+     */
+    void setX2Vector(std::vector<float> current_);
+
+    /**
+     * @brief Sets output current to Y2 PSU
+     * 
+     * @param current_ vector of floats containing all desired X fields.
+     * @param psu_ PSU_ENUM containing the chosen power supply.
+     */
+    void setY2Vector(std::vector<float> current_);
+
+
+    /**
+     * @brief Sets output current to Z2 PSU
+     * 
+     * @param current_ vector of floats containing all desired X fields.
+     * @param psu_ PSU_ENUM containing the chosen power supply.
+     */
+    void setZ2Vector(std::vector<float> current_);
+
+    /**
+     * @brief Checks the Polarity required for a given input and sets it as required.
+     * 
+     * Eventually we will be able to flip the polarity only when required, but that requires some info off the manufacturer we do not have yet.
+     * 
+     * @param input input value, read from wherever.
+     * @param PSU_CHOSER determins which PSU to work on. 0->X, 1->Y, 2->Z
+     */
+    void PolarityCheck(float input, MiddlewareLayer::PSU_ENUM psu_);
+
     /**
      * @brief Reads Field in X direction.
      * 

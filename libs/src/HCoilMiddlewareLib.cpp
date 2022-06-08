@@ -1,6 +1,6 @@
 #include <HCoilMiddlewareLib/HCoilMiddlewareLib.hpp>
 
-MiddlewareLayer::MiddlewareLayer() : PSU_X("/dev/ttyUSB3", 0.1, 0.01), PSU_Y("/dev/ttyUSB4", 0.01, 0.01), PSU_Z("/dev/ttyUSB2", 0.01, 0.01),
+MiddlewareLayer::MiddlewareLayer() : PSU_X1("/dev/ttyUSB3", 0.1, 0.01), PSU_Y1("/dev/ttyUSB4", 0.01, 0.01), PSU_Z1("/dev/ttyUSB2", 0.01, 0.01),
 T_Meter("/dev/ttyUSB0"), LinAct("/dev/ttyUSB1")
 {
     /*
@@ -10,13 +10,13 @@ T_Meter("/dev/ttyUSB0"), LinAct("/dev/ttyUSB1")
     */
 
    /**
-    * @brief 
+    * @todo
     * Research how to bring back unique_ptrs at some point
     * 
     */
-    // std::unique_ptr<DXKDP_PSU> PSU_X = std::make_unique<DXKDP_PSU>("/dev/ttyUSB3", 0.01, 0.01);
-    // std::unique_ptr<DXKDP_PSU> PSU_Y = std::make_unique<DXKDP_PSU>("/dev/ttyUSB4", 0.01, 0.01);
-    // std::unique_ptr<DXKDP_PSU> PSU_Z = std::make_unique<DXKDP_PSU>("/dev/ttyUSB2", 0.01, 0.01);
+    // std::unique_ptr<DXKDP_PSU> PSU_X1 = std::make_unique<DXKDP_PSU>("/dev/ttyUSB3", 0.01, 0.01);
+    // std::unique_ptr<DXKDP_PSU> PSU_Y1 = std::make_unique<DXKDP_PSU>("/dev/ttyUSB4", 0.01, 0.01);
+    // std::unique_ptr<DXKDP_PSU> PSU_Z1 = std::make_unique<DXKDP_PSU>("/dev/ttyUSB2", 0.01, 0.01);
 
     // std::unique_ptr<Teslameter> T_Meter = std::make_unique<Teslameter>("/dev/ttyUSB3");
     // std::unique_ptr<LinearActuator> LinAct = std::make_unique<LinearActuator>("/dev/ttyUSB4");
@@ -26,13 +26,13 @@ T_Meter("/dev/ttyUSB0"), LinAct("/dev/ttyUSB1")
 }
 
 MiddlewareLayer::MiddlewareLayer(std::string PSUX_PORT, std::string PSUY_PORT, std::string PSUZ_PORT, std::string TMETER_PORT, std::string LINACT_PORT ): 
-PSU_X(PSUX_PORT, 0.1, 0.01), PSU_Y(PSUY_PORT, 0.01, 0.01), PSU_Z(PSUZ_PORT, 0.01, 0.01),
+PSU_X1(PSUX_PORT, 0.1, 0.01), PSU_Y1(PSUY_PORT, 0.01, 0.01), PSU_Z1(PSUZ_PORT, 0.01, 0.01),
 T_Meter(TMETER_PORT), LinAct(LINACT_PORT)
 {
     
-    // std::unique_ptr<DXKDP_PSU> PSU_X = std::make_unique<DXKDP_PSU>(PSUX_PORT, 0.01, 0.01);
-    // std::unique_ptr<DXKDP_PSU> PSU_Y = std::make_unique<DXKDP_PSU>(PSUY_PORT, 0.01, 0.01);
-    // std::unique_ptr<DXKDP_PSU> PSU_Z = std::make_unique<DXKDP_PSU>(PSUZ_PORT, 0.1, 0.1);
+    // std::unique_ptr<DXKDP_PSU> PSU_X1 = std::make_unique<DXKDP_PSU>(PSUX_PORT, 0.01, 0.01);
+    // std::unique_ptr<DXKDP_PSU> PSU_Y1 = std::make_unique<DXKDP_PSU>(PSUY_PORT, 0.01, 0.01);
+    // std::unique_ptr<DXKDP_PSU> PSU_Z1 = std::make_unique<DXKDP_PSU>(PSUZ_PORT, 0.1, 0.1);
 
     // std::unique_ptr<Teslameter> T_Meter = std::make_unique<Teslameter>(TMETER_PORT);
     // std::unique_ptr<LinearActuator> LinAct = std::make_unique<LinearActuator>(LINACT_PORT);
@@ -41,38 +41,38 @@ T_Meter(TMETER_PORT), LinAct(LINACT_PORT)
 }
 
 void MiddlewareLayer::TurnOnSupply(){
-    std::thread thread_x(&DXKDP_PSU::PoCtrl, &PSU_X, 0x01);
-    std::thread thread_y(&DXKDP_PSU::PoCtrl, &PSU_Y, 0x01);
-    std::thread thread_z(&DXKDP_PSU::PoCtrl, &PSU_Z, 0x01);
-    thread_x.join();
-    thread_y.join();
-    thread_z.join();
+    std::thread thread_x1(&DXKDP_PSU::PoCtrl, &PSU_X1, 0x01);
+    std::thread thread_y1(&DXKDP_PSU::PoCtrl, &PSU_Y1, 0x01);
+    std::thread thread_z1(&DXKDP_PSU::PoCtrl, &PSU_Z1, 0x01);
+    thread_x1.join();
+    thread_y1.join();
+    thread_z1.join();
 }
 
 void MiddlewareLayer::TurnOffSupply(){
-    std::thread th_x(&DXKDP_PSU::WriteVI, &PSU_X, 0, 0.00, 0x01);
-    std::thread th_y(&DXKDP_PSU::WriteVI, &PSU_Y, 0, 0.00, 0x01);
-    std::thread th_z(&DXKDP_PSU::WriteVI, &PSU_Z, 0, 0.00, 0x01);
+    std::thread th_x(&DXKDP_PSU::WriteVI, &PSU_X1, 0, 0.00, 0x01);
+    std::thread th_y(&DXKDP_PSU::WriteVI, &PSU_Y1, 0, 0.00, 0x01);
+    std::thread th_z(&DXKDP_PSU::WriteVI, &PSU_Z1, 0, 0.00, 0x01);
     th_x.join();
     th_y.join();
     th_z.join();
 
 
-    std::thread thread_x(&DXKDP_PSU::PoCtrl, &PSU_X, 0x00);
-    std::thread thread_y(&DXKDP_PSU::PoCtrl, &PSU_Y, 0x00);
-    std::thread thread_z(&DXKDP_PSU::PoCtrl, &PSU_Z, 0x00);
-    thread_x.join();
-    thread_y.join();
-    thread_z.join();
+    std::thread thread_x1(&DXKDP_PSU::PoCtrl, &PSU_X1, 0x00);
+    std::thread thread_y1(&DXKDP_PSU::PoCtrl, &PSU_Y1, 0x00);
+    std::thread thread_z1(&DXKDP_PSU::PoCtrl, &PSU_Z1, 0x00);
+    thread_x1.join();
+    thread_y1.join();
+    thread_z1.join();
 }
 
 void MiddlewareLayer::initialSetup(){
-    std::thread thread_x(&DXKDP_PSU::WriteVI, &PSU_X, 60, 0.00, 0x01);
-    std::thread thread_y(&DXKDP_PSU::WriteVI, &PSU_Y, 60, 0.00, 0x01);
-    std::thread thread_z(&DXKDP_PSU::WriteVI, &PSU_Z, 60, 0.00, 0x01);
-    thread_x.join();
-    thread_y.join();
-    thread_z.join();
+    std::thread thread_x1(&DXKDP_PSU::WriteVI, &PSU_X1, 60, 0.00, 0x01);
+    std::thread thread_y1(&DXKDP_PSU::WriteVI, &PSU_Y1, 60, 0.00, 0x01);
+    std::thread thread_z1(&DXKDP_PSU::WriteVI, &PSU_Z1, 60, 0.00, 0x01);
+    thread_x1.join();
+    thread_y1.join();
+    thread_z1.join();
     this->outputFile.open(filename, std::ios::out);
     this->outputFile << "Reading, Bx\n";
 
@@ -84,6 +84,9 @@ void MiddlewareLayer::initialSetup(){
 }
 
 void MiddlewareLayer::set3DVector(std::vector<float> I_X, std::vector<float> I_Y, std::vector<float> I_Z){
+    
+    //setting how much the stepper motor will be extended by at the end of the function.
+    //this is used in the destructor to retract the tentacle back.
     this->stepper_count = I_X.size();
     for(int i = 0; i < I_X.size(); i++){
 
@@ -96,9 +99,9 @@ void MiddlewareLayer::set3DVector(std::vector<float> I_X, std::vector<float> I_Y
 
         */
 
-        std::thread th_x(&MiddlewareLayer::PolarityCheck, this, I_X[i], 0);
-        std::thread th_y(&MiddlewareLayer::PolarityCheck, this, I_Y[i], 1);
-        std::thread th_z(&MiddlewareLayer::PolarityCheck, this, I_Z[i], 2);
+        std::thread th_x(&MiddlewareLayer::PolarityCheck, this, I_X[i], MiddlewareLayer::PSU_ENUM::X1);
+        std::thread th_y(&MiddlewareLayer::PolarityCheck, this, I_Y[i], MiddlewareLayer::PSU_ENUM::Y1);
+        std::thread th_z(&MiddlewareLayer::PolarityCheck, this, I_Z[i], MiddlewareLayer::PSU_ENUM::Z1);
         th_x.join();
         th_y.join();
         th_z.join();
@@ -108,26 +111,26 @@ void MiddlewareLayer::set3DVector(std::vector<float> I_X, std::vector<float> I_Y
 
         /*
         Single threaded Write Current Below
-        this->PSU_X.WriteCurrent(abs(I_X[i]));
-        this->PSU_Y.WriteCurrent(abs(I_Y[i]));
-        this->PSU_Z.WriteCurrent(abs(I_Z[i]));
+        this->PSU_X1.WriteCurrent(abs(I_X[i]));
+        this->PSU_Y1.WriteCurrent(abs(I_Y[i]));
+        this->PSU_Z1.WriteCurrent(abs(I_Z[i]));
         this->writeXField();
         this->LinAct.LinearExtend();
         */
         
 
         std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
-        std::thread thread_x(&DXKDP_PSU::WriteCurrent, &PSU_X, abs(I_X[i])*cal_x, 0x01);
-        std::thread thread_y(&DXKDP_PSU::WriteCurrent, &PSU_Y, abs(I_Y[i])*cal_y, 0x01);
-        std::thread thread_z(&DXKDP_PSU::WriteCurrent, &PSU_Z, abs(I_Z[i])*cal_z, 0x01);
+        std::thread thread_x1(&DXKDP_PSU::WriteCurrent, &PSU_X1, abs(I_X[i])*cal_x, 0x01);
+        std::thread thread_y1(&DXKDP_PSU::WriteCurrent, &PSU_Y1, abs(I_Y[i])*cal_y, 0x01);
+        std::thread thread_z1(&DXKDP_PSU::WriteCurrent, &PSU_Z1, abs(I_Z[i])*cal_z, 0x01);
         std::thread thread_te(&MiddlewareLayer::writeXField, this);
         std::thread thread_i(&LinearActuator::LinearExtend, &LinAct);
-        thread_x.join();
-        thread_y.join();
-        thread_z.join();
+        thread_x1.join();
+        thread_y1.join();
+        thread_z1.join();
         thread_te.join();
         thread_i.join();
-        
+
         std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
         int duration_us = int(std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count());
         int sleep_us = period_us = duration_us;
@@ -138,19 +141,110 @@ void MiddlewareLayer::set3DVector(std::vector<float> I_X, std::vector<float> I_Y
     }
 }
 
-void MiddlewareLayer::PolarityCheck(float input, int PSU_CHOSER){
-    switch(PSU_CHOSER){
-        case 0:
-            if(input < 0) {PSU_X.setPolarity(0x1); printf("Flipped polarity\n");}
-            else PSU_X.setPolarity(0x0);
+
+void MiddlewareLayer::setX1Vector(std::vector<float> current_){
+    this->stepper_count =current_.size();
+
+    for (size_t i = 0; i < current_.size(); i++)
+    {
+        this->PolarityCheck(current_[i], MiddlewareLayer::PSU_ENUM::X1);
+        std::thread thread_PSU(&DXKDP_PSU::WriteCurrent, &PSU_X1, abs(current_[i])*cal_x, 0x01);
+        std::thread thread_te(&MiddlewareLayer::writeXField, this);
+        std::thread thread_i(&LinearActuator::LinearExtend, &LinAct);
+        thread_PSU.join();
+        thread_te.join();
+        thread_i.join();
+    }
+}
+void MiddlewareLayer::setY1Vector(std::vector<float> current_){
+    this->stepper_count =current_.size();
+
+    for (size_t i = 0; i < current_.size(); i++)
+    {
+        this->PolarityCheck(current_[i], MiddlewareLayer::PSU_ENUM::X1);
+        std::thread thread_PSU(&DXKDP_PSU::WriteCurrent, &PSU_Y1, abs(current_[i])*cal_y, 0x01);
+        // std::thread thread_te(&MiddlewareLayer::writeXField, this);
+        std::thread thread_i(&LinearActuator::LinearExtend, &LinAct);
+        thread_PSU.join();
+        // thread_te.join();
+        thread_i.join();
+    }
+}
+
+void MiddlewareLayer::setZ1Vector(std::vector<float> current_){
+    this->stepper_count =current_.size();
+
+    for (size_t i = 0; i < current_.size(); i++)
+    {
+        this->PolarityCheck(current_[i], MiddlewareLayer::PSU_ENUM::X1);
+        std::thread thread_PSU(&DXKDP_PSU::WriteCurrent, &PSU_Z1, abs(current_[i])*cal_z, 0x01);
+        // std::thread thread_te(&MiddlewareLayer::writeYField, this);
+        std::thread thread_i(&LinearActuator::LinearExtend, &LinAct);
+        thread_PSU.join();
+        // thread_te.join();
+        thread_i.join();
+    }
+}
+
+void MiddlewareLayer::setX2Vector(std::vector<float> current_){
+    this->stepper_count =current_.size();
+
+    for (size_t i = 0; i < current_.size(); i++)
+    {
+        this->PolarityCheck(current_[i], MiddlewareLayer::PSU_ENUM::X1);
+        std::thread thread_PSU(&DXKDP_PSU::WriteCurrent, &PSU_X2, abs(current_[i])*cal_x, 0x01);
+        std::thread thread_te(&MiddlewareLayer::writeXField, this);
+        std::thread thread_i(&LinearActuator::LinearExtend, &LinAct);
+        thread_PSU.join();
+        thread_te.join();
+        thread_i.join();
+    }
+}
+
+
+void MiddlewareLayer::setY2Vector(std::vector<float> current_){
+    this->stepper_count =current_.size();
+
+    for (size_t i = 0; i < current_.size(); i++)
+    {
+        this->PolarityCheck(current_[i], MiddlewareLayer::PSU_ENUM::X1);
+        std::thread thread_PSU(&DXKDP_PSU::WriteCurrent, &PSU_Y2, abs(current_[i])*cal_y, 0x01);
+        // std::thread thread_te(&MiddlewareLayer::writeXField, this);
+        std::thread thread_i(&LinearActuator::LinearExtend, &LinAct);
+        thread_PSU.join();
+        // thread_te.join();
+        thread_i.join();
+    }
+}
+
+void MiddlewareLayer::setZ2Vector(std::vector<float> current_){
+    this->stepper_count =current_.size();
+
+    for (size_t i = 0; i < current_.size(); i++)
+    {
+        this->PolarityCheck(current_[i], MiddlewareLayer::PSU_ENUM::X1);
+        std::thread thread_PSU(&DXKDP_PSU::WriteCurrent, &PSU_Z2, abs(current_[i])*cal_z, 0x01);
+        // std::thread thread_te(&MiddlewareLayer::writeXField, this);
+        std::thread thread_i(&LinearActuator::LinearExtend, &LinAct);
+        thread_PSU.join();
+        // thread_te.join();
+        thread_i.join();
+    }
+}
+
+void MiddlewareLayer::PolarityCheck(float input, MiddlewareLayer::PSU_ENUM psu_){
+    switch(psu_){
+        case MiddlewareLayer::PSU_ENUM::X1:
+            if(input < 0) {PSU_X1.setPolarity(0x1); printf("Flipped polarity, X1\n");}
+            else PSU_X1.setPolarity(0x0);
         break;
-        case 1:
-            if(input < 0) {PSU_Y.setPolarity(0x1); printf("Flipped polarity\n");}
-            else PSU_Y.setPolarity(0x0);
+        case MiddlewareLayer::PSU_ENUM::Y1:
+            if(input < 0) {PSU_Y1.setPolarity(0x1); printf("Flipped polarity, Y1\n");}
+            else PSU_Y1.setPolarity(0x0);
         break;
-        case 2:
-            if(input < 0) {PSU_Z.setPolarity(0x1); printf("Flipped polarity\n");}
-            else PSU_Z.setPolarity(0x0);
+        case MiddlewareLayer::PSU_ENUM::Z1:
+            if(input < 0) {PSU_Z1.setPolarity(0x1); printf("Flipped polarity, Z1\n");}
+            else PSU_Z1.setPolarity(0x0);
         break;
     }
     
