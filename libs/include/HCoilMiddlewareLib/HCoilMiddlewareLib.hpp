@@ -83,6 +83,8 @@ public:
     Teslameter T_Meter; //!< Instance of Teslameter
     LinearActuator LinAct; //!< Instance of LinearActuator
 
+    std::unique_ptr<LinearActuator> uniqueLinAct; //!< uniquePtr to Linear Actuator obj. Experimental
+
     /**
     @brief Default constructor. Calls TurnOnSupply.
     
@@ -152,6 +154,12 @@ public:
     /**
      * @brief Sets output current to X1
      * 
+     * 
+     * 
+     * @note the set<X/Y/Z><1/2>Vector functions step through a vector of floats, writing the currents accordingly.\n 
+     * The X variants also write the field read to a CSV file.\n 
+     * Introducer stepping should be handled separately through the StepIntroducer functions. 
+     * 
      * @param current_ vector of floats containing all desired X fields.
      * @param psu_ PSU_ENUM containing the chosen power supply.
      */
@@ -198,6 +206,21 @@ public:
      * @param psu_ PSU_ENUM containing the chosen power supply.
      */
     void setZ2Vector(std::vector<float> current_);
+
+    /**
+     * @brief Wrapper for the Introducer Functions. Extends by 1mm.
+     * 
+     * Use alongside the 1D field functions to step the introducer along.
+     */
+    void stepIntroducer(void);
+    
+
+    /**
+     * @brief Wrapper for Introducer Functions. Extends by stepCount_ mms
+     * 
+     * @param stepCount_ count of how many extensions to be made.
+     */
+    void stepIntroducer(int stepCount_);
 
     /**
      * @brief Checks the Polarity required for a given input and sets it as required.

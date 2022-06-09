@@ -1,6 +1,8 @@
-/*! @mainpage Index Page
+/*! @mainpage Introduction
  *
- * @section intro_sec Introduction
+ * @tableofcontents
+ * 
+ * @section intro_sec Overview
  *
  * Set of libraries covering all the Low-Level control of a set of (currently) 3 DXKDP Power Supplies connected to a a Tri-axis Helmholtz Coil.
  *

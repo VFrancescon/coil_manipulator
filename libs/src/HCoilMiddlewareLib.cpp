@@ -150,10 +150,10 @@ void MiddlewareLayer::setX1Vector(std::vector<float> current_){
         this->PolarityCheck(current_[i], MiddlewareLayer::PSU_ENUM::X1);
         std::thread thread_PSU(&DXKDP_PSU::WriteCurrent, &PSU_X1, abs(current_[i])*cal_x, 0x01);
         std::thread thread_te(&MiddlewareLayer::writeXField, this);
-        std::thread thread_i(&LinearActuator::LinearExtend, &LinAct);
+        // std::thread thread_i(&LinearActuator::LinearExtend, &LinAct);
         thread_PSU.join();
         thread_te.join();
-        thread_i.join();
+        // thread_i.join();
     }
 }
 void MiddlewareLayer::setY1Vector(std::vector<float> current_){
@@ -162,12 +162,13 @@ void MiddlewareLayer::setY1Vector(std::vector<float> current_){
     for (size_t i = 0; i < current_.size(); i++)
     {
         this->PolarityCheck(current_[i], MiddlewareLayer::PSU_ENUM::X1);
-        std::thread thread_PSU(&DXKDP_PSU::WriteCurrent, &PSU_Y1, abs(current_[i])*cal_y, 0x01);
-        // std::thread thread_te(&MiddlewareLayer::writeXField, this);
-        std::thread thread_i(&LinearActuator::LinearExtend, &LinAct);
-        thread_PSU.join();
-        // thread_te.join();
-        thread_i.join();
+        // std::thread thread_PSU(&DXKDP_PSU::WriteCurrent, &PSU_Y1, abs(current_[i])*cal_y, 0x01);
+        // // std::thread thread_te(&MiddlewareLayer::writeXField, this);
+        // std::thread thread_i(&LinearActuator::LinearExtend, &LinAct);
+        // thread_PSU.join();
+        // // thread_te.join();
+        // thread_i.join();
+        this->PSU_Y1.WriteCurrent(current_[i]);
     }
 }
 
@@ -177,12 +178,13 @@ void MiddlewareLayer::setZ1Vector(std::vector<float> current_){
     for (size_t i = 0; i < current_.size(); i++)
     {
         this->PolarityCheck(current_[i], MiddlewareLayer::PSU_ENUM::X1);
-        std::thread thread_PSU(&DXKDP_PSU::WriteCurrent, &PSU_Z1, abs(current_[i])*cal_z, 0x01);
-        // std::thread thread_te(&MiddlewareLayer::writeYField, this);
-        std::thread thread_i(&LinearActuator::LinearExtend, &LinAct);
-        thread_PSU.join();
-        // thread_te.join();
-        thread_i.join();
+        // std::thread thread_PSU(&DXKDP_PSU::WriteCurrent, &PSU_Z1, abs(current_[i])*cal_z, 0x01);
+        // // std::thread thread_te(&MiddlewareLayer::writeYField, this);
+        // std::thread thread_i(&LinearActuator::LinearExtend, &LinAct);
+        // thread_PSU.join();
+        // // thread_te.join();
+        // thread_i.join();
+        this->PSU_Z1.WriteCurrent(current_[i]);
     }
 }
 
@@ -194,10 +196,10 @@ void MiddlewareLayer::setX2Vector(std::vector<float> current_){
         this->PolarityCheck(current_[i], MiddlewareLayer::PSU_ENUM::X1);
         std::thread thread_PSU(&DXKDP_PSU::WriteCurrent, &PSU_X2, abs(current_[i])*cal_x, 0x01);
         std::thread thread_te(&MiddlewareLayer::writeXField, this);
-        std::thread thread_i(&LinearActuator::LinearExtend, &LinAct);
+        // std::thread thread_i(&LinearActuator::LinearExtend, &LinAct);
         thread_PSU.join();
         thread_te.join();
-        thread_i.join();
+        // thread_i.join();
     }
 }
 
@@ -208,12 +210,13 @@ void MiddlewareLayer::setY2Vector(std::vector<float> current_){
     for (size_t i = 0; i < current_.size(); i++)
     {
         this->PolarityCheck(current_[i], MiddlewareLayer::PSU_ENUM::X1);
-        std::thread thread_PSU(&DXKDP_PSU::WriteCurrent, &PSU_Y2, abs(current_[i])*cal_y, 0x01);
-        // std::thread thread_te(&MiddlewareLayer::writeXField, this);
-        std::thread thread_i(&LinearActuator::LinearExtend, &LinAct);
-        thread_PSU.join();
-        // thread_te.join();
-        thread_i.join();
+        // std::thread thread_PSU(&DXKDP_PSU::WriteCurrent, &PSU_Y2, abs(current_[i])*cal_y, 0x01);
+        // // std::thread thread_te(&MiddlewareLayer::writeXField, this);
+        // std::thread thread_i(&LinearActuator::LinearExtend, &LinAct);
+        // thread_PSU.join();
+        // // thread_te.join();
+        // thread_i.join();
+        this->PSU_Y2.WriteCurrent(current_[i]);
     }
 }
 
@@ -223,12 +226,25 @@ void MiddlewareLayer::setZ2Vector(std::vector<float> current_){
     for (size_t i = 0; i < current_.size(); i++)
     {
         this->PolarityCheck(current_[i], MiddlewareLayer::PSU_ENUM::X1);
-        std::thread thread_PSU(&DXKDP_PSU::WriteCurrent, &PSU_Z2, abs(current_[i])*cal_z, 0x01);
-        // std::thread thread_te(&MiddlewareLayer::writeXField, this);
-        std::thread thread_i(&LinearActuator::LinearExtend, &LinAct);
-        thread_PSU.join();
-        // thread_te.join();
-        thread_i.join();
+        // std::thread thread_PSU(&DXKDP_PSU::WriteCurrent, &PSU_Z2, abs(current_[i])*cal_z, 0x01);
+        // // std::thread thread_te(&MiddlewareLayer::writeXField, this);
+        // std::thread thread_i(&LinearActuator::LinearExtend, &LinAct);
+        // thread_PSU.join();
+        // // thread_te.join();
+        // thread_i.join();
+        this->PSU_Z2.WriteCurrent(current_[i]);
+    }
+}
+
+void MiddlewareLayer::stepIntroducer(){
+    this->stepper_count++;
+    this->LinAct.LinearExtend();    
+}
+
+void MiddlewareLayer::stepIntroducer(int stepCount_){
+    this->stepper_count += stepCount_;
+    for(int i = 0; i < stepCount_; i++){
+        this->LinAct.LinearExtend();
     }
 }
 
