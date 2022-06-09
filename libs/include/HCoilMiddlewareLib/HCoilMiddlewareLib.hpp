@@ -29,7 +29,7 @@ class MiddlewareLayer{
 private:
 
 
-    int stepper_count; //!< keeps track of how many extensions/retractions happened to the stepper motor.
+    int stepper_count = 0; //!< keeps track of how many extensions/retractions happened to the stepper motor.
     
     std::ofstream outputFile; //!< Output file object
     std::ofstream leftoverTimeFile; //!< Leftover time file object

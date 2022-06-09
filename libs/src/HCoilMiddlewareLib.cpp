@@ -87,7 +87,7 @@ void MiddlewareLayer::set3DVector(std::vector<float> I_X, std::vector<float> I_Y
     
     //setting how much the stepper motor will be extended by at the end of the function.
     //this is used in the destructor to retract the tentacle back.
-    this->stepper_count = I_X.size();
+    this->stepper_count += I_X.size();
     for(int i = 0; i < I_X.size(); i++){
 
         /*
@@ -143,7 +143,7 @@ void MiddlewareLayer::set3DVector(std::vector<float> I_X, std::vector<float> I_Y
 
 
 void MiddlewareLayer::setX1Vector(std::vector<float> current_){
-    this->stepper_count =current_.size();
+    this->stepper_count += current_.size();
 
     for (size_t i = 0; i < current_.size(); i++)
     {
@@ -157,7 +157,7 @@ void MiddlewareLayer::setX1Vector(std::vector<float> current_){
     }
 }
 void MiddlewareLayer::setY1Vector(std::vector<float> current_){
-    this->stepper_count =current_.size();
+    this->stepper_count += current_.size();
 
     for (size_t i = 0; i < current_.size(); i++)
     {
@@ -172,7 +172,7 @@ void MiddlewareLayer::setY1Vector(std::vector<float> current_){
 }
 
 void MiddlewareLayer::setZ1Vector(std::vector<float> current_){
-    this->stepper_count =current_.size();
+    this->stepper_count += current_.size();
 
     for (size_t i = 0; i < current_.size(); i++)
     {
@@ -187,7 +187,7 @@ void MiddlewareLayer::setZ1Vector(std::vector<float> current_){
 }
 
 void MiddlewareLayer::setX2Vector(std::vector<float> current_){
-    this->stepper_count =current_.size();
+    this->stepper_count += current_.size();
 
     for (size_t i = 0; i < current_.size(); i++)
     {
@@ -203,7 +203,7 @@ void MiddlewareLayer::setX2Vector(std::vector<float> current_){
 
 
 void MiddlewareLayer::setY2Vector(std::vector<float> current_){
-    this->stepper_count =current_.size();
+    this->stepper_count += current_.size();
 
     for (size_t i = 0; i < current_.size(); i++)
     {
@@ -218,7 +218,7 @@ void MiddlewareLayer::setY2Vector(std::vector<float> current_){
 }
 
 void MiddlewareLayer::setZ2Vector(std::vector<float> current_){
-    this->stepper_count =current_.size();
+    this->stepper_count += current_.size();
 
     for (size_t i = 0; i < current_.size(); i++)
     {
