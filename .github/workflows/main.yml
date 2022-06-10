@@ -27,6 +27,4 @@ jobs:
       - name: Run a one-line script
         run: |
           rm -rf docs/*
-          cd build/
-          make Doxygen
-          mv docs/html/* docs/
+          mv docsBuild/html/* docs/
