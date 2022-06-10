@@ -23,6 +23,8 @@ Then follow install instructions for each repo (CppLinuxSerial) only for now.
 
 ## Documentation
 
+[READ THE DOCS HERE](https://vfrancescon.github.io/coil_manipulator/)
+
 * [Doxygen](https://www.doxygen.nl/download.html#srcbin)
 
 * [graphviz](http://www.graphviz.org/download/)
