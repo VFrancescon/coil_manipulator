@@ -22,7 +22,6 @@
  * Note: CSV parsing is not included here. Currently it's contained in the driver code, it will probably get a class of its own eventually.
  * 
  * @todo Fix calibration factor. I believe the data being read is in mT, but we treat it as T. 
- * Also look into implementing Smart Pointers. Add error flags everywhere.
  */
 class MiddlewareLayer{
 
@@ -43,8 +42,6 @@ private:
     float cal_x = 0.54; //!< Bx calibration factor
     float cal_y = 1.135; //!< By calibration factor
     float cal_z = 0.65; //!< Bz calibration factor
-
-    
 
 public:
 
@@ -79,21 +76,19 @@ public:
     // DXKDP_PSU PSU_Y2; //!< Y2-axis instance of DXKDP_PSU
     // DXKDP_PSU PSU_Z2; //!< Z2-axis instance of DXKDP_PSU
 
+    std::unique_ptr<DXKDP_PSU> uniquePSU_X1; //!< uniquePtr for X1 PSU obj.  
+    std::unique_ptr<DXKDP_PSU> uniquePSU_Y1; //!< uniquePtr for Y1 PSU obj.  
+    std::unique_ptr<DXKDP_PSU> uniquePSU_Z1; //!< uniquePtr for Z1 PSU obj.  
 
-
-    std::unique_ptr<DXKDP_PSU> uniquePSU_X1; //!< uniquePtr for X1 PSU obj. Experimental
-    std::unique_ptr<DXKDP_PSU> uniquePSU_Y1; //!< uniquePtr for Y1 PSU obj. Experimental
-    std::unique_ptr<DXKDP_PSU> uniquePSU_Z1; //!< uniquePtr for Z1 PSU obj. Experimental
-
-    std::unique_ptr<DXKDP_PSU> uniquePSU_X2; //!< uniquePtr for X2 PSU obj. Experimental
-    std::unique_ptr<DXKDP_PSU> uniquePSU_Y2; //!< uniquePtr for Y2 PSU obj. Experimental
-    std::unique_ptr<DXKDP_PSU> uniquePSU_Z2; //!< uniquePtr for Z2 PSU obj. Experimental
+    std::unique_ptr<DXKDP_PSU> uniquePSU_X2; //!< uniquePtr for X2 PSU obj.  
+    std::unique_ptr<DXKDP_PSU> uniquePSU_Y2; //!< uniquePtr for Y2 PSU obj.  
+    std::unique_ptr<DXKDP_PSU> uniquePSU_Z2; //!< uniquePtr for Z2 PSU obj.  
 
     // Teslameter T_Meter; //!< Instance of Teslameter
     // LinearActuator LinAct; //!< Instance of LinearActuator
 
-    std::unique_ptr<LinearActuator> uniqueLinAct; //!< uniquePtr to Linear Actuator obj. Experimental
-    std::unique_ptr<Teslameter>uniqueT_Meter; //!< uniquePtr for Teslameter obj. Experimental
+    std::unique_ptr<LinearActuator> uniqueLinAct; //!< uniquePtr to Linear Actuator obj.  
+    std::unique_ptr<Teslameter>uniqueT_Meter; //!< uniquePtr for Teslameter obj.  
     /**
     @brief Default constructor. Calls TurnOnSupply.
     
