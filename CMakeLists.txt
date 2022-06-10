@@ -43,7 +43,7 @@ include_directories(libs/include)
 add_subdirectory(libs/src)
 add_subdirectory(submodules/a-star)
 # add_subdirectory(src)
-add_subdirectory(docs)
+add_subdirectory(docsBuild)
 
 
 
