@@ -1,31 +1,5 @@
 #include <HCoilMiddlewareLib/HCoilMiddlewareLib.hpp>
 
-// MiddlewareLayer::MiddlewareLayer() : PSU_X1("/dev/ttyUSB3", 0.1, 0.01), PSU_Y1("/dev/ttyUSB4", 0.01, 0.01), PSU_Z1("/dev/ttyUSB2", 0.01, 0.01),
-// T_Meter("/dev/ttyUSB0"), LinAct("/dev/ttyUSB1")
-// {
-//     /*
-//     3x PSUs
-//     1x Teslameter
-//     1x Linear Actuator
-//     */
-
-//    /**
-//     * @todo
-//     * Research how to bring back unique_ptrs at some point
-//     * 
-//     */
-//     // std::unique_ptr<DXKDP_PSU> PSU_X1 = std::make_unique<DXKDP_PSU>("/dev/ttyUSB3", 0.01, 0.01);
-//     // std::unique_ptr<DXKDP_PSU> PSU_Y1 = std::make_unique<DXKDP_PSU>("/dev/ttyUSB4", 0.01, 0.01);
-//     // std::unique_ptr<DXKDP_PSU> PSU_Z1 = std::make_unique<DXKDP_PSU>("/dev/ttyUSB2", 0.01, 0.01);
-
-//     // std::unique_ptr<Teslameter> T_Meter = std::make_unique<Teslameter>("/dev/ttyUSB3");
-//     // std::unique_ptr<LinearActuator> LinAct = std::make_unique<LinearActuator>("/dev/ttyUSB4");
-//     uniqueLinAct = std::make_unique<LinearActuator>("/dev/ttyUSB6");
-    
-//     this->initialSetup();
-    
-// }
-
 MiddlewareLayer::MiddlewareLayer(){
 
     // <X/Y/Z>1 PSUs
@@ -118,35 +92,14 @@ void MiddlewareLayer::set3DVector(std::vector<float> I_X, std::vector<float> I_Y
     this->stepper_count += I_X.size();
     for(int i = 0; i < I_X.size(); i++){
 
-        /*
-        Single threaded polarity check below
-
-        this->PolarityCheck(I_X[i], 0);
-        this->PolarityCheck(I_Y[i], 1);
-        this->PolarityCheck(I_Z[i], 2);
-
-        */
-
         std::thread th_x(&MiddlewareLayer::PolarityCheck, this, I_X[i], MiddlewareLayer::PSU_ENUM::X1);
         std::thread th_y(&MiddlewareLayer::PolarityCheck, this, I_Y[i], MiddlewareLayer::PSU_ENUM::Y1);
         std::thread th_z(&MiddlewareLayer::PolarityCheck, this, I_Z[i], MiddlewareLayer::PSU_ENUM::Z1);
         th_x.join();
         th_y.join();
         th_z.join();
-        // this->PolarityCheck(I_X[i], 0);
-        // this->PolarityCheck(I_Y[i], 1);
-        // this->PolarityCheck(I_Z[i], 2);
 
-        /*
-        Single threaded Write Current Below
-        this->uniquePSU_X1->WriteCurrent(abs(I_X[i]));
-        this->uniquePSU_Y1->WriteCurrent(abs(I_Y[i]));
-        this->uniquePSU_Z1->WriteCurrent(abs(I_Z[i]));
-        this->writeXField();
-        this->LinAct.LinearExtend();
-        */
-        
-
+        //starting timing here
         std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
         std::thread thread_x1(&DXKDP_PSU::WriteCurrent, uniquePSU_X1.get(), abs(I_X[i])*cal_x, 0x01);
         std::thread thread_y1(&DXKDP_PSU::WriteCurrent, uniquePSU_Y1.get(), abs(I_Y[i])*cal_y, 0x01);
@@ -159,9 +112,10 @@ void MiddlewareLayer::set3DVector(std::vector<float> I_X, std::vector<float> I_Y
         thread_te.join();
         introducer_thread.join();
 
+        //ending timing here. Then calculating diffs and printing.
         std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
         int duration_us = int(std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count());
-        int sleep_us = period_us = duration_us;
+        int sleep_us = period_us - duration_us;
         
         std::cout << "going to sleep for: " << sleep_us/1000 << "ms\n";
         leftoverTimeFile << leftoverTime_count << "," << sleep_us << "," << 1/float(sleep_us)*1000000 << "\n";

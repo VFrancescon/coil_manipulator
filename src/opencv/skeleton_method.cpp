@@ -11,7 +11,7 @@ std::vector<std::string> decodePath(std::vector<Point> path_);
 
 int main(void){
     
-    std::string image_path = "/home/vittorio/coil_manipulator/src/opencv/test_shape.png";
+    std::string image_path = "/home/vittorio/coil_manipulator/src/opencv/RAL_DEMO_SC3.png";
     Mat img = imread(image_path, IMREAD_COLOR);
 
     if(img.empty())
@@ -102,7 +102,8 @@ int main(void){
     AStar::CoordinateList path = generator.findPath(origin, destination);
     std::vector<Point> cvPath = AStar::Vec2iToCvPointList(path);
     std::reverse(cvPath.begin(), cvPath.end());
-    polylines(img, cvPath, false, Scalar(255,0,0), 2);
+    // polylines(img, cvPath, false, Scalar(255,0,0), 2);
+    std::cout << " length of path: " << cntLine.size() << "\n";
     // std::vector<Point> goalPath;
     // for(auto i: path){
     //     goalPath.push_back(Point(i.x, i.y));
@@ -110,11 +111,11 @@ int main(void){
     // for(auto i: goalPath){
     //     circle(img, i, 2, Scalar(255,0,0), FILLED);
     // }
-    std::vector<std::string> InstructionPath = decodePath(cvPath);
-    // for(auto i: InstructionPath) std::cout << i << "\n";
-    for(int i = 0; i < InstructionPath.size(); i++){
-        std::cout << "From : " << cvPath[i] << " to: " << cvPath[i+1] << " direction: " << InstructionPath[i] << "\n";
-    }
+    // std::vector<std::string> InstructionPath = decodePath(cvPath);
+    // // for(auto i: InstructionPath) std::cout << i << "\n";
+    // for(int i = 0; i < InstructionPath.size(); i++){
+    //     std::cout << "From : " << cvPath[i] << " to: " << cvPath[i+1] << " direction: " << InstructionPath[i] << "\n";
+    // }
     
     imshow("Tip detection", img);
     // imshow("mask", introducer_mask);
