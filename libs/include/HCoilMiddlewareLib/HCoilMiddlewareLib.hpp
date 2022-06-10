@@ -72,19 +72,28 @@ public:
 
     // std::unique_ptr<Teslameter> T_Meter;
     // std::unique_ptr<LinearActuator> LinAct; 
-    DXKDP_PSU PSU_X1; //!< X1-axis instance of DXKDP_PSU
-    DXKDP_PSU PSU_Y1; //!< Y1-axis instance of DXKDP_PSU
-    DXKDP_PSU PSU_Z1; //!< Z1-axis instance of DXKDP_PSU
+    // DXKDP_PSU PSU_X1; //!< X1-axis instance of DXKDP_PSU
+    // DXKDP_PSU PSU_Y1; //!< Y1-axis instance of DXKDP_PSU
+    // DXKDP_PSU PSU_Z1; //!< Z1-axis instance of DXKDP_PSU
+    // DXKDP_PSU PSU_X2; //!< X2-axis instance of DXKDP_PSU
+    // DXKDP_PSU PSU_Y2; //!< Y2-axis instance of DXKDP_PSU
+    // DXKDP_PSU PSU_Z2; //!< Z2-axis instance of DXKDP_PSU
 
-    DXKDP_PSU PSU_X2; //!< X2-axis instance of DXKDP_PSU
-    DXKDP_PSU PSU_Y2; //!< Y2-axis instance of DXKDP_PSU
-    DXKDP_PSU PSU_Z2; //!< Z2-axis instance of DXKDP_PSU
 
-    Teslameter T_Meter; //!< Instance of Teslameter
-    LinearActuator LinAct; //!< Instance of LinearActuator
+
+    std::unique_ptr<DXKDP_PSU> uniquePSU_X1; //!< uniquePtr for X1 PSU obj. Experimental
+    std::unique_ptr<DXKDP_PSU> uniquePSU_Y1; //!< uniquePtr for Y1 PSU obj. Experimental
+    std::unique_ptr<DXKDP_PSU> uniquePSU_Z1; //!< uniquePtr for Z1 PSU obj. Experimental
+
+    std::unique_ptr<DXKDP_PSU> uniquePSU_X2; //!< uniquePtr for X2 PSU obj. Experimental
+    std::unique_ptr<DXKDP_PSU> uniquePSU_Y2; //!< uniquePtr for Y2 PSU obj. Experimental
+    std::unique_ptr<DXKDP_PSU> uniquePSU_Z2; //!< uniquePtr for Z2 PSU obj. Experimental
+
+    // Teslameter T_Meter; //!< Instance of Teslameter
+    // LinearActuator LinAct; //!< Instance of LinearActuator
 
     std::unique_ptr<LinearActuator> uniqueLinAct; //!< uniquePtr to Linear Actuator obj. Experimental
-
+    std::unique_ptr<Teslameter>uniqueT_Meter; //!< uniquePtr for Teslameter obj. Experimental
     /**
     @brief Default constructor. Calls TurnOnSupply.
     
@@ -106,7 +115,10 @@ public:
      * @param TMETER_PORT Teslamter port.
      * @param LINACT_PORT Introducer port.
      */
-    MiddlewareLayer(std::string PSUX_PORT, std::string PSUY_PORT, std::string PSUZ_PORT, std::string TMETER_PORT, std::string LINACT_PORT );
+    MiddlewareLayer(std::string PSUX1_PORT, std::string PSUY1_PORT, std::string PSUZ1_PORT, 
+        std::string PSUX2_PORT, std::string PSUY2_PORT, std::string PSUZ2_PORT,
+        std::string TMETER_PORT, std::string LINACT_PORT 
+    );
     
     /**
      * @brief Destroy the Middleware Layer object
