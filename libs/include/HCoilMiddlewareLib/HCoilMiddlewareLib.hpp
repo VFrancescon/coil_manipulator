@@ -57,24 +57,6 @@ public:
         Z1, //!< First Z axis PSU
         Z2  //!< Second Z axis PSU
         };
-    /*
-    3x PSUs
-    1x Teslameter
-    1x Linear Actuator
-    */
-    // std::shared_ptr<Device> device;
-    // std::unique_ptr<DXKDP_PSU> PSU_X;
-    // std::unique_ptr<DXKDP_PSU> PSU_Y;
-    // std::unique_ptr<DXKDP_PSU> PSU_Z;
-
-    // std::unique_ptr<Teslameter> T_Meter;
-    // std::unique_ptr<LinearActuator> LinAct; 
-    // DXKDP_PSU PSU_X1; //!< X1-axis instance of DXKDP_PSU
-    // DXKDP_PSU PSU_Y1; //!< Y1-axis instance of DXKDP_PSU
-    // DXKDP_PSU PSU_Z1; //!< Z1-axis instance of DXKDP_PSU
-    // DXKDP_PSU PSU_X2; //!< X2-axis instance of DXKDP_PSU
-    // DXKDP_PSU PSU_Y2; //!< Y2-axis instance of DXKDP_PSU
-    // DXKDP_PSU PSU_Z2; //!< Z2-axis instance of DXKDP_PSU
 
     std::unique_ptr<DXKDP_PSU> uniquePSU_X1; //!< uniquePtr for X1 PSU obj.  
     std::unique_ptr<DXKDP_PSU> uniquePSU_Y1; //!< uniquePtr for Y1 PSU obj.  
@@ -83,9 +65,6 @@ public:
     std::unique_ptr<DXKDP_PSU> uniquePSU_X2; //!< uniquePtr for X2 PSU obj.  
     std::unique_ptr<DXKDP_PSU> uniquePSU_Y2; //!< uniquePtr for Y2 PSU obj.  
     std::unique_ptr<DXKDP_PSU> uniquePSU_Z2; //!< uniquePtr for Z2 PSU obj.  
-
-    // Teslameter T_Meter; //!< Instance of Teslameter
-    // LinearActuator LinAct; //!< Instance of LinearActuator
 
     std::unique_ptr<LinearActuator> uniqueLinAct; //!< uniquePtr to Linear Actuator obj.  
     std::unique_ptr<Teslameter>uniqueT_Meter; //!< uniquePtr for Teslameter obj.  
@@ -253,6 +232,7 @@ public:
      * 
      */
     void writeXField();
+
 
     std::string filename = "../output.csv"; //!< default file name.
 };
