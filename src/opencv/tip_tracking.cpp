@@ -3,6 +3,7 @@
 #include <opencv2/ximgproc.hpp>
 #include <opencv2/video.hpp>
 #include <a-star/source/AStar.hpp>
+#include <fstream>
 
 using namespace cv;
 
@@ -39,6 +40,11 @@ Mat IntroducerMask(Mat src);
 int main(void){
     AStar::Generator generator;
 
+    // std::string lenghtCSV = "/home/vittorio/coil_manipulator/TentacleLenght.csv";
+
+    // std::ofstream outputFile(lenghtCSV, std::ios::out);
+    // outputFile << "Frame, Point Count\n";
+    // int prevCntLineSize = 0, frame_count = 0;
 
     VideoCapture cap("/home/vittorio/coil_manipulator/src/opencv/BothRoutes_INOUT_V1.mp4");
     if(!cap.isOpened()){
@@ -127,6 +133,11 @@ int main(void){
         std::vector<Point> cntLine;
         findNonZero(skeleton, cntLine);
         std::sort(cntLine.begin(), cntLine.end(), xWiseSort);
+        
+        // ++frame_count;
+        // if(prevCntLineSize != cntLine.size()) outputFile << frame_count << "," << cntLine.size() << "\n";
+        // prevCntLineSize = cntLine.size();
+
         Point endpoint;
 
         //iterate over all points
@@ -159,7 +170,7 @@ int main(void){
         char c= (char)waitKey(10);
         if(c==27) break;
     }
-    
+    // outputFile.close();
     cap.release();
     // video_out.release();
     destroyAllWindows();
