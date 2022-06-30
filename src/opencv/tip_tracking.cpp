@@ -35,6 +35,8 @@ Mat continuityCheck(Mat src, int iterations=1);
  */
 Mat IntroducerMask(Mat src);
 
+int threshold_low = 60;
+int threshold_high = 255;
 
 int main(void){
     AStar::Generator generator;
@@ -48,30 +50,26 @@ int main(void){
     /*Video input stuff starts here
     -----------------------------------------------------------
     */
-    
-    
-    VideoCapture cap("/home/vittorio/coil_manipulator/src/opencv/BothRoutes_INOUT_V1.mp4");
-    if(!cap.isOpened()){
-	    std::cout << "Error opening video stream or file" << "\n";
-	    return -1;
-    }
+    // VideoCapture cap("/home/vittorio/coil_manipulator/src/opencv/BothRoutes_INOUT_V1.mp4");
+    // if(!cap.isOpened()){
+	//     std::cout << "Error opening video stream or file" << "\n";
+	//     return -1;
+    // }
 
     Mat img, threshold_img, img_copy, skeleton, cnts_bin, masked_img;
     Mat grid;
-    int rows,cols;
+    // int rows,cols;
     
-    cap >> img;
-    rows = img.rows * 3 / 8;
-    cols = img.cols * 3 / 8;
-    
-    
+    // cap >> img;
+    // rows = img.rows * 3 / 8;
+    // cols = img.cols * 3 / 8; 
     /*
     -----------------------------------------------------------
     Video input stuff ends here*/
 
+    
     /*pylon video input here
-    -----------------------------------------------------------
-    */
+    -----------------------------------------------------------*/
     Pylon::PylonInitialize();
     Pylon::CImageFormatConverter formatConverter;
     formatConverter.OutputPixelFormat = Pylon::PixelType_BGR8packed;
@@ -92,17 +90,21 @@ int main(void){
     /*-----------------------------------------------------------
     pylon video input here*/
 
+    camera.RetrieveResult(5000, ptrGrabResult, Pylon::TimeoutHandling_ThrowException);
+    const uint8_t* preImageBuffer = (uint8_t*) ptrGrabResult->GetBuffer();
+    formatConverter.Convert(pylonImage, ptrGrabResult);
+    img = cv::Mat(ptrGrabResult->GetHeight(), ptrGrabResult->GetWidth(), CV_8UC3, (uint8_t *) pylonImage.GetBuffer());
 
     AStar::Vec2i worldSize;
-    worldSize.x = rows;
-    worldSize.y = cols;
+    worldSize.x = img.rows;
+    worldSize.y = img.cols;
     generator.setWorldSize(worldSize);
     generator.setHeuristic(AStar::Heuristic::manhattan);
     generator.setDiagonalMovement(true);
     Point Goal(300,300);
 
     //make image smaller 
-    resize(img, img, Size(rows, cols), INTER_LINEAR);
+    // resize(img, img, Size(rows, cols), INTER_LINEAR);
     // VideoWriter video_out("output.avi", CV_FOURCC('M', 'J', 'P', 'G'), 10, 
     //             Size(img.rows * 3 / 8, img.cols * 3 / 8));
     Mat intr_mask = Mat::zeros(img.size(), CV_8UC1);
@@ -113,16 +115,22 @@ int main(void){
     std::vector<Point> cvPath;
     // std::cout << "image size: " << img.rows << " " << img.cols << "\n";
 
-    while(1){
+    while(camera.IsGrabbing()){
 
-        cap >> img;
+        camera.RetrieveResult(5000, ptrGrabResult, Pylon::TimeoutHandling_ThrowException);
+        const uint8_t* pImageBuffer = (uint8_t*) ptrGrabResult->GetBuffer();
+        formatConverter.Convert(pylonImage, ptrGrabResult);
+        img = cv::Mat(ptrGrabResult->GetHeight(), ptrGrabResult->GetWidth(), CV_8UC3, (uint8_t *) pylonImage.GetBuffer());
+
+        // cap >> img;
+
         if(img.empty()) break;
-        // sizes down from 1544x2048 to 579x774
-        rows = img.rows * 3 / 8;
-        cols = img.cols * 3 / 8;
+        // // sizes down from 1544x2048 to 579x774
+        // rows = img.rows * 3 / 8;
+        // cols = img.cols * 3 / 8;
         
-        //make image smaller 
-        resize(img, img, Size(rows, cols), INTER_LINEAR);
+        // //make image smaller 
+        // resize(img, img, Size(rows, cols), INTER_LINEAR);
         
         /*flip image about y*/
         // flip(img, img, 1);
@@ -135,7 +143,7 @@ int main(void){
         
         //apply blur and threshold so that only the tentacle is visible
         blur(img_copy, img_copy, Size(5,5));
-        threshold(img_copy, threshold_img, 60, 255, THRESH_BINARY_INV); 
+        threshold(img_copy, threshold_img, threshold_low, threshold_high, THRESH_BINARY_INV); 
         threshold_img.copyTo(masked_img, intr_mask);
         
         //set up vectors for findContours to output to
@@ -220,7 +228,7 @@ Mat IntroducerMask(Mat src){
     
     //apply blur and threshold so that only the tentacle is visible
     blur(src_GRAY, src_GRAY, Size(5,5));
-    threshold(src_GRAY, src_GRAY, 60, 255, THRESH_BINARY_INV); 
+    threshold(src_GRAY, src_GRAY, threshold_low, threshold_high, THRESH_BINARY_INV); 
     
     element = getStructuringElement(MORPH_DILATE, Size(3,3), Point(1,1) );
     dilate(src_GRAY, src_GRAY, element);
