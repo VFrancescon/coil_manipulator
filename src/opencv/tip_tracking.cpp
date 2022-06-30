@@ -6,7 +6,6 @@
 #include <fstream>
 
 using namespace cv;
-
 /**
  * @brief comparator function for std::sort. Do not use directly.
  * 
@@ -46,6 +45,11 @@ int main(void){
     // outputFile << "Frame, Point Count\n";
     // int prevCntLineSize = 0, frame_count = 0;
 
+    /*Video input stuff starts here
+    -----------------------------------------------------------
+    */
+    
+    
     VideoCapture cap("/home/vittorio/coil_manipulator/src/opencv/BothRoutes_INOUT_V1.mp4");
     if(!cap.isOpened()){
 	    std::cout << "Error opening video stream or file" << "\n";
@@ -59,6 +63,35 @@ int main(void){
     cap >> img;
     rows = img.rows * 3 / 8;
     cols = img.cols * 3 / 8;
+    
+    
+    /*
+    -----------------------------------------------------------
+    Video input stuff ends here*/
+
+    /*pylon video input here
+    -----------------------------------------------------------
+    */
+    Pylon::PylonInitialize();
+    Pylon::CImageFormatConverter formatConverter;
+    formatConverter.OutputPixelFormat = Pylon::PixelType_BGR8packed;
+    Pylon::CPylonImage pylonImage;
+    Pylon::CInstantCamera camera(Pylon::CTlFactory::GetInstance().CreateFirstDevice() );
+    camera.Open();
+    Pylon::CIntegerParameter width     ( camera.GetNodeMap(), "Width");
+    Pylon::CIntegerParameter height    ( camera.GetNodeMap(), "Height");
+    Pylon::CEnumParameter pixelFormat  ( camera.GetNodeMap(), "PixelFormat");
+    Size frameSize= Size((int)width.GetValue(), (int)height.GetValue());
+    int codec = VideoWriter::fourcc('M', 'J', 'P', 'G');
+    width.TrySetValue(640, Pylon::IntegerValueCorrection_Nearest);
+    height.TrySetValue(480, Pylon::IntegerValueCorrection_Nearest);
+    Pylon::CPixelTypeMapper pixelTypeMapper( &pixelFormat);
+    Pylon::EPixelType pixelType = pixelTypeMapper.GetPylonPixelTypeFromNodeValue(pixelFormat.GetIntValue());
+    camera.StartGrabbing(Pylon::GrabStrategy_LatestImageOnly);
+    Pylon::CGrabResultPtr ptrGrabResult;
+    /*-----------------------------------------------------------
+    pylon video input here*/
+
 
     AStar::Vec2i worldSize;
     worldSize.x = rows;
@@ -171,7 +204,8 @@ int main(void){
         if(c==27) break;
     }
     // outputFile.close();
-    cap.release();
+    // cap.release();
+    Pylon::PylonTerminate();
     // video_out.release();
     destroyAllWindows();
     return 0;
