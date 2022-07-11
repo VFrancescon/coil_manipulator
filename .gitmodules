@@ -7,3 +7,6 @@
 [submodule "submodules/doxygen-awesome-css"]
 	path = submodules/doxygen-awesome-css
 	url = https://github.com/jothepro/doxygen-awesome-css.git
+[submodule "submodules/cl_tentacle"]
+	path = submodules/cl_tentacle
+	url = git@github.com:VFrancescon/cl_tentacle.git
