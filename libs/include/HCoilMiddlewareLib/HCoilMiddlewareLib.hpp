@@ -20,8 +20,6 @@
  * Best efforts have been made to keep this all void-returner so Multithreading is easy.
  * 
  * Note: CSV parsing is not included here. Currently it's contained in the driver code, it will probably get a class of its own eventually.
- * 
- * @todo Fix calibration factor. I believe the data being read is in mT, but we treat it as T. 
  */
 class MiddlewareLayer{
 
