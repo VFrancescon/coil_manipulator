@@ -41,28 +41,25 @@ int threshold_high = 255;
 int main(void){
     AStar::Generator generator;
 
-    // std::string lenghtCSV = "/home/vittorio/coil_manipulator/TentacleLenght.csv";
-
-    // std::ofstream outputFile(lenghtCSV, std::ios::out);
-    // outputFile << "Frame, Point Count\n";
-    // int prevCntLineSize = 0, frame_count = 0;
-
     /*Video input stuff starts here
     -----------------------------------------------------------
     */
-    // VideoCapture cap("/home/vittorio/coil_manipulator/src/opencv/BothRoutes_INOUT_V1.mp4");
-    // if(!cap.isOpened()){
-	//     std::cout << "Error opening video stream or file" << "\n";
-	//     return -1;
-    // }
+    VideoCapture cap("/home/vittorio/coil_manipulator/src/opencv/BothRoutes_INOUT_V1.mp4");
+    if(!cap.isOpened()){
+	    std::cout << "Error opening video stream or file" << "\n";
+	    return -1;
+    }
 
     Mat img, threshold_img, img_copy, skeleton, cnts_bin, masked_img;
     Mat grid;
-    // int rows,cols;
-    
-    // cap >> img;
-    // rows = img.rows * 3 / 8;
-    // cols = img.cols * 3 / 8; 
+    int rows,cols;
+    int max_lenght = 0, jointCount = 0;
+
+    cap >> img;
+    rows = img.rows * 3 / 8;
+    cols = img.cols * 3 / 8; 
+    //make image smaller 
+    resize(img, img, Size(rows, cols), INTER_LINEAR);
     /*
     -----------------------------------------------------------
     Video input stuff ends here*/
@@ -70,67 +67,64 @@ int main(void){
     
     /*pylon video input here
     -----------------------------------------------------------*/
-    Pylon::PylonInitialize();
-    Pylon::CImageFormatConverter formatConverter;
-    formatConverter.OutputPixelFormat = Pylon::PixelType_BGR8packed;
-    Pylon::CPylonImage pylonImage;
-    Pylon::CInstantCamera camera(Pylon::CTlFactory::GetInstance().CreateFirstDevice() );
-    camera.Open();
-    Pylon::CIntegerParameter width     ( camera.GetNodeMap(), "Width");
-    Pylon::CIntegerParameter height    ( camera.GetNodeMap(), "Height");
-    Pylon::CEnumParameter pixelFormat  ( camera.GetNodeMap(), "PixelFormat");
-    Size frameSize= Size((int)width.GetValue(), (int)height.GetValue());
-    int codec = VideoWriter::fourcc('M', 'J', 'P', 'G');
-    width.TrySetValue(640, Pylon::IntegerValueCorrection_Nearest);
-    height.TrySetValue(480, Pylon::IntegerValueCorrection_Nearest);
-    Pylon::CPixelTypeMapper pixelTypeMapper( &pixelFormat);
-    Pylon::EPixelType pixelType = pixelTypeMapper.GetPylonPixelTypeFromNodeValue(pixelFormat.GetIntValue());
-    camera.StartGrabbing(Pylon::GrabStrategy_LatestImageOnly);
-    Pylon::CGrabResultPtr ptrGrabResult;
+    // Pylon::PylonInitialize();
+    // Pylon::CImageFormatConverter formatConverter;
+    // formatConverter.OutputPixelFormat = Pylon::PixelType_BGR8packed;
+    // Pylon::CPylonImage pylonImage;
+    // Pylon::CInstantCamera camera(Pylon::CTlFactory::GetInstance().CreateFirstDevice() );
+    // camera.Open();
+    // Pylon::CIntegerParameter width     ( camera.GetNodeMap(), "Width");
+    // Pylon::CIntegerParameter height    ( camera.GetNodeMap(), "Height");
+    // Pylon::CEnumParameter pixelFormat  ( camera.GetNodeMap(), "PixelFormat");
+    // Size frameSize= Size((int)width.GetValue(), (int)height.GetValue());
+    // int codec = VideoWriter::fourcc('M', 'J', 'P', 'G');
+    // width.TrySetValue(640, Pylon::IntegerValueCorrection_Nearest);
+    // height.TrySetValue(480, Pylon::IntegerValueCorrection_Nearest);
+    // Pylon::CPixelTypeMapper pixelTypeMapper( &pixelFormat);
+    // Pylon::EPixelType pixelType = pixelTypeMapper.GetPylonPixelTypeFromNodeValue(pixelFormat.GetIntValue());
+    // camera.StartGrabbing(Pylon::GrabStrategy_LatestImageOnly);
+    // Pylon::CGrabResultPtr ptrGrabResult;
+    // camera.RetrieveResult(5000, ptrGrabResult, Pylon::TimeoutHandling_ThrowException);
+    // const uint8_t* preImageBuffer = (uint8_t*) ptrGrabResult->GetBuffer();
+    // formatConverter.Convert(pylonImage, ptrGrabResult);
+    // img = cv::Mat(ptrGrabResult->GetHeight(), ptrGrabResult->GetWidth(), CV_8UC3, (uint8_t *) pylonImage.GetBuffer());
     /*-----------------------------------------------------------
     pylon video input here*/
 
-    camera.RetrieveResult(5000, ptrGrabResult, Pylon::TimeoutHandling_ThrowException);
-    const uint8_t* preImageBuffer = (uint8_t*) ptrGrabResult->GetBuffer();
-    formatConverter.Convert(pylonImage, ptrGrabResult);
-    img = cv::Mat(ptrGrabResult->GetHeight(), ptrGrabResult->GetWidth(), CV_8UC3, (uint8_t *) pylonImage.GetBuffer());
-
-    AStar::Vec2i worldSize;
-    worldSize.x = img.rows;
-    worldSize.y = img.cols;
-    generator.setWorldSize(worldSize);
-    generator.setHeuristic(AStar::Heuristic::manhattan);
-    generator.setDiagonalMovement(true);
-    Point Goal(300,300);
-
-    //make image smaller 
-    // resize(img, img, Size(rows, cols), INTER_LINEAR);
+    
     // VideoWriter video_out("output.avi", CV_FOURCC('M', 'J', 'P', 'G'), 10, 
     //             Size(img.rows * 3 / 8, img.cols * 3 / 8));
     Mat intr_mask = Mat::zeros(img.size(), CV_8UC1);
-    intr_mask = IntroducerMask(img);
-
-    AStar::Vec2i origin, destination;
-    destination = Goal;
-    std::vector<Point> cvPath;
+    intr_mask = IntroducerMask(img);    
+    
+    // AStar::Vec2i worldSize;
+    // worldSize.x = img.rows;
+    // worldSize.y = img.cols;
+    // generator.setWorldSize(worldSize);
+    // generator.setHeuristic(AStar::Heuristic::manhattan);
+    // generator.setDiagonalMovement(true);
+    // Point Goal(300,300);
+    // AStar::Vec2i origin, destination;
+    // destination = Goal;
+    // std::vector<Point> cvPath;
     // std::cout << "image size: " << img.rows << " " << img.cols << "\n";
 
-    while(camera.IsGrabbing()){
+    // while(camera.IsGrabbing()){
+    while(true){
+        // camera.RetrieveResult(5000, ptrGrabResult, Pylon::TimeoutHandling_ThrowException);
+        // const uint8_t* pImageBuffer = (uint8_t*) ptrGrabResult->GetBuffer();
+        // formatConverter.Convert(pylonImage, ptrGrabResult);
+        // img = cv::Mat(ptrGrabResult->GetHeight(), ptrGrabResult->GetWidth(), CV_8UC3, (uint8_t *) pylonImage.GetBuffer());
 
-        camera.RetrieveResult(5000, ptrGrabResult, Pylon::TimeoutHandling_ThrowException);
-        const uint8_t* pImageBuffer = (uint8_t*) ptrGrabResult->GetBuffer();
-        formatConverter.Convert(pylonImage, ptrGrabResult);
-        img = cv::Mat(ptrGrabResult->GetHeight(), ptrGrabResult->GetWidth(), CV_8UC3, (uint8_t *) pylonImage.GetBuffer());
-
-        // cap >> img;
+        cap >> img;
 
         if(img.empty()) break;
-        // // sizes down from 1544x2048 to 579x774
-        // rows = img.rows * 3 / 8;
-        // cols = img.cols * 3 / 8;
+        // sizes down from 1544x2048 to 579x774
+        rows = img.rows * 3 / 8;
+        cols = img.cols * 3 / 8;
         
-        // //make image smaller 
-        // resize(img, img, Size(rows, cols), INTER_LINEAR);
+        //make image smaller 
+        resize(img, img, Size(rows, cols), INTER_LINEAR);
         
         /*flip image about y*/
         // flip(img, img, 1);
@@ -174,8 +168,8 @@ int main(void){
         std::vector<Point> cntLine;
         findNonZero(skeleton, cntLine);
         std::sort(cntLine.begin(), cntLine.end(), xWiseSort);
+
         
-        // ++frame_count;
         // if(prevCntLineSize != cntLine.size()) outputFile << frame_count << "," << cntLine.size() << "\n";
         // prevCntLineSize = cntLine.size();
 
@@ -199,10 +193,22 @@ int main(void){
         circle(img, endpoint, 4, Scalar(0,0,255), FILLED);
         // putText(img, "Endpoint", endpoint, FONT_HERSHEY_COMPLEX_SMALL, 1.0, Scalar(0,0,255)); 
         /*endpoint of the contour ends here*/
-        origin = endpoint;
-        auto asPath = generator.findPath(origin, destination);
-        cvPath = AStar::Vec2iToCvPointList(asPath);
-        polylines(img, cvPath, false, Scalar(0,0,0), 2);
+        // origin = endpoint;
+        // auto asPath = generator.findPath(origin, destination);
+        // cvPath = AStar::Vec2iToCvPointList(asPath);
+        // polylines(img, cvPath, false, Scalar(0,0,0), 2);
+
+
+        jointCount = (int) cntLine.size() / 100;
+        if(jointCount){
+            for(int i = 0; i < jointCount; i++){
+                circle(img, cntLine[100*(i)], 4, Scalar(255,0,0), FILLED);
+            }
+        }
+
+        max_lenght = max((int)cntLine.size(), max_lenght);
+
+
 
         //show the results
         imshow("Tip detection", img);
@@ -212,10 +218,12 @@ int main(void){
         if(c==27) break;
     }
     // outputFile.close();
-    // cap.release();
-    Pylon::PylonTerminate();
+    cap.release();
+    // Pylon::PylonTerminate();
     // video_out.release();
     destroyAllWindows();
+    
+    std::cout << "Max lenght is: " << max_lenght << "\n";
     return 0;
 }
 
