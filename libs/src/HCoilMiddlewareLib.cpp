@@ -101,9 +101,9 @@ void MiddlewareLayer::set3DVector(std::vector<float> I_X, std::vector<float> I_Y
 
         //starting timing here
         std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
-        std::thread thread_x1(&DXKDP_PSU::WriteCurrent, uniquePSU_X1.get(), abs(I_X[i])*cal_x, 0x01);
-        std::thread thread_y1(&DXKDP_PSU::WriteCurrent, uniquePSU_Y1.get(), abs(I_Y[i])*cal_y, 0x01);
-        std::thread thread_z1(&DXKDP_PSU::WriteCurrent, uniquePSU_Z1.get(), abs(I_Z[i])*cal_z, 0x01);
+        std::thread thread_x1(&DXKDP_PSU::WriteCurrent, uniquePSU_X1.get(), abs(I_X[i])/cal_x, 0x01);
+        std::thread thread_y1(&DXKDP_PSU::WriteCurrent, uniquePSU_Y1.get(), abs(I_Y[i])/cal_y, 0x01);
+        std::thread thread_z1(&DXKDP_PSU::WriteCurrent, uniquePSU_Z1.get(), abs(I_Z[i])/cal_z, 0x01);
         std::thread thread_te(&MiddlewareLayer::writeXField, this);
         std::thread introducer_thread(&LinearActuator::LinearExtend, uniqueLinAct.get());
         thread_x1.join();

@@ -27,7 +27,6 @@ add_executable( middleware_test "src/middleware_test.cpp")
 add_executable( tip_tracking "src/opencv/tip_tracking.cpp")
 add_executable( skeleton "src/opencv/skeleton_method.cpp")
 add_executable( thcal "src/opencv/thresholds_cal.cpp")
-add_executable( jul15 "src/Jul15Tests.cpp")
 target_link_libraries( PsuLibTest LINK_PUBLIC DxkdpLib )
 target_link_libraries( initial_test LINK_PUBLIC CppLinuxSerial )
 target_link_libraries( camera_test ${OpenCV_LIBS} ${Pylon_LIBRARIES} )
@@ -36,7 +35,6 @@ target_link_libraries( skeleton ${OpenCV_LIBS} a-star)
 target_link_libraries( thcal ${OpenCV_LIBS} ${Pylon_LIBRARIES})
 target_link_libraries( teslameter_test LINK_PUBLIC LakeshoreF71Lib )
 target_link_libraries( middleware_test LINK_PUBLIC HCoilMiddlewareLib )
-target_link_libraries( jul15 ${OpenCV_LIBS} ${Pylon_LIBRARIES} a-star HCoilMiddlewareLib)
 
 
 ## Two lines below allow libraries to be built.

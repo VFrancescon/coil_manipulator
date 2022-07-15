@@ -4,6 +4,8 @@
 #include <opencv2/video.hpp>
 #include <a-star/source/AStar.hpp>
 #include <fstream>
+#include <chrono>
+#include <unistd.h>
 
 using namespace cv;
 /**
@@ -37,7 +39,9 @@ Mat IntroducerMask(Mat src);
 
 int threshold_low = 60;
 int threshold_high = 255;
-
+const int target_frame_rate = 60;
+const int target_proc_period =  1 / (double )target_frame_rate * 10e6;
+int slowed_count = 0;
 int main(void){
     AStar::Generator generator;
 
@@ -111,6 +115,8 @@ int main(void){
 
     // while(camera.IsGrabbing()){
     while(true){
+        std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
+
         // camera.RetrieveResult(5000, ptrGrabResult, Pylon::TimeoutHandling_ThrowException);
         // const uint8_t* pImageBuffer = (uint8_t*) ptrGrabResult->GetBuffer();
         // formatConverter.Convert(pylonImage, ptrGrabResult);
@@ -214,8 +220,18 @@ int main(void){
         imshow("Tip detection", img);
         // video_out.write(img);
         
-        char c= (char)waitKey(10);
+        char c= (char)waitKey(1);
         if(c==27) break;
+        std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+        int duration_us = int(std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count());
+        if(duration_us < target_proc_period) {
+            int sleep_time = target_proc_period - duration_us;
+            double fps_count = 1 / double(duration_us) * 10e6;
+            std::cout << "Loop takes: " << duration_us << " us or: " << fps_count << "Hz\n"
+            << "Therefore going to sleep for " << sleep_time  <<"\n-----------\n";
+            usleep(sleep_time);
+        } else std::cout << "Not slowed down " << slowed_count++ << "\n";
+    
     }
     // outputFile.close();
     cap.release();
