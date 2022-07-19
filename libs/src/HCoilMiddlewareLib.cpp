@@ -14,7 +14,7 @@ MiddlewareLayer::MiddlewareLayer(){
 
     //sensors and actuators
     this->uniqueLinAct = std::make_unique<LinearActuator>("/dev/ttyUSB6");
-    this->uniqueT_Meter = std::make_unique<Teslameter>("/dev/ttyUSB7");
+    // this->uniqueT_Meter = std::make_unique<Teslameter>("/dev/ttyUSB7");
 
     this->initialSetup();
 }
@@ -35,8 +35,8 @@ MiddlewareLayer::MiddlewareLayer(std::string PSUX1_PORT, std::string PSUY1_PORT,
     this->uniquePSU_Z2 = std::make_unique<DXKDP_PSU>(PSUZ2_PORT, 0.1, 0.01);
 
     //sensors and actuators
-    this->uniqueLinAct = std::make_unique<LinearActuator>(TMETER_PORT);
-    this->uniqueT_Meter = std::make_unique<Teslameter>(LINACT_PORT);
+    this->uniqueLinAct = std::make_unique<LinearActuator>(LINACT_PORT);
+    // this->uniqueT_Meter = std::make_unique<Teslameter>(LINACT_PORT);
 
     this->initialSetup();
     
@@ -82,7 +82,6 @@ void MiddlewareLayer::initialSetup(){
     this->leftoverTimeFile << "Reading, Leftover time(us), Frequency\n";
 
     this->TurnOnSupply();
-
 }
 
 void MiddlewareLayer::set3DVector(std::vector<float> I_X, std::vector<float> I_Y, std::vector<float> I_Z){
@@ -104,12 +103,12 @@ void MiddlewareLayer::set3DVector(std::vector<float> I_X, std::vector<float> I_Y
         std::thread thread_x1(&DXKDP_PSU::WriteCurrent, uniquePSU_X1.get(), abs(I_X[i])/cal_x, 0x01);
         std::thread thread_y1(&DXKDP_PSU::WriteCurrent, uniquePSU_Y1.get(), abs(I_Y[i])/cal_y, 0x01);
         std::thread thread_z1(&DXKDP_PSU::WriteCurrent, uniquePSU_Z1.get(), abs(I_Z[i])/cal_z, 0x01);
-        std::thread thread_te(&MiddlewareLayer::writeXField, this);
+        // std::thread thread_te(&MiddlewareLayer::writeXField, this);
         std::thread introducer_thread(&LinearActuator::LinearExtend, uniqueLinAct.get());
         thread_x1.join();
         thread_y1.join();
         thread_z1.join();
-        thread_te.join();
+        // thread_te.join();
         introducer_thread.join();
 
         //ending timing here. Then calculating diffs and printing.
@@ -117,12 +116,30 @@ void MiddlewareLayer::set3DVector(std::vector<float> I_X, std::vector<float> I_Y
         int duration_us = int(std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count());
         int sleep_us = period_us - duration_us;
         
-        std::cout << "going to sleep for: " << sleep_us/1000 << "ms\n";
-        leftoverTimeFile << leftoverTime_count << "," << sleep_us << "," << 1/float(sleep_us)*1000000 << "\n";
-        usleep(sleep_us);
+        if(sleep_us > 0 ){
+            std::cout << "going to sleep for: " << sleep_us/1000 << "ms\n";
+            leftoverTimeFile << leftoverTime_count << "," << sleep_us << "," << 1/float(sleep_us)*1000000 << "\n";
+            usleep(sleep_us);
+        }
     }
 }
 
+void MiddlewareLayer::set3DField(float I_X, float I_Y, float I_Z){
+    std::thread th_x(&MiddlewareLayer::PolarityCheck, this, I_X, MiddlewareLayer::PSU_ENUM::X1);
+    std::thread th_y(&MiddlewareLayer::PolarityCheck, this, I_Y, MiddlewareLayer::PSU_ENUM::Y1);
+    std::thread th_z(&MiddlewareLayer::PolarityCheck, this, I_Z, MiddlewareLayer::PSU_ENUM::Z1);
+    th_x.join();
+    th_y.join();
+    th_z.join();
+
+    std::thread thread_x1(&DXKDP_PSU::WriteCurrent, uniquePSU_X1.get(), abs(I_X)/cal_x, 0x01);
+    std::thread thread_y1(&DXKDP_PSU::WriteCurrent, uniquePSU_Y1.get(), abs(I_Y)/cal_y, 0x01);
+    std::thread thread_z1(&DXKDP_PSU::WriteCurrent, uniquePSU_Z1.get(), abs(I_Z)/cal_z, 0x01);
+    thread_x1.join();
+    thread_y1.join();
+    thread_z1.join();    
+
+}
 
 void MiddlewareLayer::setX1Vector(std::vector<float> current_){
     this->stepper_count += current_.size();
@@ -131,10 +148,10 @@ void MiddlewareLayer::setX1Vector(std::vector<float> current_){
     {
         this->PolarityCheck(current_[i], MiddlewareLayer::PSU_ENUM::X1);
         std::thread thread_PSU(&DXKDP_PSU::WriteCurrent, uniquePSU_X1.get(), abs(current_[i])*cal_x, 0x01);
-        std::thread thread_te(&MiddlewareLayer::writeXField, this);
+        // std::thread thread_te(&MiddlewareLayer::writeXField, this);
         // std::thread thread_i(&LinearActuator::LinearExtend, &LinAct);
         thread_PSU.join();
-        thread_te.join();
+        // thread_te.join();
         // thread_i.join();
     }
 }
@@ -177,10 +194,10 @@ void MiddlewareLayer::setX2Vector(std::vector<float> current_){
     {
         this->PolarityCheck(current_[i], MiddlewareLayer::PSU_ENUM::X1);
         std::thread thread_PSU(&DXKDP_PSU::WriteCurrent, uniquePSU_X2.get(), abs(current_[i])*cal_x, 0x01);
-        std::thread thread_te(&MiddlewareLayer::writeXField, this);
+        // std::thread thread_te(&MiddlewareLayer::writeXField, this);
         // std::thread thread_i(&LinearActuator::LinearExtend, &LinAct);
         thread_PSU.join();
-        thread_te.join();
+        // thread_te.join();
         // thread_i.join();
     }
 }
@@ -257,13 +274,15 @@ void MiddlewareLayer::writeXField(){
 }
 
 MiddlewareLayer::~MiddlewareLayer(){
+    // std::cout << "Top of destructor";
     this->TurnOffSupply();
     this->outputFile.close();
     this->leftoverTimeFile.close();
     // std::cout << "Row count: " << this->row_count;
-    for(int i = 0; i < this->row_count; i++){
+    for(int i = 0; i < this->stepper_count; i++){
         this->uniqueLinAct->LinearContract();
-        std::cout << "i= " << i << "\n";
+        // std::cout << "i= " << i << "\n";
+        usleep(400000); //retract in intervals of 0.4s
     }
     this->uniqueLinAct->LinearStop();
     std::cout << "Shutting down\n";

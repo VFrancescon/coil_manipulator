@@ -33,7 +33,7 @@ private:
     
     int row_count = 1; //!< keeps track of how many rows have been printed to outputFile.
     int leftoverTime_count = 1; //!< keeps track of how many rows have been printed to outputFile
-    float frequency = 1.75; //!< frequency of the system.
+    float frequency = 1; //!< frequency of the system.
 
     int period_us = 1/frequency*1000000; //!< period in microseconds, derived from the frequency.
     
@@ -135,6 +135,15 @@ public:
      */
     void set3DVector(std::vector<float> I_X, std::vector<float> I_Y, std::vector<float> I_Z);
     
+    /**
+     * @brief Sets X, Y and Z fields by altering corresponding currents.
+     * 
+     * @param I_X desired X field
+     * @param I_Y desired Y field
+     * @param I_Z desired Z field
+     */
+    void set3DField(float I_X, float I_Y, float I_Z);
+
     /**
      * @brief Sets output current to X1
      * 

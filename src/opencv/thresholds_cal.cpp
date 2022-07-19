@@ -21,11 +21,11 @@ void on_low_H_thresh_trackbar(int, void*)
  printf("%d\n", g_slider);
 }
 
-Mat IntroducerMask(Mat src);
+// Mat IntroducerMask(Mat src);
 
 int main(int argc, char* argv[])
 {
-    VideoCapture cap("/home/vittorio/coil_manipulator/src/opencv/BothRoutes_INOUT_V1.mp4");
+    // VideoCapture cap("/home/vittorio/coil_manipulator/src/opencv/BothRoutes_INOUT_V1.mp4");
     namedWindow(window_capture_name);
     namedWindow(window_detection_name);
     createTrackbar("Low Thresh", window_detection_name, &g_slider, g_slider_max, on_low_H_thresh_trackbar);
@@ -35,31 +35,31 @@ int main(int argc, char* argv[])
     /*pylon video input here
     -----------------------------------------------------------
     */
-    // Pylon::PylonInitialize();
-    // Pylon::CImageFormatConverter formatConverter;
-    // formatConverter.OutputPixelFormat = Pylon::PixelType_BGR8packed;
-    // Pylon::CPylonImage pylonImage;
-    // Pylon::CInstantCamera camera(Pylon::CTlFactory::GetInstance().CreateFirstDevice() );
-    // camera.Open();
-    // Pylon::CIntegerParameter width     ( camera.GetNodeMap(), "Width");
-    // Pylon::CIntegerParameter height    ( camera.GetNodeMap(), "Height");
-    // Pylon::CEnumParameter pixelFormat  ( camera.GetNodeMap(), "PixelFormat");
-    // Size frameSize= Size((int)width.GetValue(), (int)height.GetValue());
-    // int codec = VideoWriter::fourcc('M', 'J', 'P', 'G');
-    // width.TrySetValue(640, Pylon::IntegerValueCorrection_Nearest);
-    // height.TrySetValue(480, Pylon::IntegerValueCorrection_Nearest);
-    // Pylon::CPixelTypeMapper pixelTypeMapper( &pixelFormat);
-    // Pylon::EPixelType pixelType = pixelTypeMapper.GetPylonPixelTypeFromNodeValue(pixelFormat.GetIntValue());
-    // camera.StartGrabbing(Pylon::GrabStrategy_LatestImageOnly);
-    // Pylon::CGrabResultPtr ptrGrabResult;
+    Pylon::PylonInitialize();
+    Pylon::CImageFormatConverter formatConverter;
+    formatConverter.OutputPixelFormat = Pylon::PixelType_BGR8packed;
+    Pylon::CPylonImage pylonImage;
+    Pylon::CInstantCamera camera(Pylon::CTlFactory::GetInstance().CreateFirstDevice() );
+    camera.Open();
+    Pylon::CIntegerParameter width     ( camera.GetNodeMap(), "Width");
+    Pylon::CIntegerParameter height    ( camera.GetNodeMap(), "Height");
+    Pylon::CEnumParameter pixelFormat  ( camera.GetNodeMap(), "PixelFormat");
+    Size frameSize= Size((int)width.GetValue(), (int)height.GetValue());
+    int codec = VideoWriter::fourcc('M', 'J', 'P', 'G');
+    width.TrySetValue(640, Pylon::IntegerValueCorrection_Nearest);
+    height.TrySetValue(480, Pylon::IntegerValueCorrection_Nearest);
+    Pylon::CPixelTypeMapper pixelTypeMapper( &pixelFormat);
+    Pylon::EPixelType pixelType = pixelTypeMapper.GetPylonPixelTypeFromNodeValue(pixelFormat.GetIntValue());
+    camera.StartGrabbing(Pylon::GrabStrategy_LatestImageOnly);
+    Pylon::CGrabResultPtr ptrGrabResult;
     /*-----------------------------------------------------------
     pylon video input here*/
 
-    cap >> frame;
-    int rows = frame.rows * 3 / 8;
-    int cols = frame.cols * 3 / 8; 
+    // cap >> frame;
+    // int rows = frame.rows * 3 / 8;
+    // int cols = frame.cols * 3 / 8; 
     //make image smaller 
-    resize(frame, frame, Size(rows, cols), INTER_LINEAR);
+    // resize(frame, frame, Size(rows, cols), INTER_LINEAR);
     
     /*
     Add streaming pylonImg to frame here
@@ -69,14 +69,14 @@ int main(int argc, char* argv[])
     // formatConverter.Convert(pylonImage, ptrGrabResult);
     // frame = cv::Mat(ptrGrabResult->GetHeight(), ptrGrabResult->GetWidth(), CV_8UC3, (uint8_t *) pylonImage.GetBuffer());
 
-    Mat introducer_mask = IntroducerMask(frame);
+    // Mat introducer_mask = IntroducerMask(frame);
 
-    // while (camera.IsGrabbing()) {
-    while(true){
-        // camera.RetrieveResult(5000, ptrGrabResult, Pylon::TimeoutHandling_ThrowException);
-        // const uint8_t* pImageBuffer = (uint8_t*) ptrGrabResult->GetBuffer();
-        // formatConverter.Convert(pylonImage, ptrGrabResult);
-        // frame = cv::Mat(ptrGrabResult->GetHeight(), ptrGrabResult->GetWidth(), CV_8UC3, (uint8_t *) pylonImage.GetBuffer());
+    while (camera.IsGrabbing()) {
+    // // while(true){
+        camera.RetrieveResult(5000, ptrGrabResult, Pylon::TimeoutHandling_ThrowException);
+        const uint8_t* pImageBuffer = (uint8_t*) ptrGrabResult->GetBuffer();
+        formatConverter.Convert(pylonImage, ptrGrabResult);
+        frame = cv::Mat(ptrGrabResult->GetHeight(), ptrGrabResult->GetWidth(), CV_8UC3, (uint8_t *) pylonImage.GetBuffer());
         // cap >> frame;
 
         
@@ -109,7 +109,7 @@ int main(int argc, char* argv[])
             break;
         }
         if (key == 'n' ) {
-            cap >> frame;
+            // cap >> frame;
             int rows = frame.rows * 3 / 8;
             int cols = frame.cols * 3 / 8;
             
@@ -117,9 +117,9 @@ int main(int argc, char* argv[])
             resize(frame, frame, Size(rows, cols), INTER_LINEAR);
         }
     }
-    // Pylon::PylonTerminate();
-    cap.release();
-    destroyAllWindows();
+    Pylon::PylonTerminate();
+    // cap.release();
+    // destroyAllWindows();
     return 0;
 }
 
@@ -145,7 +145,7 @@ Mat IntroducerMask(Mat src){
 
 
     std::vector<Point> corners;
-    goodFeaturesToTrack(src_GRAY, corners, 6, 0.01, 10);
+    cv::goodFeaturesToTrack(src_GRAY, corners, 6, 0.01, 10);
     Point Top1Corner(600,600), Top2Corner(600,600), BottomCorner(0,0);
     
     for(int i = 0; i < corners.size(); i++){
@@ -164,9 +164,9 @@ Mat IntroducerMask(Mat src){
 
     Rect rect(Top1Corner.x*0.95, Top1Corner.y-xWidth, xWidth*1.25, yWidth);
     // Rect rect(RectCenter, Size(xWidth, yWidth));
-    rectangle( src_GRAY, rect, Scalar(0), FILLED);
+    cv::rectangle( src_GRAY, rect, Scalar(0), FILLED);
 
-    bitwise_not(src_GRAY, src_GRAY);
+    cv::bitwise_not(src_GRAY, src_GRAY);
     return src_GRAY;
 
 }

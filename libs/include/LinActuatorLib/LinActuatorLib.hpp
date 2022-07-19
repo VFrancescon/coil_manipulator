@@ -30,8 +30,8 @@ private:
     void ActuatorSetup();
 
    
-    std::string Ext1mm = "1\0"; //!< Value to extend by 1mm .
-    std::string Ctr1mm = "2\0"; //!< Value to contract by 1mm.
+    std::string Ext1mm = "2\0"; //!< Value to extend by 1mm .
+    std::string Ctr1mm = "1\0"; //!< Value to contract by 1mm.
     std::string Shtdwn = "3\0"; //!< Value to shut down the system.
 
 

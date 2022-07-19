@@ -37,7 +37,7 @@ Mat continuityCheck(Mat src, int iterations=1);
  */
 Mat IntroducerMask(Mat src);
 
-int threshold_low = 60;
+int threshold_low = 189;
 int threshold_high = 255;
 const int target_frame_rate = 60;
 const int target_proc_period =  1 / (double )target_frame_rate * 10e6;
@@ -48,22 +48,22 @@ int main(void){
     /*Video input stuff starts here
     -----------------------------------------------------------
     */
-    VideoCapture cap("/home/vittorio/coil_manipulator/src/opencv/BothRoutes_INOUT_V1.mp4");
-    if(!cap.isOpened()){
-	    std::cout << "Error opening video stream or file" << "\n";
-	    return -1;
-    }
+    // VideoCapture cap("/home/vittorio/coil_manipulator/src/opencv/BothRoutes_INOUT_V1.mp4");
+    // if(!cap.isOpened()){
+	//     std::cout << "Error opening video stream or file" << "\n";
+	//     return -1;
+    // }
 
     Mat img, threshold_img, img_copy, skeleton, cnts_bin, masked_img;
     Mat grid;
     int rows,cols;
     int max_lenght = 0, jointCount = 0;
 
-    cap >> img;
-    rows = img.rows * 3 / 8;
-    cols = img.cols * 3 / 8; 
+    // cap >> img;
+    // rows = img.rows * 3 / 8;
+    // cols = img.cols * 3 / 8; 
     //make image smaller 
-    resize(img, img, Size(rows, cols), INTER_LINEAR);
+    // resize(img, img, Size(rows, cols), INTER_LINEAR);
     /*
     -----------------------------------------------------------
     Video input stuff ends here*/
@@ -71,27 +71,27 @@ int main(void){
     
     /*pylon video input here
     -----------------------------------------------------------*/
-    // Pylon::PylonInitialize();
-    // Pylon::CImageFormatConverter formatConverter;
-    // formatConverter.OutputPixelFormat = Pylon::PixelType_BGR8packed;
-    // Pylon::CPylonImage pylonImage;
-    // Pylon::CInstantCamera camera(Pylon::CTlFactory::GetInstance().CreateFirstDevice() );
-    // camera.Open();
-    // Pylon::CIntegerParameter width     ( camera.GetNodeMap(), "Width");
-    // Pylon::CIntegerParameter height    ( camera.GetNodeMap(), "Height");
-    // Pylon::CEnumParameter pixelFormat  ( camera.GetNodeMap(), "PixelFormat");
-    // Size frameSize= Size((int)width.GetValue(), (int)height.GetValue());
-    // int codec = VideoWriter::fourcc('M', 'J', 'P', 'G');
-    // width.TrySetValue(640, Pylon::IntegerValueCorrection_Nearest);
-    // height.TrySetValue(480, Pylon::IntegerValueCorrection_Nearest);
-    // Pylon::CPixelTypeMapper pixelTypeMapper( &pixelFormat);
-    // Pylon::EPixelType pixelType = pixelTypeMapper.GetPylonPixelTypeFromNodeValue(pixelFormat.GetIntValue());
-    // camera.StartGrabbing(Pylon::GrabStrategy_LatestImageOnly);
-    // Pylon::CGrabResultPtr ptrGrabResult;
-    // camera.RetrieveResult(5000, ptrGrabResult, Pylon::TimeoutHandling_ThrowException);
-    // const uint8_t* preImageBuffer = (uint8_t*) ptrGrabResult->GetBuffer();
-    // formatConverter.Convert(pylonImage, ptrGrabResult);
-    // img = cv::Mat(ptrGrabResult->GetHeight(), ptrGrabResult->GetWidth(), CV_8UC3, (uint8_t *) pylonImage.GetBuffer());
+    Pylon::PylonInitialize();
+    Pylon::CImageFormatConverter formatConverter;
+    formatConverter.OutputPixelFormat = Pylon::PixelType_BGR8packed;
+    Pylon::CPylonImage pylonImage;
+    Pylon::CInstantCamera camera(Pylon::CTlFactory::GetInstance().CreateFirstDevice() );
+    camera.Open();
+    Pylon::CIntegerParameter width     ( camera.GetNodeMap(), "Width");
+    Pylon::CIntegerParameter height    ( camera.GetNodeMap(), "Height");
+    Pylon::CEnumParameter pixelFormat  ( camera.GetNodeMap(), "PixelFormat");
+    Size frameSize= Size((int)width.GetValue(), (int)height.GetValue());
+    int codec = VideoWriter::fourcc('M', 'J', 'P', 'G');
+    width.TrySetValue(640, Pylon::IntegerValueCorrection_Nearest);
+    height.TrySetValue(480, Pylon::IntegerValueCorrection_Nearest);
+    Pylon::CPixelTypeMapper pixelTypeMapper( &pixelFormat);
+    Pylon::EPixelType pixelType = pixelTypeMapper.GetPylonPixelTypeFromNodeValue(pixelFormat.GetIntValue());
+    camera.StartGrabbing(Pylon::GrabStrategy_LatestImageOnly);
+    Pylon::CGrabResultPtr ptrGrabResult;
+    camera.RetrieveResult(5000, ptrGrabResult, Pylon::TimeoutHandling_ThrowException);
+    const uint8_t* preImageBuffer = (uint8_t*) ptrGrabResult->GetBuffer();
+    formatConverter.Convert(pylonImage, ptrGrabResult);
+    img = cv::Mat(ptrGrabResult->GetHeight(), ptrGrabResult->GetWidth(), CV_8UC3, (uint8_t *) pylonImage.GetBuffer());
     /*-----------------------------------------------------------
     pylon video input here*/
 
@@ -117,20 +117,20 @@ int main(void){
     while(true){
         std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
 
-        // camera.RetrieveResult(5000, ptrGrabResult, Pylon::TimeoutHandling_ThrowException);
-        // const uint8_t* pImageBuffer = (uint8_t*) ptrGrabResult->GetBuffer();
-        // formatConverter.Convert(pylonImage, ptrGrabResult);
-        // img = cv::Mat(ptrGrabResult->GetHeight(), ptrGrabResult->GetWidth(), CV_8UC3, (uint8_t *) pylonImage.GetBuffer());
+        camera.RetrieveResult(5000, ptrGrabResult, Pylon::TimeoutHandling_ThrowException);
+        const uint8_t* pImageBuffer = (uint8_t*) ptrGrabResult->GetBuffer();
+        formatConverter.Convert(pylonImage, ptrGrabResult);
+        img = cv::Mat(ptrGrabResult->GetHeight(), ptrGrabResult->GetWidth(), CV_8UC3, (uint8_t *) pylonImage.GetBuffer());
 
-        cap >> img;
+        // cap >> img;
 
-        if(img.empty()) break;
+        // if(img.empty()) break;
         // sizes down from 1544x2048 to 579x774
-        rows = img.rows * 3 / 8;
-        cols = img.cols * 3 / 8;
+        // rows = img.rows * 3 / 8;
+        // cols = img.cols * 3 / 8;
         
         //make image smaller 
-        resize(img, img, Size(rows, cols), INTER_LINEAR);
+        // resize(img, img, Size(rows, cols), INTER_LINEAR);
         
         /*flip image about y*/
         // flip(img, img, 1);
@@ -205,10 +205,10 @@ int main(void){
         // polylines(img, cvPath, false, Scalar(0,0,0), 2);
 
 
-        jointCount = (int) cntLine.size() / 100;
+        jointCount = (int) cntLine.size() / 150;
         if(jointCount){
             for(int i = 0; i < jointCount; i++){
-                circle(img, cntLine[100*(i)], 4, Scalar(255,0,0), FILLED);
+                circle(img, cntLine[150*(i)], 4, Scalar(255,0,0), FILLED);
             }
         }
 
@@ -218,24 +218,25 @@ int main(void){
 
         //show the results
         imshow("Tip detection", img);
+        // imshow("Masked", intr_mask);
         // video_out.write(img);
         
         char c= (char)waitKey(1);
         if(c==27) break;
-        std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
-        int duration_us = int(std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count());
-        if(duration_us < target_proc_period) {
-            int sleep_time = target_proc_period - duration_us;
-            double fps_count = 1 / double(duration_us) * 10e6;
-            std::cout << "Loop takes: " << duration_us << " us or: " << fps_count << "Hz\n"
-            << "Therefore going to sleep for " << sleep_time  <<"\n-----------\n";
-            usleep(sleep_time);
-        } else std::cout << "Not slowed down " << slowed_count++ << "\n";
+        // std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+        // int duration_us = int(std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count());
+        // if(duration_us < target_proc_period) {
+        //     int sleep_time = target_proc_period - duration_us;
+        //     double fps_count = 1 / double(duration_us) * 10e6;
+        //     std::cout << "Loop takes: " << duration_us << " us or: " << fps_count << "Hz\n"
+        //     << "Therefore going to sleep for " << sleep_time  <<"\n-----------\n";
+        //     usleep(sleep_time);
+        // } else std::cout << "Not slowed down " << slowed_count++ << "\n";
     
     }
     // outputFile.close();
-    cap.release();
-    // Pylon::PylonTerminate();
+    // cap.release();
+    Pylon::PylonTerminate();
     // video_out.release();
     destroyAllWindows();
     
@@ -254,30 +255,30 @@ Mat IntroducerMask(Mat src){
     blur(src_GRAY, src_GRAY, Size(5,5));
     threshold(src_GRAY, src_GRAY, threshold_low, threshold_high, THRESH_BINARY_INV); 
     
-    element = getStructuringElement(MORPH_DILATE, Size(3,3), Point(1,1) );
+    element = getStructuringElement(MORPH_DILATE, Size(7,7) );
     dilate(src_GRAY, src_GRAY, element);
     
-    std::vector<Point> corners;
-    goodFeaturesToTrack(src_GRAY, corners, 6, 0.01, 10);
-    Point Top1Corner(600,600), Top2Corner(600,600), BottomCorner(0,0);
+    // std::vector<Point> corners;
+    // goodFeaturesToTrack(src_GRAY, corners, 6, 0.01, 10);
+    // Point Top1Corner(600,600), Top2Corner(600,600), BottomCorner(0,0);
     
-    for(int i = 0; i < corners.size(); i++){
-        if(Top1Corner.y >= corners[i].y) {
-            Top2Corner = Top1Corner;
-            Top1Corner = corners[i];
-        }
-        if(BottomCorner.y < corners[i].y) BottomCorner = corners[i]; 
-    }
+    // for(int i = 0; i < corners.size(); i++){
+    //     if(Top1Corner.y >= corners[i].y) {
+    //         Top2Corner = Top1Corner;
+    //         Top1Corner = corners[i];
+    //     }
+    //     if(BottomCorner.y < corners[i].y) BottomCorner = corners[i]; 
+    // }
     // std::cout << "Top Corners at: " << Top1Corner << " and " << Top2Corner << "\n";
     
-    int xCenter = std::min(Top1Corner.x, Top2Corner.x);
-    int yCenter = std::min(Top1Corner.y, Top2Corner.y);
-    int xWidth = abs( Top2Corner.x - Top1Corner.x);
-    int yWidth = xWidth*2;
+    // int xCenter = std::min(Top1Corner.x, Top2Corner.x);
+    // int yCenter = std::min(Top1Corner.y, Top2Corner.y);
+    // int xWidth = abs( Top2Corner.x - Top1Corner.x);
+    // int yWidth = xWidth*2;
 
-    Rect rect(Top1Corner.x*0.95, Top1Corner.y-xWidth, xWidth*1.25, yWidth);
+    // Rect rect(Top1Corner.x*0.95, Top1Corner.y-xWidth, xWidth*1.25, yWidth);
     // Rect rect(RectCenter, Size(xWidth, yWidth));
-    rectangle( src_GRAY, rect, Scalar(0), FILLED);
+    // rectangle( src_GRAY, rect, Scalar(0), FILLED);
 
     bitwise_not(src_GRAY, src_GRAY);
 
@@ -286,7 +287,7 @@ Mat IntroducerMask(Mat src){
 }
 
 bool xWiseSort(Point lhs, Point rhs){
-    return (lhs.x < rhs.x);
+    return (lhs.x > rhs.x);
 }
 
 
