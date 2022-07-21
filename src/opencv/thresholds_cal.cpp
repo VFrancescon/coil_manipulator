@@ -87,6 +87,12 @@ int main(int argc, char* argv[])
         {
             break;
         }
+        
+        int rows = frame.rows / 2;
+        int cols = frame.cols * 3 / 8; 
+        // make image smaller 
+        resize(frame, frame, Size(rows, cols), INTER_LINEAR);
+        
         cvtColor(frame, frame_BGR, COLOR_BGR2GRAY);
         blur(frame_BGR, frame_BGR, Size(5,5));
         threshold(frame_BGR, frame_threshold, g_slider, 255, THRESH_BINARY_INV);
