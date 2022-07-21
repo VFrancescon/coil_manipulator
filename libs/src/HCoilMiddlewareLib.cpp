@@ -4,13 +4,13 @@ MiddlewareLayer::MiddlewareLayer(){
 
     // <X/Y/Z>1 PSUs
     this->uniquePSU_X1 = std::make_unique<DXKDP_PSU>("/dev/ttyUSB0", 0.1, 0.01);
-    this->uniquePSU_Y1 = std::make_unique<DXKDP_PSU>("/dev/ttyUSB2", 0.1, 0.01);
-    this->uniquePSU_Z1 = std::make_unique<DXKDP_PSU>("/dev/ttyUSB4", 0.1, 0.01);
+    this->uniquePSU_Y1 = std::make_unique<DXKDP_PSU>("/dev/ttyUSB2", 0.01, 0.01);
+    this->uniquePSU_Z1 = std::make_unique<DXKDP_PSU>("/dev/ttyUSB4", 0.01, 0.01);
     
     // <X/Y/Z>1 PSUs
     this->uniquePSU_X2 = std::make_unique<DXKDP_PSU>("/dev/ttyUSB1", 0.1, 0.01);
-    this->uniquePSU_Y2 = std::make_unique<DXKDP_PSU>("/dev/ttyUSB3", 0.1, 0.01);
-    this->uniquePSU_Z2 = std::make_unique<DXKDP_PSU>("/dev/ttyUSB5", 0.1, 0.01);
+    this->uniquePSU_Y2 = std::make_unique<DXKDP_PSU>("/dev/ttyUSB3", 0.01, 0.01);
+    this->uniquePSU_Z2 = std::make_unique<DXKDP_PSU>("/dev/ttyUSB5", 0.01, 0.01);
 
     //sensors and actuators
     this->uniqueLinAct = std::make_unique<LinearActuator>("/dev/ttyUSB6");
@@ -75,11 +75,11 @@ void MiddlewareLayer::initialSetup(){
     thread_x1.join();
     thread_y1.join();
     thread_z1.join();
-    this->outputFile.open(filename, std::ios::out);
-    this->outputFile << "Reading, Bx\n";
+    // this->outputFile.open(filename, std::ios::out);
+    // this->outputFile << "Reading, Bx\n";
 
-    this->leftoverTimeFile.open("../leftovertime.csv", std::ios::out);
-    this->leftoverTimeFile << "Reading, Leftover time(us), Frequency\n";
+    // this->leftoverTimeFile.open("../leftovertime.csv", std::ios::out);
+    // this->leftoverTimeFile << "Reading, Leftover time(us), Frequency\n";
 
     this->TurnOnSupply();
 }
@@ -117,8 +117,8 @@ void MiddlewareLayer::set3DVector(std::vector<float> I_X, std::vector<float> I_Y
         int sleep_us = period_us - duration_us;
         
         if(sleep_us > 0 ){
-            std::cout << "going to sleep for: " << sleep_us/1000 << "ms\n";
-            leftoverTimeFile << leftoverTime_count << "," << sleep_us << "," << 1/float(sleep_us)*1000000 << "\n";
+            // std::cout << "going to sleep for: " << sleep_us/1000 << "ms\n";
+            // leftoverTimeFile << leftoverTime_count << "," << sleep_us << "," << 1/float(sleep_us)*1000000 << "\n";
             usleep(sleep_us);
         }
     }
@@ -276,7 +276,7 @@ void MiddlewareLayer::writeXField(){
 MiddlewareLayer::~MiddlewareLayer(){
     // std::cout << "Top of destructor";
     this->TurnOffSupply();
-    this->outputFile.close();
+    // this->outputFile.close();
     this->leftoverTimeFile.close();
     // std::cout << "Row count: " << this->row_count;
     for(int i = 0; i < this->stepper_count; i++){
