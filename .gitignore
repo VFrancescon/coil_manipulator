@@ -13,3 +13,4 @@ frontend_folder/coil_frontend/Makefile
 leftovertime*
 src/opencv/*.mp4
 TentacleLenght.csv
+*.avi

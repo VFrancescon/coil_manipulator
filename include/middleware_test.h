@@ -2,7 +2,7 @@
 #include <sstream>
 #include <fstream>
 #include <string>
-
+#include <algorithm>
 std::vector<std::string> row;
 std::vector<float> bx, by, bz;
 

@@ -36,6 +36,12 @@ int main(int argc, char* argv[]){
         }
     }
     std::cout << "Size of input: " << bx.size() << "\n";
+    
+    std::vector<float> bxINV = bx, byINV = by, bzINV = bz;
+    std::reverse(bxINV.begin(), bxINV.end());
+    std::reverse(byINV.begin(), byINV.end());
+    std::reverse(bzINV.begin(), bzINV.end());
+
     // MiddlewareLayer mid("/dev/ttyUSB2","/dev/ttyUSB3", "/dev/ttyUSB1", "/dev/ttyUSB4", "/dev/ttyUSB0");
     MiddlewareLayer mid;
 
@@ -48,7 +54,7 @@ int main(int argc, char* argv[]){
     std::cout << "Inserting\n";
     mid.set3DVectorIN(bx, by, bz);
     std::cout << "Retracting\n";
-    mid.set3DVectorOUT(bx, by, bz);
+    mid.set3DVectorOUT(bxINV, byINV, bzINV);
     
 
     //std::cout << "Field in X direction at the end of writing loop: " << mid.getXField();

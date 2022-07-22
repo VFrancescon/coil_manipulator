@@ -37,11 +37,12 @@ Mat continuityCheck(Mat src, int iterations=1);
  */
 Mat IntroducerMask(Mat src);
 
-int threshold_low = 49;
+int threshold_low = 29;
 int threshold_high = 255;
 const int target_frame_rate = 60;
 const int target_proc_period =  1 / (double )target_frame_rate * 10e6;
 int slowed_count = 0;
+std::string home_path = "/home/vittorio/";
 int main(void){
     AStar::Generator generator;
 
@@ -96,8 +97,10 @@ int main(void){
     pylon video input here*/
 
     
-    // VideoWriter video_out("output.avi", CV_FOURCC('M', 'J', 'P', 'G'), 10, 
-    //             Size(img.rows * 3 / 8, img.cols * 3 / 8));
+    VideoWriter video_out(home_path + "coil_manipulator/output.avi", CV_FOURCC('M', 'J', 'P', 'G'), 10, 
+                Size(img.rows / 2, img.cols * 3 / 8));
+
+    //resizing the image for faster processing
     rows = img.rows / 2;
     cols = img.cols * 3 / 8; 
     resize(img, img, Size(rows, cols), INTER_LINEAR);
@@ -118,8 +121,8 @@ int main(void){
     // std::vector<Point> cvPath;
     // std::cout << "image size: " << img.rows << " " << img.cols << "\n";
 
-    // while(camera.IsGrabbing()){
-    while(true){
+    while(camera.IsGrabbing()){
+    // while(true){
         std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
 
         camera.RetrieveResult(5000, ptrGrabResult, Pylon::TimeoutHandling_ThrowException);
@@ -227,7 +230,7 @@ int main(void){
         //show the results
         imshow("Tip detection", img);
         // imshow("Masked", intr_mask);
-        // video_out.write(img);
+        video_out.write(img);
         
         char c= (char)waitKey(1);
         if(c==27) break;
@@ -245,11 +248,10 @@ int main(void){
     // outputFile.close();
     // cap.release();
     Pylon::PylonTerminate();
-    // video_out.release();
+    video_out.release();
     destroyAllWindows();
-    
-    std::cout << "Max lenght is: " << max_lenght << "\n";
     return 0;
+    
 }
 
 Mat IntroducerMask(Mat src){

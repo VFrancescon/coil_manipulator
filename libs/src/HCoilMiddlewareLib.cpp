@@ -157,11 +157,13 @@ void MiddlewareLayer::set3DVectorIN(std::vector<float> I_X, std::vector<float> I
         int sleep_us = period_us - duration_us;
         
         if(sleep_us > 0 ){
-            // std::cout << "going to sleep for: " << sleep_us/1000 << "ms\n";
+            // std::cout << "IN.going to sleep for: " << sleep_us/1000 << "ms\n";
             // leftoverTimeFile << leftoverTime_count << "," << sleep_us << "," << 1/float(sleep_us)*1000000 << "\n";
             usleep(sleep_us);
+
         }
     }
+    std::cout << "IN. Reached the end of CSV\n";
 }
 
 void MiddlewareLayer::set3DVectorOUT(std::vector<float> I_X, std::vector<float> I_Y, std::vector<float> I_Z){
@@ -169,6 +171,8 @@ void MiddlewareLayer::set3DVectorOUT(std::vector<float> I_X, std::vector<float> 
     //setting how much the stepper motor will be extended by at the end of the function.
     //this is used in the destructor to retract the tentacle back.
     this->stepper_count -= I_X.size();
+    
+    std::cout << "Just before for loop\n";
     for(int i = 0; i < I_X.size(); i++){
 
         std::thread th_x(&MiddlewareLayer::PolarityCheck, this, I_X[i], MiddlewareLayer::PSU_ENUM::X1);
@@ -197,11 +201,12 @@ void MiddlewareLayer::set3DVectorOUT(std::vector<float> I_X, std::vector<float> 
         int sleep_us = period_us - duration_us;
         
         if(sleep_us > 0 ){
-            // std::cout << "going to sleep for: " << sleep_us/1000 << "ms\n";
+            std::cout << "OUT.going to sleep for: " << sleep_us/1000 << "ms\n";
             // leftoverTimeFile << leftoverTime_count << "," << sleep_us << "," << 1/float(sleep_us)*1000000 << "\n";
             usleep(sleep_us);
         }
     }
+    std::cout << "OUT. Reached the end of CSV\n";
 }
 
 void MiddlewareLayer::set3DField(float I_X, float I_Y, float I_Z){
