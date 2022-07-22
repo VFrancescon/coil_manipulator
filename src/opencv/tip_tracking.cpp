@@ -37,7 +37,7 @@ Mat continuityCheck(Mat src, int iterations=1);
  */
 Mat IntroducerMask(Mat src);
 
-int threshold_low = 29;
+int threshold_low = 20;
 int threshold_high = 255;
 const int target_frame_rate = 60;
 const int target_proc_period =  1 / (double )target_frame_rate * 10e6;

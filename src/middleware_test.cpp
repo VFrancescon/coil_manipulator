@@ -23,9 +23,9 @@ int main(int argc, char* argv[]){
                 bx.push_back(std::stof(word));
             }
             if(counter == 7) {
-                by.push_back(std::stof(word));
-                by.push_back(std::stof(word));
-                by.push_back(std::stof(word));}
+                by.push_back(std::stof(word) * -4);
+                by.push_back(std::stof(word) * -4);
+                by.push_back(std::stof(word) * -4);}
             
             if(counter == 8) {
                 bz.push_back(std::stof(word));
@@ -41,6 +41,11 @@ int main(int argc, char* argv[]){
     std::reverse(bxINV.begin(), bxINV.end());
     std::reverse(byINV.begin(), byINV.end());
     std::reverse(bzINV.begin(), bzINV.end());
+
+
+    for(int i = 0; i < bx.size(); i++){
+        std::cout << "Bx: " << bx[i] << " By: " << by[i] << " Bz: " << bz[i] <<"\n";    
+    }
 
     // MiddlewareLayer mid("/dev/ttyUSB2","/dev/ttyUSB3", "/dev/ttyUSB1", "/dev/ttyUSB4", "/dev/ttyUSB0");
     MiddlewareLayer mid;

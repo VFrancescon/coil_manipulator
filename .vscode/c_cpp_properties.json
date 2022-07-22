@@ -5,7 +5,9 @@
             "includePath": [
                 "${workspaceFolder}/**",
                 "/opt/pylon",
-                "/opt/pylon/include"
+                "/opt/pylon/include",
+                "${workspaceFolder}",
+                "${workspaceFolder}/submodules/"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/gcc",
