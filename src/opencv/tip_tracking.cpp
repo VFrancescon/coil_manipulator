@@ -37,7 +37,7 @@ Mat continuityCheck(Mat src, int iterations=1);
  */
 Mat IntroducerMask(Mat src);
 
-int threshold_low = 75;
+int threshold_low = 49;
 int threshold_high = 255;
 const int target_frame_rate = 60;
 const int target_proc_period =  1 / (double )target_frame_rate * 10e6;
@@ -56,8 +56,8 @@ int main(void){
 
     Mat img, threshold_img, img_copy, skeleton, cnts_bin, masked_img;
     Mat grid;
-    int rows,cols;
     int max_lenght = 0, jointCount = 0;
+    int rows, cols;
 
     // cap >> img;
     // rows = img.rows * 3 / 8;
@@ -82,8 +82,8 @@ int main(void){
     Pylon::CEnumParameter pixelFormat  ( camera.GetNodeMap(), "PixelFormat");
     Size frameSize= Size((int)width.GetValue(), (int)height.GetValue());
     int codec = VideoWriter::fourcc('M', 'J', 'P', 'G');
-    width.TrySetValue(640, Pylon::IntegerValueCorrection_Nearest);
-    height.TrySetValue(480, Pylon::IntegerValueCorrection_Nearest);
+    width.TrySetValue(640*3, Pylon::IntegerValueCorrection_Nearest);
+    height.TrySetValue(480*3, Pylon::IntegerValueCorrection_Nearest);
     Pylon::CPixelTypeMapper pixelTypeMapper( &pixelFormat);
     Pylon::EPixelType pixelType = pixelTypeMapper.GetPylonPixelTypeFromNodeValue(pixelFormat.GetIntValue());
     camera.StartGrabbing(Pylon::GrabStrategy_LatestImageOnly);
@@ -98,6 +98,11 @@ int main(void){
     
     // VideoWriter video_out("output.avi", CV_FOURCC('M', 'J', 'P', 'G'), 10, 
     //             Size(img.rows * 3 / 8, img.cols * 3 / 8));
+    rows = img.rows / 2;
+    cols = img.cols * 3 / 8; 
+    resize(img, img, Size(rows, cols), INTER_LINEAR);
+
+
     Mat intr_mask = Mat::zeros(img.size(), CV_8UC1);
     intr_mask = IntroducerMask(img);    
     
@@ -123,14 +128,17 @@ int main(void){
         img = cv::Mat(ptrGrabResult->GetHeight(), ptrGrabResult->GetWidth(), CV_8UC3, (uint8_t *) pylonImage.GetBuffer());
 
         // cap >> img;
-
+        if(img.empty())
+        {
+            break;
+        }
         // if(img.empty()) break;
         // sizes down from 1544x2048 to 579x774
-        // rows = img.rows * 3 / 8;
-        // cols = img.cols * 3 / 8;
+        rows = img.rows / 2;
+        cols = img.cols * 3 / 8;
         
         //make image smaller 
-        // resize(img, img, Size(rows, cols), INTER_LINEAR);
+        resize(img, img, Size(rows, cols), INTER_LINEAR);
         
         /*flip image about y*/
         // flip(img, img, 1);
@@ -287,7 +295,7 @@ Mat IntroducerMask(Mat src){
 }
 
 bool xWiseSort(Point lhs, Point rhs){
-    return (lhs.x > rhs.x);
+    return (lhs.x < rhs.x);
 }
 
 

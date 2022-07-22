@@ -17,12 +17,25 @@ int main(int argc, char* argv[]){
         // std::cout << line << "\n";
         while(std::getline(sstr, word, ',')){
 
-            if(counter == 6) bx.push_back(std::stof(word));
-            if(counter == 7) by.push_back(std::stof(word));
-            if(counter == 8) bz.push_back(std::stof(word));
+            if(counter == 6) {
+                bx.push_back(std::stof(word));
+                bx.push_back(std::stof(word));
+                bx.push_back(std::stof(word));
+            }
+            if(counter == 7) {
+                by.push_back(std::stof(word));
+                by.push_back(std::stof(word));
+                by.push_back(std::stof(word));}
+            
+            if(counter == 8) {
+                bz.push_back(std::stof(word));
+                bz.push_back(std::stof(word));
+                bz.push_back(std::stof(word));
+            }
             counter++;
         }
     }
+    std::cout << "Size of input: " << bx.size() << "\n";
     // MiddlewareLayer mid("/dev/ttyUSB2","/dev/ttyUSB3", "/dev/ttyUSB1", "/dev/ttyUSB4", "/dev/ttyUSB0");
     MiddlewareLayer mid;
 
@@ -31,7 +44,12 @@ int main(int argc, char* argv[]){
     std::cin.get();
     
     // std::thread th1(&MiddlewareLayer::set3DVector, &mid, bx, by, bz);
-    mid.set3DVector(bx, by, bz);
     
+    std::cout << "Inserting\n";
+    mid.set3DVectorIN(bx, by, bz);
+    std::cout << "Retracting\n";
+    mid.set3DVectorOUT(bx, by, bz);
+    
+
     //std::cout << "Field in X direction at the end of writing loop: " << mid.getXField();
 }

@@ -25,7 +25,7 @@ class MiddlewareLayer{
 
 private:
 
-
+    bool PositivePolarity;
     int stepper_count = 0; //!< keeps track of how many extensions/retractions happened to the stepper motor.
     
     std::ofstream outputFile; //!< Output file object
@@ -33,7 +33,7 @@ private:
     
     int row_count = 1; //!< keeps track of how many rows have been printed to outputFile.
     int leftoverTime_count = 1; //!< keeps track of how many rows have been printed to outputFile
-    float frequency = 1; //!< frequency of the system.
+    float frequency = 2.5; //!< frequency of the system.
 
     int period_us = 1/frequency*1000000; //!< period in microseconds, derived from the frequency.
     
@@ -134,6 +134,24 @@ public:
      * @param I_Z Vector containing all desired Z fields
      */
     void set3DVector(std::vector<float> I_X, std::vector<float> I_Y, std::vector<float> I_Z);
+
+    /**
+     * @brief Checks polarity required for each input. Sets current accordingly. Stepper Motor extending
+     * 
+     * @param I_X Vector containing all desired X fields
+     * @param I_Y Vector containing all desired Y fields
+     * @param I_Z Vector containing all desired Z fields
+     */
+    void set3DVectorIN(std::vector<float> I_X, std::vector<float> I_Y, std::vector<float> I_Z);
+
+    /**
+     * @brief Checks polarity required for each input. Sets current accordingly. Stepper Motor retracting
+     * 
+     * @param I_X Vector containing all desired X fields
+     * @param I_Y Vector containing all desired Y fields
+     * @param I_Z Vector containing all desired Z fields
+     */
+    void set3DVectorOUT(std::vector<float> I_X, std::vector<float> I_Y, std::vector<float> I_Z);
     
     /**
      * @brief Sets X, Y and Z fields by altering corresponding currents.
