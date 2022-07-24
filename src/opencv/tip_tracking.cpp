@@ -97,7 +97,7 @@ int main(void){
     pylon video input here*/
 
     
-    VideoWriter video_out(home_path + "coil_manipulator/output.avi", CV_FOURCC('M', 'J', 'P', 'G'), 10, 
+    VideoWriter video_out(home_path + "coil_manipulator/output.avi", VideoWriter::fourcc('M', 'J', 'P', 'G'), 10, 
                 Size(img.rows / 2, img.cols * 3 / 8));
 
     //resizing the image for faster processing
@@ -165,7 +165,7 @@ int main(void){
         cnts_bin = Mat::zeros(masked_img.size(), CV_8UC1);
         
         //draw contours and fill the open area
-        drawContours(cnts_bin, contours, -1, Scalar(255,255,255), CV_FILLED, LINE_8, hierarchy);
+        drawContours(cnts_bin, contours, -1, Scalar(255,255,255), cv::FILLED, LINE_8, hierarchy);
         //empty matrix. Set up to 8-bit 1 channel data. Very important to set up properly.
         skeleton = Mat::zeros(img_copy.rows, img_copy.rows, CV_8U);
         
@@ -178,7 +178,7 @@ int main(void){
         findContours(skeleton, contours, hierarchy, RETR_LIST, CHAIN_APPROX_SIMPLE);
         
         //draw the skeleton on the image for visualisation purposes
-        drawContours(img, contours, -1, Scalar(255,255,0), CV_FILLED, LINE_8, hierarchy);
+        drawContours(img, contours, -1, Scalar(255,255,0), cv::FILLED, LINE_8, hierarchy);
 
         /*end point of the contour starts here*/
         // store all points of the skeleton into a vector
