@@ -3,7 +3,7 @@
 #include <eigen3/Eigen/Geometry>
 #include <eigen3/Eigen/Core>
 #include <eigen3/Eigen/QR>
-
+#include <math.h>
 
 struct dfltValues{
     float len = 10e-3;
@@ -16,12 +16,13 @@ struct dfltValues{
 MatrixXd EvaluateK(std::vector<Link> &iLinks);
 void DirectKinematics(std::vector<PosOrientation> &iPosVec, std::vector<Joint> &iJoints, std::vector<Link> &iLinks);
 MatrixXd EvaluateJacobian(std::vector<PosOrientation> &iPosVec);
-Matrix3d SkewMagnetisation(std::vector<Joint> &iJoints);
+MatrixXd MagtoFieldMap(std::vector<Joint> &iJoints);
 
 //Utility functions
 MatrixXd StackDiagonals(std::vector<Matrix3d> matrices);
 Matrix3d RotationZYX(Matrix3d src, Vector3d jointAngles);
-
+Matrix3d SkewMagnetisation(Joint J);
+MatrixXd VerticalStack(MatrixXd M1, MatrixXd M2);
 
 
 int main(int argc, char* argv[]);

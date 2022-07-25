@@ -4,18 +4,6 @@
 int main(int argc, char* argv[]){
     
     int jointNo;
-    /**
-     * @todo 
-     * 
-     *Precomputation checklist
-
-    Equation:
-        KQ = J^T * S * B
-
-    //MONDAY (25/07/22)
-        1. Figure out how to stack S 
-        2. Use all that to precalculate B at each timestep
-    */
 
     //Sample number of max joints for development
     jointNo = 2;
@@ -24,42 +12,82 @@ int main(int argc, char* argv[]){
     int timesteps = jointNo;  
 
 
-    //setup position/orientation struct for later use
-    std::vector<PosOrientation> iPosVec(jointNo);
-    std::vector<Joint> iJoints(jointNo);
-    //link joints position/orientation pointers to iPosVec's
-    for(int i = 0; i < jointNo; i++){
-		iJoints[i].assignPosOri(iPosVec[i]);
-	}
-
-    //create vector of links for properties
-    std::vector<Link> iLinks(jointNo) ;
-    dfltValues MechPpts;
-    for(auto i: iLinks){
-        i.dL = MechPpts.len;
-        i.d = MechPpts.d;
-        i.E = MechPpts.E;
-        i.v = MechPpts.v;
-    }
-
-    //Evalaute K
-    MatrixXd StackedK;
-    StackedK = EvaluateK(iLinks);
-
-
-    iJoints[0].q = Vector3d(0,10,0);
-    iJoints[0].q = Vector3d(0,20,0);
-
-    DirectKinematics(iPosVec, iJoints, iLinks);
-    MatrixXd Jacobian;
-    Jacobian = EvaluateJacobian(iPosVec);
-	
-    Jacobian.transposeInPlace();
-    MatrixXd JacobianInv(Jacobian.rows(), Jacobian.cols());
-    JacobianInv = Jacobian.completeOrthogonalDecomposition().pseudoInverse();
+    /* * * * * * * * * * * * * * * * * * * * * * * * *
+     * PRECOMPUTATION FOR EACH TIMESTEP BEGINS HERE  *
+     *                                               *
+     *                                               *
+     * * * * * * * * * * * * * * * * * * * * * * * * */
+    std::vector<Vector3d> AppliedFields(jointNo);
+    std::vector<int> DesiredAngles(jointNo);
+    DesiredAngles[0] = 10;
+    DesiredAngles[1] = 20;
     
 
+    for(int k = jointNo; k-- > 0;){
+        //setup position/orientation struct for later use
+        std::vector<PosOrientation> iPosVec(jointNo);
+        std::vector<Joint> iJoints(jointNo);
+        //link joints position/orientation pointers to iPosVec's
+        for(int i = 0; i < jointNo; i++){
+            iJoints[i].assignPosOri(iPosVec[i]);
+        }
 
+        //create vector of links for properties
+        std::vector<Link> iLinks(jointNo) ;
+        dfltValues MechPpts;
+
+        for(int i = 0; i < iLinks.size(); i++){
+            iLinks[i].dL = MechPpts.len;
+            iLinks[i].d = MechPpts.d;
+            iLinks[i].E = MechPpts.E;
+            iLinks[i].v = MechPpts.v;
+
+        }
+
+        //Evalaute K
+        MatrixXd KStacked;
+        KStacked = EvaluateK(iLinks);
+
+        iJoints[0].q = Vector3d(0,10,0);
+        iJoints[1].q = Vector3d(0,20,0);
+        VectorXd AnglesStacked(iJoints.size()*3);
+        AnglesStacked << iJoints[0].q, iJoints[1].q;
+
+
+        DirectKinematics(iPosVec, iJoints, iLinks);
+        MatrixXd Jacobian;
+        Jacobian = EvaluateJacobian(iPosVec);
+        
+        Jacobian.transposeInPlace();
+        MatrixXd JacobianINV(Jacobian.rows(), Jacobian.cols());
+        JacobianINV = Jacobian.completeOrthogonalDecomposition().pseudoInverse();
+        
+
+        iJoints[0].LocMag = Vector3d(-0.0011, 0, -0.0028);
+        iJoints[1].LocMag = Vector3d(0,0,-0.003);
+
+        MatrixXd FieldMap;
+        FieldMap = MagtoFieldMap(iJoints);
+        MatrixXd FieldMapINV;
+        FieldMapINV = FieldMap.completeOrthogonalDecomposition().pseudoInverse();
+        
+        //Rationale for operations below. Assume A+ is the pseudo inverse of A
+
+        // Given A+B+ = (AB)+
+        // and given KQ = JSB
+        // We have J+S+KQ = b
+        // Therefore we call A = JS
+        // And above Becomes A+.K.Q = B
+        // We call A = RHS
+        MatrixXd RHS, RHS_INV;
+        RHS = Jacobian * FieldMap;
+        RHS_INV = RHS.completeOrthogonalDecomposition().pseudoInverse();
+        Vector3d Field;
+        Field = RHS_INV*KStacked*AnglesStacked;
+        std::cout << "Applied Field requried:\n" << Field << "\n";
+        AppliedFields.push_back(Field);
+
+    }
 
     return 0;
 }
@@ -73,13 +101,13 @@ int main(int argc, char* argv[]){
 MatrixXd EvaluateK(std::vector<Link> &iLinks){
 	std::vector<Matrix3d> K_vec;
 
-    for(auto i:iLinks){
-		double lRadius = i.d / 2;
+    for(int i = 0; i < iLinks.size(); i++){
+		double lRadius = iLinks[i].d / 2;
 		double I = M_PI_4 * lRadius * lRadius * lRadius * lRadius;
-		double G = i.E / (2* (i.v + 1) );
+		double G = iLinks[i].E / (2* (iLinks[i].v + 1) );
 		double J = M_PI_2 * lRadius * lRadius * lRadius * lRadius;
-		double Kb = i.E*I/i.dL;
-		double Kt = G*J/i.dL;
+		double Kb = iLinks[i].E*I/iLinks[i].dL;
+		double Kt = G*J/iLinks[i].dL;
 		Matrix3d K = Matrix3d::Zero();
 		K(0,0) = Kb;
 		K(1,1) = Kb;
@@ -177,6 +205,50 @@ MatrixXd EvaluateJacobian(std::vector<PosOrientation> &iPosVec){
 		}
 	}
 	return Jacobian;
+}
+
+MatrixXd MagtoFieldMap(std::vector<Joint> &iJoints){
+    int jointNo = iJoints.size();
+    MatrixXd Map;
+    Map = VerticalStack(Matrix3d::Zero(), SkewMagnetisation(iJoints[0]));
+
+    for(int i = 1; i < jointNo; i++){
+        MatrixXd intermediateStack;
+        intermediateStack = VerticalStack(Matrix3d::Zero(), SkewMagnetisation(iJoints[i]));
+        Map = VerticalStack(Map, intermediateStack);
+    }  
+    
+
+    return Map;
+}
+
+/**
+ * @brief Utility Function. Builds a skew matrix of a magnetised joint. This function acts on local magnetisation. Technically works on all skews.
+ * 
+ * @param j struct for a given joint, holding magnetisation. 
+ * @return Matrix3d Skew matrix built of 3d magnetisations
+ */
+Matrix3d SkewMagnetisation(Joint J){
+    Matrix3d skewed;
+    Vector3d ProcMag;
+    ProcMag = J.Rotation *  (-J.LocMag);
+    skewed << 0, - ProcMag[2],  ProcMag[1],
+             ProcMag[2], 0, - ProcMag[0],
+            - ProcMag[1],  ProcMag[0], 0;
+    return skewed;
+}
+
+/**
+ * @brief Utility Function. Vertically Stacks a 3x3 Matrix onto an existing Xx3 Matrix
+ * 
+ * @param M1 Matrix of any number of rows, but 3 columns
+ * @param M2 3x3 Matrix to stack below
+ * @return MatrixXd resultatant of stack
+ */
+MatrixXd VerticalStack(MatrixXd M1, MatrixXd M2){
+    MatrixXd Stack(M1.rows() + M2.rows(), M1.cols());
+    Stack << M1, M2;
+    return Stack;
 }
 
 
