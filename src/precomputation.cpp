@@ -6,7 +6,7 @@ int main(int argc, char* argv[]){
     int jointNo;
 
     //Sample number of max joints for development
-    jointNo = 2;
+    jointNo = 3;
 
     //timesteps are equal to joint no
     int timesteps = jointNo;  
@@ -18,22 +18,29 @@ int main(int argc, char* argv[]){
      *                                               *
      * * * * * * * * * * * * * * * * * * * * * * * * */
     std::vector<Vector3d> AppliedFields(jointNo);
+
     std::vector<int> DesiredAngles(jointNo);
     DesiredAngles[0] = 10;
     DesiredAngles[1] = 20;
-    
+    DesiredAngles[2] = 20;
+
+    std::vector<Vector3d> Magnetisations(jointNo);
+    Magnetisations[0] = Vector3d(-0.0011, 0, -0.0028);
+    Magnetisations[1] = Vector3d(-0.0028,0,-0.001);
+    Magnetisations[2] = Vector3d(0,0,-0.003);
 
     for(int k = jointNo; k-- > 0;){
+        std::cout << k << "\n";
         //setup position/orientation struct for later use
-        std::vector<PosOrientation> iPosVec(jointNo);
-        std::vector<Joint> iJoints(jointNo);
+        std::vector<PosOrientation> iPosVec(k);
+        std::vector<Joint> iJoints(k);
         //link joints position/orientation pointers to iPosVec's
-        for(int i = 0; i < jointNo; i++){
+        for(int i = 0; i < k; i++){
             iJoints[i].assignPosOri(iPosVec[i]);
         }
 
         //create vector of links for properties
-        std::vector<Link> iLinks(jointNo) ;
+        std::vector<Link> iLinks(k) ;
         dfltValues MechPpts;
 
         for(int i = 0; i < iLinks.size(); i++){
@@ -48,8 +55,16 @@ int main(int argc, char* argv[]){
         MatrixXd KStacked;
         KStacked = EvaluateK(iLinks);
 
-        iJoints[0].q = Vector3d(0,10,0);
-        iJoints[1].q = Vector3d(0,20,0);
+        for(int i = 0; i < DesiredAngles.size(); i++){
+            iJoints[i].q = Vector3d(0,DesiredAngles[i],0);
+        }
+
+        for(int i = 0; i < Magnetisations.size(); i++){
+            iJoints[i].LocMag = Magnetisations[i];
+        }
+
+        /** @todo change this to a function that stacks all q components of each given joint
+         */
         VectorXd AnglesStacked(iJoints.size()*3);
         AnglesStacked << iJoints[0].q, iJoints[1].q;
 
@@ -63,8 +78,7 @@ int main(int argc, char* argv[]){
         JacobianINV = Jacobian.completeOrthogonalDecomposition().pseudoInverse();
         
 
-        iJoints[0].LocMag = Vector3d(-0.0011, 0, -0.0028);
-        iJoints[1].LocMag = Vector3d(0,0,-0.003);
+        
 
         MatrixXd FieldMap;
         FieldMap = MagtoFieldMap(iJoints);
@@ -86,6 +100,13 @@ int main(int argc, char* argv[]){
         Field = RHS_INV*KStacked*AnglesStacked;
         std::cout << "Applied Field requried:\n" << Field << "\n";
         AppliedFields.push_back(Field);
+
+        DesiredAngles.pop_back();
+        Magnetisations.pop_back();
+        pop_front(iJoints);
+        pop_front(iPosVec);
+        pop_front(iLinks);
+
 
     }
 
