@@ -13,7 +13,7 @@ MiddlewareLayer::MiddlewareLayer(){
     this->uniquePSU_Z2 = std::make_unique<DXKDP_PSU>("/dev/ttyUSB3", 0.01, 0.01);
 
     //sensors and actuators
-    this->uniqueLinAct = std::make_unique<LinearActuator>("/dev/ttyUSB6");
+    // this->uniqueLinAct = std::make_unique<LinearActuator>("/dev/ttyUSB6");
     // this->uniqueT_Meter = std::make_unique<Teslameter>("/dev/ttyUSB7");
 
     this->initialSetup();
@@ -35,7 +35,7 @@ MiddlewareLayer::MiddlewareLayer(std::string PSUX1_PORT, std::string PSUY1_PORT,
     this->uniquePSU_Z2 = std::make_unique<DXKDP_PSU>(PSUZ2_PORT, 0.1, 0.01);
 
     //sensors and actuators
-    this->uniqueLinAct = std::make_unique<LinearActuator>(LINACT_PORT);
+    // this->uniqueLinAct = std::make_unique<LinearActuator>(LINACT_PORT);
     // this->uniqueT_Meter = std::make_unique<Teslameter>(LINACT_PORT);
 
     this->initialSetup();
@@ -104,12 +104,12 @@ void MiddlewareLayer::set3DVector(std::vector<float> I_X, std::vector<float> I_Y
         std::thread thread_y1(&DXKDP_PSU::WriteCurrent, uniquePSU_Y1.get(), abs(I_Y[i])/cal_y, 0x01);
         std::thread thread_z1(&DXKDP_PSU::WriteCurrent, uniquePSU_Z1.get(), abs(I_Z[i])/cal_z, 0x01);
         // std::thread thread_te(&MiddlewareLayer::writeXField, this);
-        std::thread introducer_thread(&LinearActuator::LinearExtend, uniqueLinAct.get());
+        // std::thread introducer_thread(&LinearActuator::LinearExtend, uniqueLinAct.get());
         thread_x1.join();
         thread_y1.join();
         thread_z1.join();
         // thread_te.join();
-        introducer_thread.join();
+        // introducer_thread.join();
 
         //ending timing here. Then calculating diffs and printing.
         std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
@@ -144,12 +144,12 @@ void MiddlewareLayer::set3DVectorIN(std::vector<float> I_X, std::vector<float> I
         std::thread thread_y1(&DXKDP_PSU::WriteCurrent, uniquePSU_Y1.get(), abs(I_Y[i])/cal_y, 0x01);
         std::thread thread_z1(&DXKDP_PSU::WriteCurrent, uniquePSU_Z1.get(), abs(I_Z[i])/cal_z, 0x01);
         // std::thread thread_te(&MiddlewareLayer::writeXField, this);
-        std::thread introducer_thread(&LinearActuator::LinearExtend, uniqueLinAct.get());
+        // std::thread introducer_thread(&LinearActuator::LinearExtend, uniqueLinAct.get());
         thread_x1.join();
         thread_y1.join();
         thread_z1.join();
         // thread_te.join();
-        introducer_thread.join();
+        // introducer_thread.join();
 
         //ending timing here. Then calculating diffs and printing.
         std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
@@ -188,12 +188,12 @@ void MiddlewareLayer::set3DVectorOUT(std::vector<float> I_X, std::vector<float> 
         std::thread thread_y1(&DXKDP_PSU::WriteCurrent, uniquePSU_Y1.get(), abs(I_Y[i])/cal_y, 0x01);
         std::thread thread_z1(&DXKDP_PSU::WriteCurrent, uniquePSU_Z1.get(), abs(I_Z[i])/cal_z, 0x01);
         // std::thread thread_te(&MiddlewareLayer::writeXField, this);
-        std::thread introducer_thread(&LinearActuator::LinearContract, uniqueLinAct.get());
+        // std::thread introducer_thread(&LinearActuator::LinearContract, uniqueLinAct.get());
         thread_x1.join();
         thread_y1.join();
         thread_z1.join();
         // thread_te.join();
-        introducer_thread.join();
+        // introducer_thread.join();
 
         //ending timing here. Then calculating diffs and printing.
         std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
@@ -371,13 +371,13 @@ MiddlewareLayer::~MiddlewareLayer(){
     // this->outputFile.close();
     this->leftoverTimeFile.close();
     // std::cout << "Row count: " << this->row_count;
-    if(this->stepper_count > 0 ){
-        for(int i = 0; i < this->stepper_count; i++){
-            this->uniqueLinAct->LinearContract();
-            // std::cout << "i= " << i << "\n";
-            usleep(400000); //retract in intervals of 0.4s
-        }
-    }
-    this->uniqueLinAct->LinearStop();
-    std::cout << "Shutting down\n";
+    // if(this->stepper_count > 0 ){
+    //     for(int i = 0; i < this->stepper_count; i++){
+    //         this->uniqueLinAct->LinearContract();
+    //         // std::cout << "i= " << i << "\n";
+    //         usleep(400000); //retract in intervals of 0.4s
+    //     }
+    // }
+    // this->uniqueLinAct->LinearStop();
+    // std::cout << "Shutting down\n";
 }

@@ -1,12 +1,13 @@
 #include "precomputation.hpp"
 
+#define DIVIDER std::cout << "--------------------------\n"
 
 int main(int argc, char* argv[]){
     
     int jointNo;
 
     //Sample number of max joints for development
-    jointNo = 3;
+    jointNo = 5;
 
     //timesteps are equal to joint no
     int timesteps = jointNo;  
@@ -17,57 +18,71 @@ int main(int argc, char* argv[]){
      *                                               *
      *                                               *
      * * * * * * * * * * * * * * * * * * * * * * * * */
-    std::vector<Vector3d> AppliedFields(jointNo);
+    std::vector<Vector3d> AppliedFields;
 
     std::vector<int> DesiredAngles(jointNo);
     DesiredAngles[0] = 10;
     DesiredAngles[1] = 20;
-    DesiredAngles[2] = 20;
+    DesiredAngles[2] = 10;
+    DesiredAngles[3] = -10;
+    DesiredAngles[4] = -10;
+
 
     std::vector<Vector3d> Magnetisations(jointNo);
-    Magnetisations[0] = Vector3d(-0.0011, 0, -0.0028);
-    Magnetisations[1] = Vector3d(-0.0028,0,-0.001);
-    Magnetisations[2] = Vector3d(0,0,-0.003);
+    Magnetisations[0] = Vector3d(0, 0, 0.003);
+    Magnetisations[1] = Vector3d(-0.003,0,0);
+    Magnetisations[2] = Vector3d(-0.003,0,0);
+    Magnetisations[3] = Vector3d(-0.0021,0,-0.0021);
+    Magnetisations[4] = Vector3d(0,0,-0.003);
 
-    for(int k = jointNo; k-- > 0;){
-        std::cout << k << "\n";
+    std::vector<PosOrientation> iPosVec(jointNo);
+    std::vector<Joint> iJoints(jointNo);
+    //link joints position/orientation pointers to iPosVec's
+    for(int i = 0; i < jointNo; i++){
+        iJoints[i].assignPosOri(iPosVec[i]);
+    }
+
+    //create vector of links for properties
+    std::vector<Link> iLinks(jointNo) ;
+    dfltValues MechPpts;
+
+    for(int i = 0; i < iLinks.size(); i++){
+        iLinks[i].dL = MechPpts.len;
+        iLinks[i].d = MechPpts.d;
+        iLinks[i].E = MechPpts.E;
+        iLinks[i].v = MechPpts.v;
+
+    }
+
+    //
+    for(int i = 0; i < jointNo; i++){
+        iJoints[i].q = Vector3d(0,DesiredAngles[i],0);
+        iJoints[i].LocMag = Magnetisations[i];
+    }
+
+
+
+    for(int k = jointNo; k >= 1 ; --k){
+        // DIVIDER;
+        // std::cout << k << "\n";
         //setup position/orientation struct for later use
-        std::vector<PosOrientation> iPosVec(k);
-        std::vector<Joint> iJoints(k);
-        //link joints position/orientation pointers to iPosVec's
-        for(int i = 0; i < k; i++){
-            iJoints[i].assignPosOri(iPosVec[i]);
-        }
+     
+        VectorXd AnglesStacked;
+        AnglesStacked = StackAngles(iJoints);
+        // std::cout << "Angles Stacked:\n" << AnglesStacked << "\n";
 
-        //create vector of links for properties
-        std::vector<Link> iLinks(k) ;
-        dfltValues MechPpts;
-
-        for(int i = 0; i < iLinks.size(); i++){
-            iLinks[i].dL = MechPpts.len;
-            iLinks[i].d = MechPpts.d;
-            iLinks[i].E = MechPpts.E;
-            iLinks[i].v = MechPpts.v;
-
-        }
 
         //Evalaute K
         MatrixXd KStacked;
         KStacked = EvaluateK(iLinks);
 
-        for(int i = 0; i < DesiredAngles.size(); i++){
-            iJoints[i].q = Vector3d(0,DesiredAngles[i],0);
-        }
-
-        for(int i = 0; i < Magnetisations.size(); i++){
-            iJoints[i].LocMag = Magnetisations[i];
-        }
-
+        
         /** @todo change this to a function that stacks all q components of each given joint
          */
-        VectorXd AnglesStacked(iJoints.size()*3);
-        AnglesStacked << iJoints[0].q, iJoints[1].q;
+        // VectorXd AnglesStacked(iJoints.size()*3);
+        // AnglesStacked << iJoints[0].q, iJoints[1].q;
 
+        
 
         DirectKinematics(iPosVec, iJoints, iLinks);
         MatrixXd Jacobian;
@@ -98,17 +113,41 @@ int main(int argc, char* argv[]){
         RHS_INV = RHS.completeOrthogonalDecomposition().pseudoInverse();
         Vector3d Field;
         Field = RHS_INV*KStacked*AnglesStacked;
-        std::cout << "Applied Field requried:\n" << Field << "\n";
+
+        // DIVIDER;
+        // // std::cout << "RHS_INV\n" << RHS_INV << "\n";
+
+        // std::cout << "JacobianT\n" << Jacobian << "\n";
+        // std::cout << "S(m)\n" << FieldMap << "\n";
+
+        // std::cout << "KStacked\n" << KStacked << "\n";
+        // std::cout << "AnglesStacked\n" << AnglesStacked << "\n";
+        // DIVIDER;
+
+
+        // std::cout << "Applied Field requried:\n" << Field << "\n";
         AppliedFields.push_back(Field);
+
+        // std::cout << "Before popping, sizes are:\n";
+        // std::cout << "Angles: " <<DesiredAngles.size() << "\n";
+        // std::cout << "Magnetisations: " << Magnetisations.size() << "\n";
+        // std::cout << "Joints: " << iJoints.size() << "\n";
+        // std::cout << "Links: " <<iLinks.size() << "\n";
+
+
 
         DesiredAngles.pop_back();
         Magnetisations.pop_back();
         pop_front(iJoints);
         pop_front(iPosVec);
         pop_front(iLinks);
-
-
     }
+    
+    
+    std::reverse(AppliedFields.begin(), AppliedFields.end());
+    // std::cout << "Size of fields " << AppliedFields.size() <<" fields in order\n";
+    // for(auto i: AppliedFields){std::cout << i << "\n"; DIVIDER;}
+    
 
     return 0;
 }
@@ -134,6 +173,7 @@ MatrixXd EvaluateK(std::vector<Link> &iLinks){
 		K(1,1) = Kb;
 		K(2,2) = Kt;
 		K_vec.push_back(K);
+        // std::cout << "I " << i << "\nK\n" << K << "\n";
 	}
 	
 	MatrixXd KDiagonal;
@@ -228,6 +268,12 @@ MatrixXd EvaluateJacobian(std::vector<PosOrientation> &iPosVec){
 	return Jacobian;
 }
 
+/**
+ * @brief Precomputation function. Calculates a Vertically stacked Map from Magnetisation to Field
+ * 
+ * @param iJoints ordered vector of joints, each containing the set magnetisation
+ * @return MatrixXd 6*n x 3 matrix of vertically stacked 0(3x3) and maps. See Llyod 2020 and Salmanipour/Diller 2018
+ */
 MatrixXd MagtoFieldMap(std::vector<Joint> &iJoints){
     int jointNo = iJoints.size();
     MatrixXd Map;
@@ -259,6 +305,24 @@ Matrix3d SkewMagnetisation(Joint J){
     return skewed;
 }
 
+VectorXd StackAngles(std::vector<Joint>& iJoints){
+    int jointNo = iJoints.size();
+    VectorXd stacked;
+
+    if(jointNo == 1){
+        stacked = iJoints[0].q;
+    }
+    else{
+        stacked = VerticalStack(iJoints[0].q, iJoints[1].q);
+        for(int i = 2; i < jointNo; i++){
+            stacked = VerticalStack(stacked, iJoints[i].q);
+        }
+    }
+    return stacked;
+}
+
+
+
 /**
  * @brief Utility Function. Vertically Stacks a 3x3 Matrix onto an existing Xx3 Matrix
  * 
@@ -281,14 +345,15 @@ MatrixXd VerticalStack(MatrixXd M1, MatrixXd M2){
  */
 MatrixXd StackDiagonals(std::vector<Matrix3d> matrices){
 	MatrixXd diagonal(matrices.size()*3, matrices.size()*3);
+    diagonal = MatrixXd::Zero(diagonal.rows(), diagonal.cols());
 	for(size_t i = 0; i < matrices.size(); i++){
 		
 		diagonal( seq(i*3, 2+i*3), seq(i*3, 2+i*3)) = matrices[i];
 	
 	}
-	return diagonal;
+	std::cout << "Diagonal evaluated\n" << diagonal << "\n";
+    return diagonal;
 }
-
 
 
 /**

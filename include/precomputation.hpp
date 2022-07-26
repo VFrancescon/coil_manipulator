@@ -31,7 +31,7 @@ MatrixXd StackDiagonals(std::vector<Matrix3d> matrices);
 Matrix3d RotationZYX(Matrix3d src, Vector3d jointAngles);
 Matrix3d SkewMagnetisation(Joint J);
 MatrixXd VerticalStack(MatrixXd M1, MatrixXd M2);
-VectorXd VectorVStack(std::vector<Joint> J);
+VectorXd StackAngles(std::vector<Joint>& iJoints);
 
 
 int main(int argc, char* argv[]);
