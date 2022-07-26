@@ -1,13 +1,14 @@
 #include "precomputation.hpp"
 
+
 #define DIVIDER std::cout << "--------------------------\n"
 
 int main(int argc, char* argv[]){
-    
+
     int jointNo;
 
     //Sample number of max joints for development
-    jointNo = 5;
+    jointNo = 2;
 
     //timesteps are equal to joint no
     int timesteps = jointNo;  
@@ -23,17 +24,19 @@ int main(int argc, char* argv[]){
     std::vector<int> DesiredAngles(jointNo);
     DesiredAngles[0] = 10;
     DesiredAngles[1] = 20;
-    DesiredAngles[2] = 10;
-    DesiredAngles[3] = -10;
-    DesiredAngles[4] = -10;
+    // DesiredAngles[2] = 20;
+    // DesiredAngles[3] = 0;
+    // DesiredAngles[4] = 10;
 
 
     std::vector<Vector3d> Magnetisations(jointNo);
-    Magnetisations[0] = Vector3d(0, 0, 0.003);
-    Magnetisations[1] = Vector3d(-0.003,0,0);
-    Magnetisations[2] = Vector3d(-0.003,0,0);
-    Magnetisations[3] = Vector3d(-0.0021,0,-0.0021);
-    Magnetisations[4] = Vector3d(0,0,-0.003);
+    // Magnetisations[0] = Vector3d(0, 0, 0.003);
+    // Magnetisations[1] = Vector3d(-0.003,0,0);
+    // Magnetisations[2] = Vector3d(-0.003,0,0);
+    // Magnetisations[3] = Vector3d(-0.0021,0,-0.0021);
+    // Magnetisations[4] = Vector3d(0,0,-0.003);
+    Magnetisations[0] = Vector3d(-0.0021,0,-0.0021);
+    Magnetisations[1] = Vector3d(0,0,-0.003);
 
     std::vector<PosOrientation> iPosVec(jointNo);
     std::vector<Joint> iJoints(jointNo);
@@ -54,7 +57,6 @@ int main(int argc, char* argv[]){
 
     }
 
-    //
     for(int i = 0; i < jointNo; i++){
         iJoints[i].q = Vector3d(0,DesiredAngles[i],0);
         iJoints[i].LocMag = Magnetisations[i];
@@ -114,20 +116,26 @@ int main(int argc, char* argv[]){
         Vector3d Field;
         Field = RHS_INV*KStacked*AnglesStacked;
 
-        // DIVIDER;
-        // // std::cout << "RHS_INV\n" << RHS_INV << "\n";
+        DIVIDER;
+        // std::cout << "RHS_INV\n" << RHS_INV << "\n";
 
-        // std::cout << "JacobianT\n" << Jacobian << "\n";
+        std::cout << "Jacobian\n" << Jacobian.transpose() << "\n";
         // std::cout << "S(m)\n" << FieldMap << "\n";
 
-        // std::cout << "KStacked\n" << KStacked << "\n";
-        // std::cout << "AnglesStacked\n" << AnglesStacked << "\n";
-        // DIVIDER;
+        std::cout << "KStacked\n" << KStacked << "\n";
+        std::cout << "AnglesStacked\n" << AnglesStacked << "\n";
+        DIVIDER;
 
 
         // std::cout << "Applied Field requried:\n" << Field << "\n";
-        AppliedFields.push_back(Field);
+        AppliedFields.push_back(Field*1000);
+        // DIVIDER;
+        // std::cout << "Angles:\n" << AnglesStacked << "\n";
+        // std::cout << "Calculated field\n" << Field*1000 << "\n";
+        // for(auto i: iPosVec) std::cout << "\n" << i.p << "\n";
+        // for(auto i: iJoints) std::cout << "\n" << i.pLocal << "\n";
 
+        // DIVIDER;
         // std::cout << "Before popping, sizes are:\n";
         // std::cout << "Angles: " <<DesiredAngles.size() << "\n";
         // std::cout << "Magnetisations: " << Magnetisations.size() << "\n";
@@ -143,8 +151,8 @@ int main(int argc, char* argv[]){
         pop_front(iLinks);
     }
     
-    
-    std::reverse(AppliedFields.begin(), AppliedFields.end());
+    // DIVIDER;
+    // std::reverse(AppliedFields.begin(), AppliedFields.end());
     // std::cout << "Size of fields " << AppliedFields.size() <<" fields in order\n";
     // for(auto i: AppliedFields){std::cout << i << "\n"; DIVIDER;}
     
@@ -351,7 +359,7 @@ MatrixXd StackDiagonals(std::vector<Matrix3d> matrices){
 		diagonal( seq(i*3, 2+i*3), seq(i*3, 2+i*3)) = matrices[i];
 	
 	}
-	std::cout << "Diagonal evaluated\n" << diagonal << "\n";
+	// std::cout << "Diagonal evaluated\n" << diagonal << "\n";
     return diagonal;
 }
 
