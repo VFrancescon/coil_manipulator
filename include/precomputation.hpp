@@ -37,7 +37,7 @@ MatrixXd MagtoFieldMap(std::vector<Joint> &iJoints);
 //Utility functions
 MatrixXd StackDiagonals(std::vector<Matrix3d> matrices);
 Matrix3d RotationZYX(Matrix3d src, Vector3d jointAngles);
-Matrix3d SkewMagnetisation(Joint J);
+Matrix3d SkewMagnetisation(std::vector<Joint> &iJoints, int index);
 MatrixXd VerticalStack(MatrixXd M1, MatrixXd M2);
 VectorXd StackAngles(std::vector<Joint>& iJoints);
 

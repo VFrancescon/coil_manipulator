@@ -11,7 +11,7 @@ int main(int argc, char *argv[]){
         I_Z = std::stof(argv[3]);
         } catch( std::invalid_argument &e){
             std::cout << "One of the provided arguments was invalid. Arguments:\n" << argv[1] << " " << argv[2] << " " << argv[3] << "\n";
-            return;
+            return -1;
         }
         
         bool psu_only_mode = true; 

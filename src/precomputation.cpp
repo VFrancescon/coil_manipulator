@@ -121,8 +121,12 @@ int main(int argc, char* argv[]){
         // DIVIDER;
         // // std::cout << "RHS_INV\n" << RHS_INV << "\n";
 
-        std::cout << "S(m)\n" << FieldMap << "\n";
+        // std::cout << "S(m)\n" << FieldMap << "\n";
+        // std::cout << "JTinv =\n" << JacobianINV << "\n";
 
+        // DIVIDER;
+
+        // std::cout << "K* Q\n" << KStacked*AnglesStacked << "\n";
         // std::cout << "KStacked\n" << KStacked << "\n";
         // std::cout << "AnglesStacked\n" << AnglesStacked << "\n";
         // DIVIDER;
@@ -296,11 +300,11 @@ MatrixXd EvaluateJacobian(std::vector<PosOrientation> &iPosVec){
 MatrixXd MagtoFieldMap(std::vector<Joint> &iJoints){
     int jointEff = iJoints.size() - 1;
     MatrixXd Map;
-    Map = VerticalStack(Matrix3d::Zero(), SkewMagnetisation(iJoints[0]));
+    Map = VerticalStack(Matrix3d::Zero(), SkewMagnetisation(iJoints, 0));
 
     for(int i = 1; i < jointEff; i++){
         MatrixXd intermediateStack;
-        intermediateStack = VerticalStack(Matrix3d::Zero(), SkewMagnetisation(iJoints[i]));
+        intermediateStack = VerticalStack(Matrix3d::Zero(), SkewMagnetisation(iJoints, i));
         Map = VerticalStack(Map, intermediateStack);
     }  
     
@@ -314,10 +318,10 @@ MatrixXd MagtoFieldMap(std::vector<Joint> &iJoints){
  * @param j struct for a given joint, holding magnetisation. 
  * @return Matrix3d Skew matrix built of 3d magnetisations
  */
-Matrix3d SkewMagnetisation(Joint J){
+Matrix3d SkewMagnetisation(std::vector<Joint> &iJoints, int index){
     Matrix3d skewed;
     Vector3d ProcMag;
-    ProcMag = J.Rotation *  (-J.LocMag);
+    ProcMag = iJoints[index+1].Rotation *  (iJoints[index].LocMag);
     skewed << 0, - ProcMag[2],  ProcMag[1],
              ProcMag[2], 0, - ProcMag[0],
             - ProcMag[1],  ProcMag[0], 0;
