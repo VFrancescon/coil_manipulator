@@ -5,12 +5,20 @@
 #include <eigen3/Eigen/QR>
 #include <math.h>
 #include <cassert>
+#include <vector>
 
 template<typename T>
 void pop_front(std::vector<T>& vec)
 {
     assert(!vec.empty());
     vec.erase(vec.begin());
+};
+
+template<typename T>
+void pop_2ndback(std::vector<T>& vec)
+{
+    assert(!vec.empty());
+    vec.erase(vec.end()-2);
 };
 
 struct dfltValues{
