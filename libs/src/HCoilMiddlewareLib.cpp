@@ -13,7 +13,7 @@ MiddlewareLayer::MiddlewareLayer(){
     this->uniquePSU_Z2 = std::make_unique<DXKDP_PSU>("/dev/ttyUSB3", 0.01, 0.01);
 
     //sensors and actuators
-    // this->uniqueLinAct = std::make_unique<LinearActuator>("/dev/ttyUSB6");
+    this->uniqueLinAct = std::make_unique<LinearActuator>("/dev/ttyUSB6");
     // this->uniqueT_Meter = std::make_unique<Teslameter>("/dev/ttyUSB7");
 
     this->initialSetup();
@@ -40,6 +40,22 @@ MiddlewareLayer::MiddlewareLayer(std::string PSUX1_PORT, std::string PSUY1_PORT,
 
     this->initialSetup();
     
+}
+
+MiddlewareLayer::MiddlewareLayer(bool PSU_ONLY){
+    this->PSU_MODE = PSU_ONLY;
+
+    // <X/Y/Z>1 PSUs
+    this->uniquePSU_X1 = std::make_unique<DXKDP_PSU>("/dev/ttyUSB0", 0.1, 0.01);
+    this->uniquePSU_Y1 = std::make_unique<DXKDP_PSU>("/dev/ttyUSB4", 0.01, 0.01);
+    this->uniquePSU_Z1 = std::make_unique<DXKDP_PSU>("/dev/ttyUSB2", 0.01, 0.01);
+    
+    // <X/Y/Z>1 PSUs
+    this->uniquePSU_X2 = std::make_unique<DXKDP_PSU>("/dev/ttyUSB1", 0.1, 0.01);
+    this->uniquePSU_Y2 = std::make_unique<DXKDP_PSU>("/dev/ttyUSB5", 0.01, 0.01);
+    this->uniquePSU_Z2 = std::make_unique<DXKDP_PSU>("/dev/ttyUSB3", 0.01, 0.01);
+    this->initialSetup();
+
 }
 
 void MiddlewareLayer::TurnOnSupply(){
@@ -86,9 +102,7 @@ void MiddlewareLayer::initialSetup(){
 
 void MiddlewareLayer::set3DVector(std::vector<float> I_X, std::vector<float> I_Y, std::vector<float> I_Z){
     
-    //setting how much the stepper motor will be extended by at the end of the function.
-    //this is used in the destructor to retract the tentacle back.
-    this->stepper_count += I_X.size();
+    // this->stepper_count += I_X.size();
     for(int i = 0; i < I_X.size(); i++){
 
         std::thread th_x(&MiddlewareLayer::PolarityCheck, this, I_X[i], MiddlewareLayer::PSU_ENUM::X1);
@@ -128,6 +142,11 @@ void MiddlewareLayer::set3DVectorIN(std::vector<float> I_X, std::vector<float> I
     
     //setting how much the stepper motor will be extended by at the end of the function.
     //this is used in the destructor to retract the tentacle back.
+    
+    if(PSU_MODE){
+        std::cout << "ERROR: Function " << __func__ << " was called, but middleware was initialised in PSU only mode. Exiting.\n";
+        return;
+    }   
     this->stepper_count += I_X.size();
     for(int i = 0; i < I_X.size(); i++){
 
@@ -172,7 +191,11 @@ void MiddlewareLayer::set3DVectorOUT(std::vector<float> I_X, std::vector<float> 
     //this is used in the destructor to retract the tentacle back.
     this->stepper_count -= I_X.size();
     
-    std::cout << "Just before for loop\n";
+    if(PSU_MODE){
+        std::cout << "ERROR: Function " << __func__ << " was called, but middleware was initialised in PSU only mode. Exiting.\n";
+        return;
+    }
+
     for(int i = 0; i < I_X.size(); i++){
 
         std::thread th_x(&MiddlewareLayer::PolarityCheck, this, I_X[i], MiddlewareLayer::PSU_ENUM::X1);
@@ -188,12 +211,12 @@ void MiddlewareLayer::set3DVectorOUT(std::vector<float> I_X, std::vector<float> 
         std::thread thread_y1(&DXKDP_PSU::WriteCurrent, uniquePSU_Y1.get(), abs(I_Y[i])/cal_y, 0x01);
         std::thread thread_z1(&DXKDP_PSU::WriteCurrent, uniquePSU_Z1.get(), abs(I_Z[i])/cal_z, 0x01);
         // std::thread thread_te(&MiddlewareLayer::writeXField, this);
-        // std::thread introducer_thread(&LinearActuator::LinearContract, uniqueLinAct.get());
+        std::thread introducer_thread(&LinearActuator::LinearContract, uniqueLinAct.get());
         thread_x1.join();
         thread_y1.join();
         thread_z1.join();
         // thread_te.join();
-        // introducer_thread.join();
+        introducer_thread.join();
 
         //ending timing here. Then calculating diffs and printing.
         std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
@@ -201,7 +224,7 @@ void MiddlewareLayer::set3DVectorOUT(std::vector<float> I_X, std::vector<float> 
         int sleep_us = period_us - duration_us;
         
         if(sleep_us > 0 ){
-            std::cout << "OUT.going to sleep for: " << sleep_us/1000 << "ms\n";
+            // std::cout << "OUT.going to sleep for: " << sleep_us/1000 << "ms\n";
             // leftoverTimeFile << leftoverTime_count << "," << sleep_us << "," << 1/float(sleep_us)*1000000 << "\n";
             usleep(sleep_us);
         }
@@ -378,6 +401,7 @@ MiddlewareLayer::~MiddlewareLayer(){
     //         usleep(400000); //retract in intervals of 0.4s
     //     }
     // }
-    // this->uniqueLinAct->LinearStop();
-    // std::cout << "Shutting down\n";
+    if(!PSU_MODE) this->uniqueLinAct->LinearStop();
+
+    std::cout << "Shutting down\n";
 }

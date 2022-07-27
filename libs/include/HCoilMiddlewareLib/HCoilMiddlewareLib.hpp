@@ -41,6 +41,8 @@ private:
     float cal_y = 1.135; //!< By calibration factor
     float cal_z = 0.65; //!< Bz calibration factor
 
+    bool PSU_MODE = false;
+
 public:
 
     /**
@@ -91,7 +93,14 @@ public:
         std::string PSUX2_PORT, std::string PSUY2_PORT, std::string PSUZ2_PORT,
         std::string TMETER_PORT, std::string LINACT_PORT 
     );
-    
+
+    /**
+     * @brief Middleware constructor, allows for middleware to use the PSUs only with no additional devices
+     * 
+     * @param PSU_ONLY if true, only functions using the PSUs only will work.
+     */
+    MiddlewareLayer(bool PSU_ONLY);
+
     /**
      * @brief Destroy the Middleware Layer object
      * 
