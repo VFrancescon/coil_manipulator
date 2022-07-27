@@ -19,14 +19,15 @@ int main(int argc, char *argv[]){
 
 
         mid.set3DField(I_X, I_Y, I_Z);
-        std::cout << "Holding field as printed above. press enter to quit\n";
+        std::cout << "Holding field as printed above. press enter to quit";
         std::cin.get();
     } else{
         std::cout << "Incorrect number of arguments provided\n.";
+        std::cout << "./field3d <Bx> <By> <Bz>\n";
+        std::cout << "Each argument sets the respective field\n";
     }
 
-    std::cout << "./field3d <Bx> <By> <Bz>\n";
-    std::cout << "Each argument sets the respective field\n";
+    
 
     return 0;
 }

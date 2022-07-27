@@ -22,8 +22,8 @@ int main(int argc, char* argv[]){
     std::vector<Vector3d> AppliedFields;
 
     std::vector<int> DesiredAngles(jointNo);
-    DesiredAngles[0] = 10;
-    DesiredAngles[1] = 20;
+    DesiredAngles[0] = -10;
+    DesiredAngles[1] = -20;
     // DesiredAngles[2] = 30;
     DesiredAngles[2] = 0;
     // DesiredAngles[2] = 20;

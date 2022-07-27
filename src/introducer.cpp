@@ -8,10 +8,13 @@ int main(int argc, char* argv[]){
     std::string comPORT;
     if(argc == 3){
         comPORT = argv[2];
-    } else std::string comPORT = "/dev/ttyUSB6"; 
+    } else comPORT = "/dev/ttyUSB6"; 
     
     LinearActuator LinAct(comPORT);
-    int wait_time = (int) 0.4  * ONEMILLION;
+    std::cout << "Press enter to begin";
+    std::cin.get();
+    double wait_timeD = (double) 0.4  * ONEMILLION;
+    int wait_time = (int) wait_timeD;
     int cycles;
     if(argc == 2 || argc == 3){
         try{ 
@@ -28,7 +31,7 @@ int main(int argc, char* argv[]){
             }
         } else if (cycles < 0){
             std::cout << "Retracting by " << abs(cycles) << " steps\n";
-            for(int i = 0; i < cycles; i++){
+            for(int i = 0; i < abs(cycles); i++){
                 LinAct.LinearContract();
                 usleep(wait_time);
                                 
