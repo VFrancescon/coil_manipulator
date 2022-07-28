@@ -20,14 +20,12 @@
  * Best efforts have been made to keep this all void-returner so Multithreading is easy.
  * 
  * Note: CSV parsing is not included here. Currently it's contained in the driver code, it will probably get a class of its own eventually.
- * 
- * @todo Fix calibration factor. I believe the data being read is in mT, but we treat it as T. 
  */
 class MiddlewareLayer{
 
 private:
 
-
+    bool PositivePolarity;
     int stepper_count = 0; //!< keeps track of how many extensions/retractions happened to the stepper motor.
     
     std::ofstream outputFile; //!< Output file object
@@ -35,13 +33,15 @@ private:
     
     int row_count = 1; //!< keeps track of how many rows have been printed to outputFile.
     int leftoverTime_count = 1; //!< keeps track of how many rows have been printed to outputFile
-    float frequency = 1.75; //!< frequency of the system.
+    float frequency = 2.5; //!< frequency of the system.
 
     int period_us = 1/frequency*1000000; //!< period in microseconds, derived from the frequency.
     
     float cal_x = 0.54; //!< Bx calibration factor
     float cal_y = 1.135; //!< By calibration factor
     float cal_z = 0.65; //!< Bz calibration factor
+
+    bool PSU_MODE = false;
 
 public:
 
@@ -57,24 +57,6 @@ public:
         Z1, //!< First Z axis PSU
         Z2  //!< Second Z axis PSU
         };
-    /*
-    3x PSUs
-    1x Teslameter
-    1x Linear Actuator
-    */
-    // std::shared_ptr<Device> device;
-    // std::unique_ptr<DXKDP_PSU> PSU_X;
-    // std::unique_ptr<DXKDP_PSU> PSU_Y;
-    // std::unique_ptr<DXKDP_PSU> PSU_Z;
-
-    // std::unique_ptr<Teslameter> T_Meter;
-    // std::unique_ptr<LinearActuator> LinAct; 
-    // DXKDP_PSU PSU_X1; //!< X1-axis instance of DXKDP_PSU
-    // DXKDP_PSU PSU_Y1; //!< Y1-axis instance of DXKDP_PSU
-    // DXKDP_PSU PSU_Z1; //!< Z1-axis instance of DXKDP_PSU
-    // DXKDP_PSU PSU_X2; //!< X2-axis instance of DXKDP_PSU
-    // DXKDP_PSU PSU_Y2; //!< Y2-axis instance of DXKDP_PSU
-    // DXKDP_PSU PSU_Z2; //!< Z2-axis instance of DXKDP_PSU
 
     std::unique_ptr<DXKDP_PSU> uniquePSU_X1; //!< uniquePtr for X1 PSU obj.  
     std::unique_ptr<DXKDP_PSU> uniquePSU_Y1; //!< uniquePtr for Y1 PSU obj.  
@@ -83,9 +65,6 @@ public:
     std::unique_ptr<DXKDP_PSU> uniquePSU_X2; //!< uniquePtr for X2 PSU obj.  
     std::unique_ptr<DXKDP_PSU> uniquePSU_Y2; //!< uniquePtr for Y2 PSU obj.  
     std::unique_ptr<DXKDP_PSU> uniquePSU_Z2; //!< uniquePtr for Z2 PSU obj.  
-
-    // Teslameter T_Meter; //!< Instance of Teslameter
-    // LinearActuator LinAct; //!< Instance of LinearActuator
 
     std::unique_ptr<LinearActuator> uniqueLinAct; //!< uniquePtr to Linear Actuator obj.  
     std::unique_ptr<Teslameter>uniqueT_Meter; //!< uniquePtr for Teslameter obj.  
@@ -114,7 +93,14 @@ public:
         std::string PSUX2_PORT, std::string PSUY2_PORT, std::string PSUZ2_PORT,
         std::string TMETER_PORT, std::string LINACT_PORT 
     );
-    
+
+    /**
+     * @brief Middleware constructor, allows for middleware to use the PSUs only with no additional devices
+     * 
+     * @param PSU_ONLY if true, only functions using the PSUs only will work.
+     */
+    MiddlewareLayer(bool PSU_ONLY);
+
     /**
      * @brief Destroy the Middleware Layer object
      * 
@@ -157,7 +143,34 @@ public:
      * @param I_Z Vector containing all desired Z fields
      */
     void set3DVector(std::vector<float> I_X, std::vector<float> I_Y, std::vector<float> I_Z);
+
+    /**
+     * @brief Checks polarity required for each input. Sets current accordingly. Stepper Motor extending
+     * 
+     * @param I_X Vector containing all desired X fields
+     * @param I_Y Vector containing all desired Y fields
+     * @param I_Z Vector containing all desired Z fields
+     */
+    void set3DVectorIN(std::vector<float> I_X, std::vector<float> I_Y, std::vector<float> I_Z);
+
+    /**
+     * @brief Checks polarity required for each input. Sets current accordingly. Stepper Motor retracting
+     * 
+     * @param I_X Vector containing all desired X fields
+     * @param I_Y Vector containing all desired Y fields
+     * @param I_Z Vector containing all desired Z fields
+     */
+    void set3DVectorOUT(std::vector<float> I_X, std::vector<float> I_Y, std::vector<float> I_Z);
     
+    /**
+     * @brief Sets X, Y and Z fields by altering corresponding currents.
+     * 
+     * @param I_X desired X field
+     * @param I_Y desired Y field
+     * @param I_Z desired Z field
+     */
+    void set3DField(float I_X, float I_Y, float I_Z);
+
     /**
      * @brief Sets output current to X1
      * 
@@ -253,6 +266,7 @@ public:
      * 
      */
     void writeXField();
+
 
     std::string filename = "../output.csv"; //!< default file name.
 };

@@ -17,12 +17,36 @@ int main(int argc, char* argv[]){
         // std::cout << line << "\n";
         while(std::getline(sstr, word, ',')){
 
-            if(counter == 6) bx.push_back(std::stof(word));
-            if(counter == 7) by.push_back(std::stof(word));
-            if(counter == 8) bz.push_back(std::stof(word));
+            if(counter == 6) {
+                bx.push_back(std::stof(word));
+                bx.push_back(std::stof(word));
+                bx.push_back(std::stof(word));
+            }
+            if(counter == 7) {
+                by.push_back(std::stof(word) * -4);
+                by.push_back(std::stof(word) * -4);
+                by.push_back(std::stof(word) * -4);}
+            
+            if(counter == 8) {
+                bz.push_back(std::stof(word));
+                bz.push_back(std::stof(word));
+                bz.push_back(std::stof(word));
+            }
             counter++;
         }
     }
+    std::cout << "Size of input: " << bx.size() << "\n";
+    
+    std::vector<float> bxINV = bx, byINV = by, bzINV = bz;
+    std::reverse(bxINV.begin(), bxINV.end());
+    std::reverse(byINV.begin(), byINV.end());
+    std::reverse(bzINV.begin(), bzINV.end());
+
+
+    for(int i = 0; i < bx.size(); i++){
+        std::cout << "Bx: " << bx[i] << " By: " << by[i] << " Bz: " << bz[i] <<"\n";    
+    }
+
     // MiddlewareLayer mid("/dev/ttyUSB2","/dev/ttyUSB3", "/dev/ttyUSB1", "/dev/ttyUSB4", "/dev/ttyUSB0");
     MiddlewareLayer mid;
 
@@ -31,7 +55,12 @@ int main(int argc, char* argv[]){
     std::cin.get();
     
     // std::thread th1(&MiddlewareLayer::set3DVector, &mid, bx, by, bz);
-    mid.set3DVector(bx, by, bz);
     
+    std::cout << "Inserting\n";
+    mid.set3DVectorIN(bx, by, bz);
+    std::cout << "Retracting\n";
+    mid.set3DVectorOUT(bxINV, byINV, bzINV);
+    
+
     //std::cout << "Field in X direction at the end of writing loop: " << mid.getXField();
 }

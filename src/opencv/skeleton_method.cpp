@@ -55,7 +55,7 @@ int main(void){
     cnts_bin = Mat::zeros(threshold_img.size(), CV_8UC1);
     
     //draw contours and fill the open area
-    drawContours(cnts_bin, contours, -1, Scalar(255,255,255), CV_FILLED, LINE_8, hierarchy);
+    drawContours(cnts_bin, contours, -1, Scalar(255,255,255), cv::FILLED, LINE_8, hierarchy);
     //empty matrix. Set up to 8-bit 1 channel data. Very important to set up properly.
     skeleton = Mat::zeros(img_copy.rows, img_copy.rows, CV_8UC1);
     //invert for thinning to work
@@ -70,7 +70,7 @@ int main(void){
     findContours(skeleton, contours, hierarchy, RETR_LIST, CHAIN_APPROX_SIMPLE);
     
     //draw the contour on the image for visualisation purposes
-    drawContours(img, contours, -1, Scalar(255,255,0), CV_FILLED, LINE_8, hierarchy);
+    drawContours(img, contours, -1, Scalar(255,255,0), cv::FILLED, LINE_8, hierarchy);
     
     std::vector<Point> cntLine;
     findNonZero(skeleton, cntLine);
