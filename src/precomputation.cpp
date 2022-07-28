@@ -5,7 +5,7 @@
 
 int main(int argc, char* argv[]){
 
-    int jointEff = 2;
+    int jointEff = 1;
     int jointNo = jointEff+1;
     //Sample number of max joints for development
     // int jointEff = 2;
@@ -23,9 +23,9 @@ int main(int argc, char* argv[]){
 
     std::vector<int> DesiredAngles(jointNo);
     DesiredAngles[0] = 10;
-    DesiredAngles[1] = 20;
+    // DesiredAngles[1] = 20;
     // DesiredAngles[2] = 30;
-    DesiredAngles[2] = 0;
+    DesiredAngles[1] = 0;
     // DesiredAngles[2] = 20;
     // DesiredAngles[3] = 0;
     // DesiredAngles[4] = 10;
@@ -38,9 +38,9 @@ int main(int argc, char* argv[]){
     // Magnetisations[3] = Vector3d(-0.0021,0,-0.0021);
     // Magnetisations[4] = Vector3d(0,0,-0.003);
     // Magnetisations[0] = Vector3d(-0.003,0,0);
-    Magnetisations[0] = Vector3d(-0.0021,0,-0.0021);
-    Magnetisations[1] = Vector3d(0,0,-0.003);
-    Magnetisations[2] = Vector3d(0,0,0);
+    // Magnetisations[0] = Vector3d(-0.0021,0,-0.0021);
+    Magnetisations[0] = Vector3d(0,0,-0.003);
+    Magnetisations[1] = Vector3d(0,0,0);
 
     std::vector<PosOrientation> iPosVec(jointNo);
     std::vector<Joint> iJoints(jointNo);
@@ -73,8 +73,8 @@ int main(int argc, char* argv[]){
         // std::cout << k << "\n";
         //setup position/orientation struct for later use
      
-        VectorXd AnglesStacked;
-        AnglesStacked = StackAngles(iJoints);
+        VectorXd AnglesStacked = iJoints[0].q;
+        // AnglesStacked = StackAngles(iJoints);
         // std::cout << "Angles Stacked:\n" << AnglesStacked << "\n";
 
 
@@ -94,8 +94,8 @@ int main(int argc, char* argv[]){
 
         MatrixXd FieldMap;
         FieldMap = MagtoFieldMap(iJoints);
-        MatrixXd FieldMapINV;
-        FieldMapINV = FieldMap.completeOrthogonalDecomposition().pseudoInverse();
+        // MatrixXd FieldMapINV;
+        // FieldMapINV = FieldMap.completeOrthogonalDecomposition().pseudoInverse();
         
         //Rationale for operations below. Assume A+ is the pseudo inverse of A
 
@@ -106,17 +106,25 @@ int main(int argc, char* argv[]){
         // And above Becomes A+.K.Q = B
         // We call A = RHS
         MatrixXd RHS, RHS_INV;
-        std::cout << "Sizes of matrices:\n";
-        DIVIDER;
-        std::cout << "Size of jacobian: " << Jacobian.rows() << "x" <<Jacobian.cols() << "\n";
-        std::cout << "Size of FieldMap: " << FieldMap.rows() << "x" <<FieldMap.cols() << "\n";
-        std::cout << "Size of Kstacked: " << KStacked.rows() << "x" <<KStacked.cols() << "\n";
-        std::cout << "Size of AnglesStacked: " << AnglesStacked.rows() << "x" <<AnglesStacked.cols() << "\n";
-        DIVIDER;
+        // std::cout << "Sizes of matrices:\n";
+        // DIVIDER;
+        // std::cout << "Size of jacobian: " << Jacobian.rows() << "x" <<Jacobian.cols() << "\n";
+        // std::cout << "Size of FieldMap: " << FieldMap.rows() << "x" <<FieldMap.cols() << "\n";
+        // std::cout << "Size of Kstacked: " << KStacked.rows() << "x" <<KStacked.cols() << "\n";
+        // std::cout << "Size of AnglesStacked: " << AnglesStacked.rows() << "x" <<AnglesStacked.cols() << "\n";
+        // DIVIDER;
         RHS = Jacobian * FieldMap;
         RHS_INV = RHS.completeOrthogonalDecomposition().pseudoInverse();
         Vector3d Field;
         Field = RHS_INV*KStacked*AnglesStacked;
+
+        
+
+
+        MatrixXd RHS_I;
+        RHS_I = RHS * RHS_INV;
+        std::cout << "Hopefully identity\n" << RHS_I << "\n";
+        std::cout << "A:\n" << RHS << "\n\nA+\n" << RHS_INV << "\n";
 
         // DIVIDER;
         // // std::cout << "RHS_INV\n" << RHS_INV << "\n";
@@ -131,10 +139,21 @@ int main(int argc, char* argv[]){
         // std::cout << "AnglesStacked\n" << AnglesStacked << "\n";
         // DIVIDER;
 
-        std::cout << "Desired Joint angles:\n" << AnglesStacked << "\n";
-        std::cout << "Applied Field requried (mT):\n" << Field*1000 << "\n";
-        AppliedFields.push_back(Field*1000);
+        MatrixXd LHS = KStacked * AnglesStacked;
+        RHS = RHS * Field;
+
+        std::cout << "LHS\n" << LHS << "\nRHS\n" << RHS << "\n";
+
+        // std::cout << "Desired Joint angles:\n" << AnglesStacked << "\n";
+        // std::cout << "Applied Field requried (mT):\n" << Field*1000 << "\n";
+        // AppliedFields.push_back(Field*1000);
         // DIVIDER;
+        
+        
+        // for(auto i: iJoints){
+        //     std::cout << "\n" << i.Rotation << "\n";
+        // }        
+        
         // std::cout << "Angles:\n" << AnglesStacked << "\n";
         // std::cout << "Calculated field\n" << Field*1000 << "\n";
         // for(auto i: iPosVec) std::cout << "\n" << i.p << "\n";
@@ -217,7 +236,6 @@ void DirectKinematics(std::vector<PosOrientation> &iPosVec, std::vector<Joint> &
 		iJoints[i].Rotation = RotationZYX(iJoints[i-1].Rotation, iJoints[i-1].q);
 		iJoints[i].pLocal = iJoints[i-1].pLocal + iJoints[i].Rotation * Vector3d(0,0, -iLinks[i-1].dL);
 	}
-    
 
     for(int i = 0; i < jointEff; i++){
 		
@@ -298,34 +316,28 @@ MatrixXd EvaluateJacobian(std::vector<PosOrientation> &iPosVec){
  * @return MatrixXd 6*n x 3 matrix of vertically stacked 0(3x3) and maps. See Llyod 2020 and Salmanipour/Diller 2018
  */
 MatrixXd MagtoFieldMap(std::vector<Joint> &iJoints){
-    int jointEff = iJoints.size() - 1;
-    MatrixXd Map;
-    Map = VerticalStack(Matrix3d::Zero(), SkewMagnetisation(iJoints, 0));
-
-    for(int i = 1; i < jointEff; i++){
-        MatrixXd intermediateStack;
-        intermediateStack = VerticalStack(Matrix3d::Zero(), SkewMagnetisation(iJoints, i));
-        Map = VerticalStack(Map, intermediateStack);
-    }  
-    
-
+    MatrixXd Map(6*(iJoints.size()-1), 3);
+    Map = MatrixXd::Zero(6*(iJoints.size()-1), 3);
+    Matrix3d Zeros = Matrix3d::Zero();
+    for(int i = 0; i < iJoints.size()-1; i++){
+        iJoints[i].GlobMag = iJoints[i+1].Rotation * iJoints[i].LocMag;
+        Matrix3d Skewd = SkewMatrix(iJoints[i].GlobMag);
+        Map( seqN(3+6*i, 3), seqN(0, 3)  ) = Skewd;         
+    }
+    // std::cout << "Magtofield map\n" << Map << "\n";
+    // std::cout << "Sizing: " << Map.rows() << "x" << Map.cols() << "\n";
+    // std::cout << "Size of ijoints " << iJoints.size() << "\n";
     return Map;
 }
 
-/**
- * @brief Utility Function. Builds a skew matrix of a magnetised joint. This function acts on local magnetisation. Technically works on all skews.
- * 
- * @param j struct for a given joint, holding magnetisation. 
- * @return Matrix3d Skew matrix built of 3d magnetisations
- */
-Matrix3d SkewMagnetisation(std::vector<Joint> &iJoints, int index){
-    Matrix3d skewed;
-    Vector3d ProcMag;
-    ProcMag = iJoints[index+1].Rotation *  (iJoints[index].LocMag);
-    skewed << 0, - ProcMag[2],  ProcMag[1],
-             ProcMag[2], 0, - ProcMag[0],
-            - ProcMag[1],  ProcMag[0], 0;
-    return skewed;
+
+Matrix3d SkewMatrix(Vector3d src){
+    Matrix3d Skew;
+    Skew = Matrix3d::Zero();
+    Skew << 0, -src[2], src[1],
+            src[2], 0, -src[0],
+            -src[1], src[0], 0;
+    return Skew;
 }
 
 VectorXd StackAngles(std::vector<Joint>& iJoints){
