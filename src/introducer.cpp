@@ -10,13 +10,15 @@ int main(int argc, char* argv[]){
         comPORT = argv[2];
     } else comPORT = "/dev/ttyUSB6"; 
     
-    LinearActuator LinAct(comPORT);
-    std::cout << "Press enter to begin";
-    std::cin.get();
-    double wait_timeD = (double) 0.4  * ONEMILLION;
-    int wait_time = (int) wait_timeD;
-    int cycles;
+    
     if(argc == 2 || argc == 3){
+        LinearActuator LinAct(comPORT);
+        std::cout << "Press enter to begin";
+        std::cin.get();
+        double wait_timeD = (double) 0.4  * ONEMILLION;
+        int wait_time = (int) wait_timeD;
+        int cycles;
+        
         try{ 
             cycles = std::stoi(argv[1]);
         } catch(std::invalid_argument &e){
@@ -39,7 +41,7 @@ int main(int argc, char* argv[]){
         } else std::cout << "Cannot move by 0";
 
     } else{
-        std::cout << "Introducer CLI interface; Usage:\n";
+        std::cout << "\n\n\nIntroducer CLI interface; Usage:\n";
         std::cout << "$ ./introducer <steps> <COM port>\n";
         std::cout << "Steps controls the amount of steps taken.\n";
         std::cout << "If positive, <steps> extensions occur.\n";

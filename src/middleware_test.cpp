@@ -43,9 +43,9 @@ int main(int argc, char* argv[]){
     std::reverse(bzINV.begin(), bzINV.end());
 
 
-    for(int i = 0; i < bx.size(); i++){
-        std::cout << "Bx: " << bx[i] << " By: " << by[i] << " Bz: " << bz[i] <<"\n";    
-    }
+    // for(int i = 0; i < bx.size(); i++){
+    //     std::cout << "Bx: " << bx[i] << " By: " << by[i] << " Bz: " << bz[i] <<"\n";    
+    // }
 
     // MiddlewareLayer mid("/dev/ttyUSB2","/dev/ttyUSB3", "/dev/ttyUSB1", "/dev/ttyUSB4", "/dev/ttyUSB0");
     MiddlewareLayer mid;

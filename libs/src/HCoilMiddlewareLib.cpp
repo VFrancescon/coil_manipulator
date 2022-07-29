@@ -163,12 +163,12 @@ void MiddlewareLayer::set3DVectorIN(std::vector<float> I_X, std::vector<float> I
         std::thread thread_y1(&DXKDP_PSU::WriteCurrent, uniquePSU_Y1.get(), abs(I_Y[i])/cal_y, 0x01);
         std::thread thread_z1(&DXKDP_PSU::WriteCurrent, uniquePSU_Z1.get(), abs(I_Z[i])/cal_z, 0x01);
         // std::thread thread_te(&MiddlewareLayer::writeXField, this);
-        // std::thread introducer_thread(&LinearActuator::LinearExtend, uniqueLinAct.get());
+        std::thread introducer_thread(&LinearActuator::LinearExtend, uniqueLinAct.get());
         thread_x1.join();
         thread_y1.join();
         thread_z1.join();
         // thread_te.join();
-        // introducer_thread.join();
+        introducer_thread.join();
 
         //ending timing here. Then calculating diffs and printing.
         std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
