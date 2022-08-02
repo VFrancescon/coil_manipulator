@@ -3,12 +3,12 @@
 MiddlewareLayer::MiddlewareLayer(){
 
     // <X/Y/Z>1 PSUs
-    this->uniquePSU_X1 = std::make_unique<DXKDP_PSU>("/dev/ttyUSB0", 0.1, 0.01);
+    this->uniquePSU_X1 = std::make_unique<DXKDP_PSU>("/dev/ttyUSB1", 0.1, 0.01);
     this->uniquePSU_Y1 = std::make_unique<DXKDP_PSU>("/dev/ttyUSB4", 0.01, 0.01);
     this->uniquePSU_Z1 = std::make_unique<DXKDP_PSU>("/dev/ttyUSB2", 0.01, 0.01);
     
     // <X/Y/Z>1 PSUs
-    this->uniquePSU_X2 = std::make_unique<DXKDP_PSU>("/dev/ttyUSB1", 0.1, 0.01);
+    this->uniquePSU_X2 = std::make_unique<DXKDP_PSU>("/dev/ttyUSB0", 0.1, 0.01);
     this->uniquePSU_Y2 = std::make_unique<DXKDP_PSU>("/dev/ttyUSB5", 0.01, 0.01);
     this->uniquePSU_Z2 = std::make_unique<DXKDP_PSU>("/dev/ttyUSB3", 0.01, 0.01);
 
@@ -46,12 +46,12 @@ MiddlewareLayer::MiddlewareLayer(bool PSU_ONLY){
     this->PSU_MODE = PSU_ONLY;
 
     // <X/Y/Z>1 PSUs
-    this->uniquePSU_X1 = std::make_unique<DXKDP_PSU>("/dev/ttyUSB0", 0.1, 0.01);
+    this->uniquePSU_X1 = std::make_unique<DXKDP_PSU>("/dev/ttyUSB1", 0.1, 0.01);
     this->uniquePSU_Y1 = std::make_unique<DXKDP_PSU>("/dev/ttyUSB4", 0.01, 0.01);
     this->uniquePSU_Z1 = std::make_unique<DXKDP_PSU>("/dev/ttyUSB2", 0.01, 0.01);
     
     // <X/Y/Z>1 PSUs
-    this->uniquePSU_X2 = std::make_unique<DXKDP_PSU>("/dev/ttyUSB1", 0.1, 0.01);
+    this->uniquePSU_X2 = std::make_unique<DXKDP_PSU>("/dev/ttyUSB0", 0.1, 0.01);
     this->uniquePSU_Y2 = std::make_unique<DXKDP_PSU>("/dev/ttyUSB5", 0.01, 0.01);
     this->uniquePSU_Z2 = std::make_unique<DXKDP_PSU>("/dev/ttyUSB3", 0.01, 0.01);
     this->initialSetup();
