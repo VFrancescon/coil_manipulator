@@ -22,7 +22,7 @@ int main(int argc, char *argv[]){
         std::cout << "Holding field as printed above. press enter to quit";
         std::cin.get();
     } else{
-        std::cout << "\n\nIncorrect number of arguments provided\n.";
+        std::cout << "\n\nIncorrect number of arguments provided\n";
         std::cout << "./field3d <Bx> <By> <Bz>\n";
         std::cout << "Each argument sets the respective field\n";
     }
