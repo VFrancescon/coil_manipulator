@@ -281,8 +281,8 @@ public:
     void WriteVI(float targetV, float targetI, uint8_t addr=0x01);
 
     bool POstate; //!< Current PO state.
-    float ReadVoltage; //!< Read Voltages and Currents.
-    float ReadCurrent; //!< Read Voltages and Currents.
+    float ReadVoltage; //!< Read Voltages and Currents. Only assigned internally. Needs implementing
+    float ReadCurrent; //!< Read Voltages and Currents. Only assigned internally. Needs implementing
 
 
 };

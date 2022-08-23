@@ -226,6 +226,7 @@ void DXKDP_PSU::WriteVI(float targetV, float targetI, uint8_t addr){
 void DXKDP_PSU::setPolarity(uint8_t polarity, uint8_t addr){
     std::vector<uint8_t> input_vector = this->Encoder24(polarity, polarity, addr);
     // for(auto i: input_vector) printf("%02X ", i);
+    // std::cout << "\n\n";
     this->PsuWrite(input_vector);
     output_message msgOut;
     this->PsuRead(msgOut);
