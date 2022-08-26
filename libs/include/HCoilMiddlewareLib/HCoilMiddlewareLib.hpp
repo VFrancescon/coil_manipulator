@@ -186,13 +186,12 @@ public:
      */
     void stepIntroducer(int stepCount_);
 
+    
     /**
-     * @brief Checks the Polarity required for a given input and sets it as required.
+     * @brief Checks input and sets PSU polarity accordingly.
      * 
-     * Eventually we will be able to flip the polarity only when required, but that requires some info off the manufacturer we do not have yet.
-     * 
-     * @param input input value, read from wherever.
-     * @param PSU_CHOSER determins which PSU to work on. 0->X, 1->Y, 2->Z
+     * @param input input current, both +ve and -ve allowed
+     * @param psu_ enum covering all PSUs. see PSU_ENUM for details
      */
     void PolarityCheck(float input, MiddlewareLayer::PSU_ENUM psu_);
 
