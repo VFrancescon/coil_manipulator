@@ -37,9 +37,9 @@ private:
 
     int period_us = 1/frequency*1000000; //!< period in microseconds, derived from the frequency.
     
-    float cal_x = 0.54; //!< Bx calibration factor
-    float cal_y = 1.135; //!< By calibration factor
-    float cal_z = 0.65; //!< Bz calibration factor
+    float cal_x = 1.808; //!< Bx calibration factor
+    float cal_y = 0.896; //!< By calibration factor
+    float cal_z = 1.567; //!< Bz calibration factor
 
     bool PSU_MODE = false;
 
@@ -170,62 +170,6 @@ public:
      * @param I_Z desired Z field
      */
     void set3DField(float I_X, float I_Y, float I_Z);
-
-    /**
-     * @brief Sets output current to X1
-     * 
-     * 
-     * 
-     * @note the set<X/Y/Z><1/2>Vector functions step through a vector of floats, writing the currents accordingly.\n 
-     * The X variants also write the field read to a CSV file.\n 
-     * Introducer stepping should be handled separately through the StepIntroducer functions. 
-     * 
-     * @param current_ vector of floats containing all desired X fields.
-     * @param psu_ PSU_ENUM containing the chosen power supply.
-     */
-    void setX1Vector(std::vector<float> current_);
-
-    /**
-     * @brief Sets output current to Y1 PSU
-     * 
-     * @param current_ vector of floats containing all desired X fields.
-     * @param psu_ PSU_ENUM containing the chosen power supply.
-     */
-    void setY1Vector(std::vector<float> current_);
-
-
-    /**
-     * @brief Sets output current to Z1 PSU
-     * 
-     * @param current_ vector of floats containing all desired X fields.
-     * @param psu_ PSU_ENUM containing the chosen power supply.
-     */
-    void setZ1Vector(std::vector<float> current_);
-
-        /**
-     * @brief Sets output current to X2 PSU
-     * 
-     * @param current_ vector of floats containing all desired X fields.
-     * @param psu_ PSU_ENUM containing the chosen power supply.
-     */
-    void setX2Vector(std::vector<float> current_);
-
-    /**
-     * @brief Sets output current to Y2 PSU
-     * 
-     * @param current_ vector of floats containing all desired X fields.
-     * @param psu_ PSU_ENUM containing the chosen power supply.
-     */
-    void setY2Vector(std::vector<float> current_);
-
-
-    /**
-     * @brief Sets output current to Z2 PSU
-     * 
-     * @param current_ vector of floats containing all desired X fields.
-     * @param psu_ PSU_ENUM containing the chosen power supply.
-     */
-    void setZ2Vector(std::vector<float> current_);
 
     /**
      * @brief Wrapper for the Introducer Functions. Extends by 1mm.
