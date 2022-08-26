@@ -313,33 +313,27 @@ void MiddlewareLayer::stepIntroducer(int stepCount_){
 void MiddlewareLayer::PolarityCheck(float input, MiddlewareLayer::PSU_ENUM psu_){
     
     /**
-     * @note Big note regarding polarities in the PSUs.
-     * 
+     * @note Big note regarding polarities in the PSUs.\n
      * The set polarity command given in the PSU manual is not very clear, 
-     * so the following has been found through trial and error.
+     * so the following has been found through trial and error.\n
+     * The polarity command takes either 0x00 or 0x01 as an argument and does something with it.\n
+     * Find here a table explaining what each case does to each PSU.\n
      * 
-     * The polarity command takes either 0x00 or 0x01 as an argument and does something with it.
-     * Find here a table explaining what each case does to each PSU
      * 
      * Input | PSU | Result
-     * ---------------------
+     * ------|-----|--------
      * 0x00  |  X2 | -ve  
      * 0x01  |  X2 | +ve
-     * ---------------------
      * 0x00  |  Z1 | -ve  
      * 0x01  |  Z1 | +ve
-     * ---------------------
      * 0x00  |  Z2 | -ve  
      * 0x01  |  Z2 | +ve
-     * ---------------------
      * 0x00  |  Y1 | -ve  
      * 0x01  |  Y1 | +ve
-     * ---------------------
      * 0x00  |  Y2 | +ve  
-     * 0x01  |  Y2 | -ve    
-     * ---------------------
+     * 0x01  |  Y2 | -ve
      * 
-     * Because of the last 2 rows (Y2), the switch case handling Y2 polarity is accordingly reversed.
+     * @note Because of the last 2 rows (Y2), the switch case handling Y2 polarity is accordingly reversed.
      */
 
     

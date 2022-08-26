@@ -1,5 +1,0 @@
-<map id="/home/vittorio/coil_manipulator/libs/include/DxkdpLib/instructions.hpp" name="/home/vittorio/coil_manipulator/libs/include/DxkdpLib/instructions.hpp">
-<area shape="rect" id="node1" title="Contains hex&#45;level headers for ingoing and outgoing instructions to the PSU." alt="" coords="39,5,217,60"/>
-<area shape="rect" id="node2" href="$DxkdpLib_8hpp.html" title="Contains library for PSU Usage. Instantiates input_message and output_message as required." alt="" coords="45,108,211,163"/>
-<area shape="rect" id="node3" href="$HCoilMiddlewareLib_8hpp.html" title="Middleware Library. Abstracts usage of other Low&#45;Level libraries as much as possible." alt="" coords="5,211,251,280"/>
-</map>
