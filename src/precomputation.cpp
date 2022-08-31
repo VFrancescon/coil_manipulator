@@ -5,7 +5,7 @@
 
 int main(int argc, char* argv[]){
 
-    int jointEff = 1;
+    int jointEff = 2;
     int jointNo = jointEff+1;
     //Sample number of max joints for development
     // int jointEff = 2;
@@ -25,11 +25,11 @@ int main(int argc, char* argv[]){
     DesiredAngles[0] = 10;
     // DesiredAngles[1] = 20;
     // DesiredAngles[2] = 30;
-    DesiredAngles[1] = 0;
+    DesiredAngles[1] = 20;
     // DesiredAngles[2] = 20;
     // DesiredAngles[3] = 0;
     // DesiredAngles[4] = 10;
-
+    DesiredAngles[jointEff] = 0;
 
     std::vector<Vector3d> Magnetisations(jointNo);
     // Magnetisations[0] = Vector3d(0, 0, 0.003);
@@ -40,7 +40,8 @@ int main(int argc, char* argv[]){
     // Magnetisations[0] = Vector3d(-0.003,0,0);
     // Magnetisations[0] = Vector3d(-0.0021,0,-0.0021);
     Magnetisations[0] = Vector3d(0,0,-0.003);
-    Magnetisations[1] = Vector3d(0,0,0);
+    Magnetisations[1] = Vector3d(0,0,-0.003);
+    Magnetisations[jointEff] = Vector3d(0,0,0);
 
     std::vector<PosOrientation> iPosVec(jointNo);
     std::vector<Joint> iJoints(jointNo);
@@ -73,9 +74,9 @@ int main(int argc, char* argv[]){
         // std::cout << k << "\n";
         //setup position/orientation struct for later use
      
-        VectorXd AnglesStacked = iJoints[0].q;
-        // AnglesStacked = StackAngles(iJoints);
-        // std::cout << "Angles Stacked:\n" << AnglesStacked << "\n";
+        VectorXd AnglesStacked;
+        AnglesStacked = StackAngles(iJoints);
+        std::cout << "Angles Stacked:\n" << AnglesStacked << "\n";
 
 
         //Evalaute K
@@ -123,8 +124,8 @@ int main(int argc, char* argv[]){
 
         MatrixXd RHS_I;
         RHS_I = RHS * RHS_INV;
-        std::cout << "Hopefully identity\n" << RHS_I << "\n";
-        std::cout << "A:\n" << RHS << "\n\nA+\n" << RHS_INV << "\n";
+        // std::cout << "Hopefully identity\n" << RHS_I << "\n";
+        // std::cout << "A:\n" << RHS << "\n\nA+\n" << RHS_INV << "\n";
 
         // DIVIDER;
         // // std::cout << "RHS_INV\n" << RHS_INV << "\n";
@@ -142,7 +143,7 @@ int main(int argc, char* argv[]){
         MatrixXd LHS = KStacked * AnglesStacked;
         RHS = RHS * Field;
 
-        std::cout << "LHS\n" << LHS << "\nRHS\n" << RHS << "\n";
+        // std::cout << "LHS\n" << LHS << "\nRHS\n" << RHS << "\n
 
         // std::cout << "Desired Joint angles:\n" << AnglesStacked << "\n";
         // std::cout << "Applied Field requried (mT):\n" << Field*1000 << "\n";
@@ -185,7 +186,7 @@ int main(int argc, char* argv[]){
     // std::cout << "Size of fields " << AppliedFields.size() <<" fields in order\n";
     // for(auto i: AppliedFields){std::cout << i << "\n"; DIVIDER;}
     
-
+    std::cout << "Jacobian\n: " << Jacobian.transpose() << "\n";
     return 0;
 }
 
