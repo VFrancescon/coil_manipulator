@@ -37,9 +37,9 @@ private:
 
     int period_us = 1/frequency*1000000; //!< period in microseconds, derived from the frequency.
     
-    float cal_x = 1.808; //!< Bx calibration factor
-    float cal_y = 0.896; //!< By calibration factor
-    float cal_z = 1.567; //!< Bz calibration factor
+    float cal_x = 1.867; //!< Bx calibration factor.
+    float cal_y = 1.577; //!< By calibration factor.
+    float cal_z = 0.896; //!< Bz calibration factor.
 
     bool PSU_MODE = false;
 

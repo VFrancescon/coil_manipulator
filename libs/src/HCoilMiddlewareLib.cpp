@@ -3,7 +3,7 @@
 MiddlewareLayer::MiddlewareLayer(){
 
     // <X/Y/Z>1 PSUs
-    // this->uniquePSU_X1 = std::make_unique<DXKDP_PSU>("/dev/ttyUSB0", 0.1, 0.01);
+    this->uniquePSU_X1 = std::make_unique<DXKDP_PSU>("/dev/ttyUSB0", 0.1, 0.01);
     this->uniquePSU_Y1 = std::make_unique<DXKDP_PSU>("/dev/ttyUSB4", 0.01, 0.01);
     this->uniquePSU_Z1 = std::make_unique<DXKDP_PSU>("/dev/ttyUSB2", 0.01, 0.01);
     
@@ -83,7 +83,8 @@ void MiddlewareLayer::TurnOffSupply(){
     th_z1.join();
     th_y2.join();
     th_z2.join();
-
+    
+    
     std::thread thread_x(&DXKDP_PSU::PoCtrl, uniquePSU_X2.get(), 0x00);
     std::thread thread_y1(&DXKDP_PSU::PoCtrl, uniquePSU_Y1.get(), 0x00);
     std::thread thread_z1(&DXKDP_PSU::PoCtrl, uniquePSU_Z1.get(), 0x00);
@@ -98,7 +99,7 @@ void MiddlewareLayer::TurnOffSupply(){
 
 void MiddlewareLayer::initialSetup(){
     // std::cout <<" Error in initial setup"
-    std::thread thread_x(&DXKDP_PSU::WriteVI, uniquePSU_X2.get(), 60, 0.00, 0x01);
+    std::thread thread_x(&DXKDP_PSU::WriteVI, uniquePSU_X2.get(), 80, 0.00, 0x01);
     std::thread thread_y1(&DXKDP_PSU::WriteVI, uniquePSU_Y1.get(), 60, 0.00, 0x01);
     std::thread thread_z1(&DXKDP_PSU::WriteVI, uniquePSU_Z1.get(), 60, 0.00, 0x01);
     std::thread thread_y2(&DXKDP_PSU::WriteVI, uniquePSU_Y2.get(), 60, 0.00, 0x01);
@@ -150,11 +151,11 @@ void MiddlewareLayer::set3DVector(std::vector<float> I_X, std::vector<float> I_Y
         int duration_us = int(std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count());
         int sleep_us = period_us - duration_us;
         
-        if(sleep_us > 0 ){
-            // std::cout << "going to sleep for: " << sleep_us/1000 << "ms\n";
-            // leftoverTimeFile << leftoverTime_count << "," << sleep_us << "," << 1/float(sleep_us)*1000000 << "\n";
-            usleep(sleep_us);
-        }
+        // if(sleep_us > 0 ){
+        //     // std::cout << "going to sleep for: " << sleep_us/1000 << "ms\n";
+        //     // leftoverTimeFile << leftoverTime_count << "," << sleep_us << "," << 1/float(sleep_us)*1000000 << "\n";
+        //     usleep(sleep_us);
+        // }
     }
 }
 
@@ -397,8 +398,10 @@ void MiddlewareLayer::writeXField(){
 }
 
 MiddlewareLayer::~MiddlewareLayer(){
+    
     this->TurnOffSupply();
-    this->leftoverTimeFile.close();
+    // this->leftoverTimeFile.close();
+
     if(!PSU_MODE) this->uniqueLinAct->LinearStop();
     std::cout << "Shutting down\n";
 }

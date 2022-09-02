@@ -188,7 +188,7 @@ void DXKDP_PSU::PoCtrl(uint8_t po_state){
 
 void DXKDP_PSU::WriteVoltage(float targetV, uint8_t addr){
     std::vector<uint8_t> input_vector = this->Encoder21(targetV, addr);
-    std::cout << "input vector is: ";
+    // std::cout << "input vector is: ";
     for(auto i: input_vector) printf("%02X ", i);
     this->PsuWrite(input_vector);
     output_message msgOut;
@@ -202,6 +202,7 @@ void DXKDP_PSU::WriteVoltage(float targetV, uint8_t addr){
 void DXKDP_PSU::WriteCurrent(float targetI, uint8_t addr){
     std::vector<uint8_t> input_vector = this->Encoder22(targetI, addr);
     // for(auto i: input_vector) printf("%02X ", i);
+    // std::cout << "I: Attempting to write" << " " << targetI << "\n";
     this->PsuWrite(input_vector);
     output_message msgOut;
     this->PsuRead(msgOut);
@@ -213,6 +214,7 @@ void DXKDP_PSU::WriteCurrent(float targetI, uint8_t addr){
 
 void DXKDP_PSU::WriteVI(float targetV, float targetI, uint8_t addr){
     std::vector<uint8_t> input_vector = this->Encoder23(targetV, targetI, addr);
+    // std::cout << "VI: Attempting to write " << targetV << " " << targetI << "\n";
     // for(auto i: input_vector) printf("%02X ", i);
     this->PsuWrite(input_vector);
     output_message msgOut;

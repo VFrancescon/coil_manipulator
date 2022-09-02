@@ -1,12 +1,12 @@
 [submodule "submodules/a-star"]
 	path = submodules/a-star
-	url = git@github.com:VFrancescon/a-star.git
+	url = https://github.com/VFrancescon/a-star.git
 [submodule "submodules/CppLinuxSerial"]
 	path = submodules/CppLinuxSerial
-	url = git@github.com:VFrancescon/CppLinuxSerial.git
+	url = https://github.com/VFrancescon/CppLinuxSerial.git
 [submodule "submodules/doxygen-awesome-css"]
 	path = submodules/doxygen-awesome-css
 	url = https://github.com/jothepro/doxygen-awesome-css.git
 [submodule "submodules/cl_tentacle"]
 	path = submodules/cl_tentacle
-	url = git@github.com:VFrancescon/cl_tentacle.git
+	url = https://github.com/VFrancescon/cl_tentacle.git
