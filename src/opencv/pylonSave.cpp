@@ -11,6 +11,7 @@ using namespace cv;
 
 int main(int argc, char * argv[])
 {
+    //trying to force a merge conflict
     auto png = Pylon::EImageFileFormat::ImageFileFormat_Tiff;
     Mat img;
     Pylon::PylonInitialize();
