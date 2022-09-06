@@ -2,15 +2,8 @@
 
 MiddlewareLayer::MiddlewareLayer(){
 
-    // <X/Y/Z>1 PSUs
-    // this->uniquePSU_X1 = std::make_unique<DXKDP_PSU>("/dev/ttyUSB0", 0.1, 0.01);
-    this->uniquePSU_Y1 = std::make_unique<DXKDP_PSU>("/dev/ttyUSB4", 0.01, 0.01);
-    this->uniquePSU_Z1 = std::make_unique<DXKDP_PSU>("/dev/ttyUSB2", 0.01, 0.01);
     
-    // <X/Y/Z>1 PSUs
-    this->uniquePSU_X2 = std::make_unique<DXKDP_PSU>("/dev/ttyUSB1", 0.1, 0.01);
-    this->uniquePSU_Y2 = std::make_unique<DXKDP_PSU>("/dev/ttyUSB5", 0.01, 0.01);
-    this->uniquePSU_Z2 = std::make_unique<DXKDP_PSU>("/dev/ttyUSB3", 0.01, 0.01);
+    this->setUniquePSUS();
 
     //sensors and actuators
     this->uniqueLinAct = std::make_unique<LinearActuator>("/dev/ttyUSB6");
@@ -42,20 +35,35 @@ MiddlewareLayer::MiddlewareLayer(std::string PSUX1_PORT, std::string PSUY1_PORT,
     
 }
 
+
 MiddlewareLayer::MiddlewareLayer(bool PSU_ONLY){
     this->PSU_MODE = PSU_ONLY;
+    if(this->PSU_MODE){
 
-    // <X/Y/Z>1 PSUs
-    // this->uniquePSU_X1 = std::make_unique<DXKDP_PSU>("/dev/ttyUSB1", 0.1, 0.01);
-    this->uniquePSU_Y1 = std::make_unique<DXKDP_PSU>("/dev/ttyUSB4", 0.01, 0.01);
-    this->uniquePSU_Z1 = std::make_unique<DXKDP_PSU>("/dev/ttyUSB2", 0.01, 0.01);
+        this->setUniquePSUS();
+        
+        this->initialSetup();
+    }
+    else{
+        this->setUniquePSUS();
+        this->uniqueLinAct = std::make_unique<LinearActuator>("/dev/ttyUSB6");
+        this->uniqueT_Meter = std::make_unique<Teslameter>("/dev/ttyUSB7");
+        this->initialSetup();
+    }
+}
+
+void MiddlewareLayer::setUniquePSUS(){
+        // <X/Y/Z>1 PSUs
+    this->uniquePSU_X1 = std::make_unique<DXKDP_PSU>("/dev/ttyUSB2", 0.1, 0.01);
+    this->uniquePSU_Y1 = std::make_unique<DXKDP_PSU>("/dev/ttyUSB1", 0.01, 0.01);
+    this->uniquePSU_Z1 = std::make_unique<DXKDP_PSU>("/dev/ttyUSB4", 0.01, 0.01);
     
-    // <X/Y/Z>1 PSUs
-    this->uniquePSU_X2 = std::make_unique<DXKDP_PSU>("/dev/ttyUSB1", 0.1, 0.01);
-    this->uniquePSU_Y2 = std::make_unique<DXKDP_PSU>("/dev/ttyUSB5", 0.01, 0.01);
-    this->uniquePSU_Z2 = std::make_unique<DXKDP_PSU>("/dev/ttyUSB3", 0.01, 0.01);
-    this->initialSetup();
+    // <X/Y/Z>2 PSUs
+    this->uniquePSU_X2 = std::make_unique<DXKDP_PSU>("/dev/ttyUSB3", 0.1, 0.01);
+    // this->uniquePSU_Y2 = std::make_unique<DXKDP_PSU>("/dev/ttyUSB5", 0.01, 0.01);
+    this->uniquePSU_Z2 = std::make_unique<DXKDP_PSU>("/dev/ttyUSB5", 0.01, 0.01);
 
+    return;
 }
 
 void MiddlewareLayer::TurnOnSupply(){

@@ -109,6 +109,12 @@ public:
     ~MiddlewareLayer();
 
     /**
+     * @brief Set the Unique pointers for the PSUs
+     * 
+     */
+    void setUniquePSUS();
+
+    /**
      * @brief Turns on Supplies.
      * 
      */
