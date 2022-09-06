@@ -44,6 +44,7 @@ int main(int argc, char** argv){
 
         while(camera.IsGrabbing()){
             camera.RetrieveResult(5000, ptrGrabResult, Pylon::TimeoutHandling_ThrowException);
+            // camera.GrabOne(100, ptrGrabResult, Pylon::TimeoutHandling_ThrowException);
 
             if(ptrGrabResult->GrabSucceeded()){
                 std::cout << "SizeX: " << ptrGrabResult->GetWidth() << "\n";

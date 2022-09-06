@@ -1,0 +1,2 @@
+/usr/bin/ar qc libLakeshoreF71Lib.a  CMakeFiles/LakeshoreF71Lib.dir/LakeshoreF71Lib.cpp.o
+/usr/bin/ranlib libLakeshoreF71Lib.a

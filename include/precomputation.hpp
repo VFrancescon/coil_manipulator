@@ -7,6 +7,9 @@
 #include <cassert>
 #include <vector>
 
+#ifndef PRECOMPUTATION_HPP
+#define PRECOMPUTATION_HPP
+
 template<typename T>
 void pop_front(std::vector<T>& vec)
 {
@@ -22,7 +25,7 @@ void pop_2ndback(std::vector<T>& vec)
 };
 
 struct dfltValues{
-    float len = 10e-3;
+    float len = 20e-3;
     float d = 2e-3;
     float E = 100e3;
     float v = 0.43;
@@ -41,5 +44,4 @@ Matrix3d SkewMatrix(Vector3d src);
 MatrixXd VerticalStack(MatrixXd M1, MatrixXd M2);
 VectorXd StackAngles(std::vector<Joint>& iJoints);
 
-
-int main(int argc, char* argv[]);
+#endif

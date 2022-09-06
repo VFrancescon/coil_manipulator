@@ -1,0 +1,2 @@
+/usr/bin/ar qc libLinActuatorLib.a  CMakeFiles/LinActuatorLib.dir/LinActuatorLib.cpp.o
+/usr/bin/ranlib libLinActuatorLib.a

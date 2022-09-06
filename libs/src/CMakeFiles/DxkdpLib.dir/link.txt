@@ -1,0 +1,2 @@
+/usr/bin/ar qc libDxkdpLib.a  CMakeFiles/DxkdpLib.dir/DxkdpLib.cpp.o
+/usr/bin/ranlib libDxkdpLib.a

@@ -1,0 +1,2 @@
+/usr/bin/ar qc libHCoilMiddlewareLib.a  CMakeFiles/HCoilMiddlewareLib.dir/HCoilMiddlewareLib.cpp.o
+/usr/bin/ranlib libHCoilMiddlewareLib.a

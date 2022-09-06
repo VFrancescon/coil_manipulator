@@ -225,7 +225,11 @@ int main(void){
 
         max_lenght = max((int)cntLine.size(), max_lenght);
 
+        //ACTUAL CONTROL CODE HERE
 
+
+
+        //END OF CONTROL CODE HERE
 
         //show the results
         imshow("Tip detection", img);
