@@ -41,6 +41,10 @@ private:
     float cal_y = 0.896; //!< By calibration factor
     float cal_z = 1.583; //!< Bz calibration factor
 
+    float xLimit = 50; //!< current limit in the x supply
+    float zLimit = 50; //!< current limit in the y supply
+    float yLimit = 30; //!< current limit in the z supply
+
     bool PSU_MODE = false;
 
 public:

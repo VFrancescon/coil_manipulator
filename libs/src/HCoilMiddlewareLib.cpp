@@ -326,12 +326,20 @@ void MiddlewareLayer::PolarityCheck(float input, MiddlewareLayer::PSU_ENUM psu_)
     switch(psu_){
         //block of X related cases
         case MiddlewareLayer::PSU_ENUM::X1:
+            
+            
+
             if(input > 0) {
                 uniquePSU_X1->setPolarity(0x1); }
                 // printf("Flipped polarity, X1\n");}
             else uniquePSU_X1->setPolarity(0x0);
+
+
+
+
         break;
         case MiddlewareLayer::PSU_ENUM::X2:
+            
             if(input > 0) {
                 uniquePSU_X2->setPolarity(0x0); }
                 // printf("Flipped polarity, X1\n");}
@@ -347,6 +355,7 @@ void MiddlewareLayer::PolarityCheck(float input, MiddlewareLayer::PSU_ENUM psu_)
         break;
         
         case MiddlewareLayer::PSU_ENUM::Y2:
+            
             if(input > 0) {uniquePSU_Y2->setPolarity(0x1); 
             // printf("Flipped polarity, Y2\n");
             }
@@ -356,6 +365,7 @@ void MiddlewareLayer::PolarityCheck(float input, MiddlewareLayer::PSU_ENUM psu_)
 
         //block of Z related cases
         case MiddlewareLayer::PSU_ENUM::Z1:
+
             if(input > 0) {
                 uniquePSU_Z1->setPolarity(0x1); 
                 // printf("Flipped polarity, Z1\n");
@@ -363,6 +373,7 @@ void MiddlewareLayer::PolarityCheck(float input, MiddlewareLayer::PSU_ENUM psu_)
             else uniquePSU_Z1->setPolarity(0x0);
         break;
         case MiddlewareLayer::PSU_ENUM::Z2:
+
             if(input > 0) {
                 uniquePSU_Z2->setPolarity(0x0); 
                 // printf("Flipped polarity, Z2\n");
@@ -374,7 +385,7 @@ void MiddlewareLayer::PolarityCheck(float input, MiddlewareLayer::PSU_ENUM psu_)
 }
 
 float MiddlewareLayer::getXField(){
-    return uniqueT_Meter->SingleAxisReading(Teslameter::AXIS::X);
+        return uniqueT_Meter->SingleAxisReading(Teslameter::AXIS::X);
 }
 
 void MiddlewareLayer::writeXField(){
