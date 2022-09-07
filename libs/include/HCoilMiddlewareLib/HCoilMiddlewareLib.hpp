@@ -220,6 +220,12 @@ public:
      */
     void writeXField();
 
+    /**
+     * @brief Set the Frequency parameter in the class
+     * 
+     * @param fHz 
+     */
+    void setFrequency(float fHz=1);
 
     std::string filename = "../output.csv"; //!< default file name.
 };

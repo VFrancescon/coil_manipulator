@@ -392,6 +392,16 @@ void MiddlewareLayer::writeXField(){
     this->outputFile << row_count++ << "," << this->getXField() << "\n";
 }
 
+void MiddlewareLayer::setFrequency(float fHz){
+    if(fHz <= 0){
+        std::cout << "Negative or non-zero value entered in set frequency.\n";
+        std::cout << "Keeping frequency at previously set: " << this->frequency << "\n";
+        return; 
+    }
+    this->frequency = fHz;
+    return;
+}
+
 MiddlewareLayer::~MiddlewareLayer(){
     this->TurnOffSupply();
     this->leftoverTimeFile.close();
