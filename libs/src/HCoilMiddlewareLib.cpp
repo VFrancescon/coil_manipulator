@@ -399,6 +399,7 @@ void MiddlewareLayer::setFrequency(float fHz){
         return; 
     }
     this->frequency = fHz;
+    this->period_us = 1/this->frequency*1000000;
     return;
 }
 
