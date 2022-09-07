@@ -57,7 +57,7 @@ target_link_libraries( pylonSave ${Pylon_LIBRARIES} ${OpenCV_LIBS})
 ## Two lines below allow libraries to be built.
 include_directories(libs/include)
 add_subdirectory(libs/src)
-add_subdirectory(submodules/a-star)
+# add_subdirectory(submodules/a-star)
 # add_subdirectory(src)
 add_subdirectory(docsBuild)
 
