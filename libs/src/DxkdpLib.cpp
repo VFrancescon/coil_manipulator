@@ -136,9 +136,9 @@ void DXKDP_PSU::Decoder28(output_message &msgOut){
     msgOut.I_HIGH = msgOut.output3[8];
 
     ReadVoltage = HexToValue(msgOut.V_HIGH, msgOut.V_LOW, Vconv);
-    std::cout << "\nCalculated in func, V float is: " << ReadVoltage;
+    // std::cout << "\nCalculated in func, V float is: " << ReadVoltage;
     ReadCurrent = HexToValue(msgOut.I_HIGH, msgOut.I_LOW, Iconv);
-    std::cout << "\nCalculated in func, I float is: " << ReadCurrent;
+    // std::cout << "\nCalculated in func, I float is: " << ReadCurrent;
     POstate = (bool)msgOut.PO_STATE;
 }
 
