@@ -23,7 +23,7 @@ DXKDP_PSU::DXKDP_PSU(std::string COM_PORT, float V_conv, float I_conv) : serialP
 }
 
 void DXKDP_PSU::DXKDP_Setup(){
-    this->serialPort.SetTimeout(-1);
+    this->serialPort.SetTimeout(100);
     this->serialPort.Open();
     
 }
@@ -103,7 +103,8 @@ std::vector<uint8_t> DXKDP_PSU::Encoder28(uint8_t addr){
 
 void DXKDP_PSU::Decoder26(output_message &msgOut){
     
-
+    msgOut.output3 = msgOut.output1;
+    msgOut.output3.insert(msgOut.output3.end(), msgOut.output2.begin(), msgOut.output2.end());
     // std::cout << "\n----------------\n Concatenation\n\n";
     // std::cout << "\nSize of concatenated vector: " << msgOut.output3.size();
     // std::cout << "\nContents: ";
@@ -118,10 +119,8 @@ void DXKDP_PSU::Decoder26(output_message &msgOut){
     msgOut.I_HIGH = msgOut.output3[7];
     msgOut.CC_OP = msgOut.output3[8];
 
-    ReadVoltage = HexToValue(msgOut.V_HIGH, msgOut.V_LOW, Vconv);
-    std::cout << "\nCalculated in func, V float is: " << ReadVoltage;
-    ReadCurrent = HexToValue(msgOut.I_HIGH, msgOut.I_LOW, Iconv);
-    std::cout << "\nCalculated in func, I float is: " << ReadCurrent;
+    this->ReadVoltage = HexToValue(msgOut.V_HIGH, msgOut.V_LOW, this->Vconv);
+    this->ReadCurrent = HexToValue(msgOut.I_HIGH, msgOut.I_LOW, this->Iconv);
     POstate = (bool)msgOut.PO_STATE;
 }
 
@@ -221,6 +220,28 @@ void DXKDP_PSU::WriteVI(float targetV, float targetI, uint8_t addr){
         THROW_EXCEPT("Write VI setting did not return 0x06. Aborting");
     } else return;
     
+}
+
+void DXKDP_PSU::ReadVI(uint8_t addr){
+    std::vector<uint8_t> input_vector = this->Encoder26();
+    this->PsuWrite(input_vector);
+    output_message msgOut;
+    // this->PsuRead(msgOut);
+    this->serialPort.ReadBinary(msgOut.output1);
+    this->serialPort.ReadBinary(msgOut.output2);
+
+    // for(auto i: msgOut.output1){
+    //     printf(" %02X", i);
+    // }
+    // for(auto i: msgOut.output2){
+    //     printf(" %02X", i);
+    // }
+    
+    this->Decoder26(msgOut);
+
+    if(msgOut.output1[0] == 0x15) {
+        THROW_EXCEPT("Reading VI did not return 0x06. Aborting");
+    } else return;
 }
 
 void DXKDP_PSU::setPolarity(uint8_t polarity, uint8_t addr){

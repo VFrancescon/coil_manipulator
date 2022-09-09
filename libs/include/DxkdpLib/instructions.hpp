@@ -192,7 +192,8 @@ struct output_message{
     uint8_t PO_STATE; //!< Power output state byte
     uint8_t CC_OP; //!< Constant Current output state byte
 
-    std::vector<uint8_t> output1; //!< vector containing raw read data
+    std::vector<uint8_t> output1; //!< vector containing the first batch of raw read data
+    std::vector<uint8_t> output2; //!< vector containing the second batch of raw read data
     std::vector<uint8_t> output3; //!< vector containing processed read data. Unused at the moment.
 
 };

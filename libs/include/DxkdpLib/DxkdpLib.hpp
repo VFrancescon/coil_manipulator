@@ -280,6 +280,14 @@ public:
      */
     void WriteVI(float targetV, float targetI, uint8_t addr=0x01);
 
+    /**
+     * @brief reads the VI currently output by the PSU. Writes the minto msg
+     * 
+     * @param msg reference to an output_message struct instance
+     * @param addr psu address. defautls to 0x01
+     */
+    void ReadVI(uint8_t addr=0x01);
+
     bool POstate; //!< Current PO state.
     float ReadVoltage; //!< Read Voltages and Currents. Only assigned internally. Needs implementing
     float ReadCurrent; //!< Read Voltages and Currents. Only assigned internally. Needs implementing

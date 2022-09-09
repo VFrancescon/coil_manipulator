@@ -5,9 +5,14 @@
 int main(int argc, char* argv[]){
 
     if(argc == 1){
-        DXKDP_PSU supply("/dev/ttyUSB1", 0.1, 0.01);
-        std::cout << "No input. Will enable Power out. Press enter to disable power out and quit.\n";
+        DXKDP_PSU supply("/dev/ttyUSB2", 0.01, 0.01);
+        std::cout << "No input. Will enable Power out. Press enter to read VI.\n";
+        supply.WriteVI(10,5);
         supply.PoCtrl(0x01);
+        std::cin.get();
+        
+        supply.ReadVI();
+        std::cout << "\nPress enter to shut down\n";
         std::cin.get();
         supply.PoCtrl(0x00);
     }
