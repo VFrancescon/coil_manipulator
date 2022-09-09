@@ -2,7 +2,7 @@
 #include <algorithm>
 #include <opencv2/ximgproc.hpp>
 #include <opencv2/video.hpp>
-#include <a-star/source/AStar.hpp>
+// #include <a-star/source/AStar.hpp>
 #include <fstream>
 #include <chrono>
 #include <unistd.h>
@@ -44,7 +44,7 @@ const int target_proc_period =  1 / (double )target_frame_rate * 10e6;
 int slowed_count = 0;
 std::string home_path = "/home/vittorio/";
 int main(void){
-    AStar::Generator generator;
+    // AStar::Generator generator;
 
     /*Video input stuff starts here
     -----------------------------------------------------------
