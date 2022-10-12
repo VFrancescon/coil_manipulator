@@ -44,14 +44,17 @@ int main(int argc, char* argv[])
     Pylon::CIntegerParameter width     ( camera.GetNodeMap(), "Width");
     Pylon::CIntegerParameter height    ( camera.GetNodeMap(), "Height");
     Pylon::CEnumParameter pixelFormat  ( camera.GetNodeMap(), "PixelFormat");
+    // Pylon::CEnumParameter(camera.GetNodeMap(), "ExposureTimeMode").SetValue("Standard");
     Size frameSize= Size((int)width.GetValue(), (int)height.GetValue());
     int codec = VideoWriter::fourcc('M', 'J', 'P', 'G');
     width.TrySetValue(640*3, Pylon::IntegerValueCorrection_Nearest);
     height.TrySetValue(480*3, Pylon::IntegerValueCorrection_Nearest);
+    // Pylon::CFloatParameter(camera.GetNodeMap(), "ExposureTimeAbs").SetValue(20000.0);
     Pylon::CPixelTypeMapper pixelTypeMapper( &pixelFormat);
     Pylon::EPixelType pixelType = pixelTypeMapper.GetPylonPixelTypeFromNodeValue(pixelFormat.GetIntValue());
     camera.StartGrabbing(Pylon::GrabStrategy_LatestImageOnly);
     Pylon::CGrabResultPtr ptrGrabResult;
+    
     /*-----------------------------------------------------------
     pylon video input here*/
 
