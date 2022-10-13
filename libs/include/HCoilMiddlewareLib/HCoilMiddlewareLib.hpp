@@ -33,7 +33,7 @@ private:
     
     int row_count = 1; //!< keeps track of how many rows have been printed to outputFile.
     int leftoverTime_count = 1; //!< keeps track of how many rows have been printed to outputFile
-    float frequency = 2.5; //!< frequency of the system.
+    float frequency = 1; //!< frequency of the system.
 
     int period_us = 1/frequency*1000000; //!< period in microseconds, derived from the frequency.
     

@@ -18,9 +18,9 @@ int main(int argc, char* argv[]){
         while(std::getline(sstr, word, ',')){
 
             if(counter == 6) {
-                bx.push_back(std::stof(word));
-                bx.push_back(std::stof(word));
-                bx.push_back(std::stof(word));
+                bx.push_back(std::stof(word)* -3);
+                bx.push_back(std::stof(word)* -3);
+                bx.push_back(std::stof(word)* -3);
             }
             if(counter == 7) {
                 by.push_back(std::stof(word) * -4);
@@ -28,9 +28,9 @@ int main(int argc, char* argv[]){
                 by.push_back(std::stof(word) * -4);}
             
             if(counter == 8) {
-                bz.push_back(std::stof(word));
-                bz.push_back(std::stof(word));
-                bz.push_back(std::stof(word));
+                bz.push_back(std::stof(word) * -3);
+                bz.push_back(std::stof(word) * -3);
+                bz.push_back(std::stof(word) * -3);
             }
             counter++;
         }
