@@ -196,6 +196,21 @@ public:
      */
     void stepIntroducer(int stepCount_);
 
+    /**
+     * @brief Wrapper for the Introducer Functions. Retracts by 1mm.
+     * 
+     * Use alongside the 1D field functions to step the introducer along.
+     */
+    void retractIntroducer(void);
+    
+
+    /**
+     * @brief Wrapper for Introducer Functions. Rectrats by stepCount_ mms
+     * 
+     * @param stepCount_ count of how many extensions to be made.
+     */
+    void retractIntroducer(int stepCount_);
+
     
     /**
      * @brief Checks input and sets PSU polarity accordingly.

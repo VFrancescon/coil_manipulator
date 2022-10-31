@@ -290,6 +290,20 @@ void MiddlewareLayer::stepIntroducer(int stepCount_){
     this->stepper_count += stepCount_;
     for(int i = 0; i < stepCount_; i++){
         this->uniqueLinAct->LinearExtend();
+        usleep(100000);
+    }
+}
+
+void MiddlewareLayer::retractIntroducer(){
+    this->stepper_count--;
+    this->uniqueLinAct->LinearContract();    
+}
+
+void MiddlewareLayer::retractIntroducer(int stepCount_){
+    this->stepper_count -= stepCount_;
+    for(int i = 0; i < stepCount_; i++){
+        this->uniqueLinAct->LinearContract();
+        usleep(100000);
     }
 }
 
