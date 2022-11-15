@@ -1,4 +1,5 @@
 find_package(Threads REQUIRED)
+find_package (Eigen3 3.3 REQUIRED NO_MODULE)
 
 # STEP 1: Include cpp files
 
@@ -51,7 +52,7 @@ target_include_directories(HCoilMiddlewareLib PUBLIC "$<BUILD_INTERFACE:${CMAKE_
 target_link_libraries(DxkdpLib CppLinuxSerial)
 target_link_libraries(LinActuatorLib CppLinuxSerial)
 target_link_libraries(LakeshoreF71Lib CppLinuxSerial)
-target_link_libraries(HCoilMiddlewareLib DxkdpLib LinActuatorLib LakeshoreF71Lib Threads::Threads)
+target_link_libraries(HCoilMiddlewareLib DxkdpLib LinActuatorLib LakeshoreF71Lib Threads::Threads Eigen3::Eigen)
 
 #STEP 6: Install bin
 

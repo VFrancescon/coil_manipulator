@@ -13,6 +13,8 @@
 #include <thread>
 #include <fstream>
 #include <chrono>
+#include "eigen3/Eigen/Core"
+
 /**
  * @class MiddlewareLayer
  * @brief Middleware for Low-Level Control
@@ -180,6 +182,15 @@ public:
      * @param I_Z desired Z field
      */
     void set3DField(float I_X, float I_Y, float I_Z);
+
+    /**
+     * @brief Sets X, Y and Z fields by altering corresponding currents.
+     * 
+     * @param I_X desired X field
+     * @param I_Y desired Y field
+     * @param I_Z desired Z field
+     */
+    void set3DField(Eigen::Vector3d field);
 
     /**
      * @brief Wrapper for the Introducer Functions. Extends by 1mm.
