@@ -1,10 +1,12 @@
 #include <LakeshoreF71Lib/LakeshoreF71Lib.hpp>
 #include <unistd.h>
-Teslameter::Teslameter() : serialPort("/dev/ttyUSB0", BaudRate::B_115200, NumDataBits::EIGHT, Parity::NONE, NumStopBits::ONE, FlowControl::HARDWARE) {
+Teslameter::Teslameter() : serialPort("/dev/ttyUSB0", BaudRate::B_115200, NumDataBits::EIGHT, Parity::NONE, NumStopBits::ONE, 
+    HardwareFlowControl::ON, SoftwareFlowControl::OFF) {
     this->TeslameterSetup();
 }
 
-Teslameter::Teslameter(std::string COM) : serialPort(COM, BaudRate::B_115200, NumDataBits::EIGHT, Parity::NONE, NumStopBits::ONE, FlowControl::HARDWARE) {
+Teslameter::Teslameter(std::string COM) : serialPort(COM, BaudRate::B_115200, NumDataBits::EIGHT, Parity::NONE, NumStopBits::ONE, 
+    HardwareFlowControl::ON, SoftwareFlowControl::OFF) {
     this->TeslameterSetup();
 }
 
