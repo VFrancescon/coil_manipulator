@@ -1,17 +1,16 @@
 # Helmz Coil Manipulator
 
-# Dependencies
+## Dependencies
 
-## Functional
-
+### Functional
 
 * Install the [Pylon SDK](https://www.baslerweb.com/en/sales-support/downloads/software-downloads/) with mpg4 addon.
 * [OpenCV](https://opencv.org/releases/)
-* [CppLinuxSerial](https://github.com/VFrancescon/CppLinuxSerial)*
+* [CppLinuxSerial](hhttps://github.com/gbmhunter/CppLinuxSerial)
 * [A-Star](https://github.com/VFrancescon/a-star)*
 
 \*PLEASE NOTE:
-Both those repos have been forked to introduce some extra functionality. Pull requests are out and the original repos will be restored in the guides when appropriate. 
+Forked from main to introduce some extra functionality. Pull requests are out and the original repos will be restored in the guides when appropriate. 
 
 Both repos are also included as submodules. Therefore, upon cloning, include them using:
 
@@ -21,7 +20,7 @@ Both repos are also included as submodules. Therefore, upon cloning, include the
 
 Then follow install instructions for each repo (CppLinuxSerial) only for now.
 
-## Documentation
+### Documentation
 
 [Read the documentation here](https://vfrancescon.github.io/coil_manipulator/)
 
@@ -32,17 +31,18 @@ Then follow install instructions for each repo (CppLinuxSerial) only for now.
 \*NOTE: Follow [this](https://devblogs.microsoft.com/cppblog/clear-functional-c-documentation-with-sphinx-breathe-doxygen-cmake/) guide for detailed Doxygen instructions. It was decided Sphinx was not worth it, so we only need the Doxygen section.
 Also, for compatibility, install from source. The bins and apt packages hate working on ubuntu 18.
 
-# Build Instructions
+## Build Instructions
 
 1. In ~/coil_manipulator
 
 2. Execute
 
-```
+```bash
 mkdir build && cd build
 cmake ..
 sudo make install
 ```
+
 3. You are ready to go!
 
 ### Note
@@ -64,7 +64,8 @@ E.g. (assuming you are in build/ and have compiled the project fully):
 
 `firefox docs/html/index.html`
 
-# Features
+## Features
+
 * Completely C/C++ Based
 * Qt5 Frontend
 * Basler Pylon + OpenCV integration (prototype)
@@ -73,13 +74,16 @@ E.g. (assuming you are in build/ and have compiled the project fully):
 * Low Level library written for Serial Comm to Linear Actuator
 * Functional (Barebones) middle-ware layer to control the above components
 
-# Currently in Progress
+## Currently in Progress
+
 * Image processing and control module
 
-# Screenshots
+## Screenshots
+
 ![GUI_Alpha3](images/frontend_alpha3.png)
 ![Serial_Comm](images/FirstSerialSuccess.png)
 
-# Credits
+## Credits
+
 * [Geoffry Hunter](https://github.com/gbmhunter/CppLinuxSerial) for the Serial Comm C++ Class
 * [Damian Barczyński](https://github.com/daancode/a-star) for the C++ A* implementation

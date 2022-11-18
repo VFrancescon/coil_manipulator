@@ -3,7 +3,7 @@
 	url = git@github.com:VFrancescon/a-star.git
 [submodule "submodules/CppLinuxSerial"]
 	path = submodules/CppLinuxSerial
-	url = git@github.com:VFrancescon/CppLinuxSerial.git
+	url = git@github.com:gbmhunter/CppLinuxSerial.git
 [submodule "submodules/doxygen-awesome-css"]
 	path = submodules/doxygen-awesome-css
 	url = https://github.com/jothepro/doxygen-awesome-css.git
