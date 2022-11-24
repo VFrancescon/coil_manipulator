@@ -54,14 +54,14 @@ MiddlewareLayer::MiddlewareLayer(bool PSU_ONLY){
 
 void MiddlewareLayer::setUniquePSUS(){
         // <X/Y/Z>1 PSUs
-    this->uniquePSU_X1 = std::make_unique<DXKDP_PSU>("/dev/ttyUSB2", 0.01, 0.01);
-    // this->uniquePSU_Y1 = std::make_unique<DXKDP_PSU>("/dev/ttyUSB1", 0.01, 0.01);
-    this->uniquePSU_Z1 = std::make_unique<DXKDP_PSU>("/dev/ttyUSB4", 0.01, 0.01);
+    this->uniquePSU_X1 = std::make_unique<DXKDP_PSU>("/dev/ttyUSB1", 0.1, 0.01);
+    this->uniquePSU_Y1 = std::make_unique<DXKDP_PSU>("/dev/ttyUSB4", 0.01, 0.01);
+    this->uniquePSU_Z1 = std::make_unique<DXKDP_PSU>("/dev/ttyUSB2", 0.01, 0.01);
     
     // <X/Y/Z>2 PSUs
-    this->uniquePSU_X2 = std::make_unique<DXKDP_PSU>("/dev/ttyUSB3", 0.01, 0.01);
-    // this->uniquePSU_Y2 = std::make_unique<DXKDP_PSU>("/dev/ttyUSB5", 0.01, 0.01);
-    this->uniquePSU_Z2 = std::make_unique<DXKDP_PSU>("/dev/ttyUSB5", 0.01, 0.01);
+    // this->uniquePSU_X2 = std::make_unique<DXKDP_PSU>("/dev/ttyUSB3", 0.01, 0.01);
+    this->uniquePSU_Y2 = std::make_unique<DXKDP_PSU>("/dev/ttyUSB5", 0.01, 0.01);
+    // this->uniquePSU_Z2 = std::make_unique<DXKDP_PSU>("/dev/ttyUSB5", 0.01, 0.01);
 
     return;
 }
@@ -134,34 +134,34 @@ void MiddlewareLayer::set3DVector(std::vector<float> I_X, std::vector<float> I_Y
     for(int i = 0; i < I_X.size(); i++){
 
         std::thread th_x1(&MiddlewareLayer::PolarityCheck, this, I_X[i], MiddlewareLayer::PSU_ENUM::X1);
-        std::thread th_x2(&MiddlewareLayer::PolarityCheck, this, I_X[i], MiddlewareLayer::PSU_ENUM::X2);
-        // std::thread th_y1(&MiddlewareLayer::PolarityCheck, this, I_Y[i], MiddlewareLayer::PSU_ENUM::Y1);
-        // std::thread th_y2(&MiddlewareLayer::PolarityCheck, this, I_Y[i], MiddlewareLayer::PSU_ENUM::Y2);
+        // std::thread th_x2(&MiddlewareLayer::PolarityCheck, this, I_X[i], MiddlewareLayer::PSU_ENUM::X2);
+        std::thread th_y1(&MiddlewareLayer::PolarityCheck, this, I_Y[i], MiddlewareLayer::PSU_ENUM::Y1);
+        std::thread th_y2(&MiddlewareLayer::PolarityCheck, this, I_Y[i], MiddlewareLayer::PSU_ENUM::Y2);
         std::thread th_z1(&MiddlewareLayer::PolarityCheck, this, I_Z[i], MiddlewareLayer::PSU_ENUM::Z1);
-        std::thread th_z2(&MiddlewareLayer::PolarityCheck, this, I_Z[i], MiddlewareLayer::PSU_ENUM::Z2);
+        // std::thread th_z2(&MiddlewareLayer::PolarityCheck, this, I_Z[i], MiddlewareLayer::PSU_ENUM::Z2);
         th_x1.join();
-        th_x2.join();
-        // th_y1.join();
-        // th_y2.join();
+        // th_x2.join();
+        th_y1.join();
+        th_y2.join();
         th_z1.join();
-        th_z2.join();
+        // th_z2.join();
 
         //starting timing here
         std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
         std::thread thread_x1(&DXKDP_PSU::WriteCurrent, uniquePSU_X1.get(), abs(I_X[i])*cal_x, 0x01);
-        std::thread thread_x2(&DXKDP_PSU::WriteCurrent, uniquePSU_X2.get(), abs(I_X[i])*cal_x, 0x01);
-        // std::thread thread_y1(&DXKDP_PSU::WriteCurrent, uniquePSU_Y1.get(), abs(I_Y[i])*cal_y, 0x01);
-        // std::thread thread_y2(&DXKDP_PSU::WriteCurrent, uniquePSU_Y2.get(), abs(I_Y[i])*cal_y, 0x01);
+        // std::thread thread_x2(&DXKDP_PSU::WriteCurrent, uniquePSU_X2.get(), abs(I_X[i])*cal_x, 0x01);
+        std::thread thread_y1(&DXKDP_PSU::WriteCurrent, uniquePSU_Y1.get(), abs(I_Y[i])*cal_y, 0x01);
+        std::thread thread_y2(&DXKDP_PSU::WriteCurrent, uniquePSU_Y2.get(), abs(I_Y[i])*cal_y, 0x01);
         std::thread thread_z1(&DXKDP_PSU::WriteCurrent, uniquePSU_Z1.get(), abs(I_Z[i])*cal_z, 0x01);
-        std::thread thread_z2(&DXKDP_PSU::WriteCurrent, uniquePSU_Z2.get(), abs(I_Z[i])*cal_z, 0x01);
+        // std::thread thread_z2(&DXKDP_PSU::WriteCurrent, uniquePSU_Z2.get(), abs(I_Z[i])*cal_z, 0x01);
         // std::thread thread_te(&MiddlewareLayer::writeXField, this);
         // std::thread introducer_thread(&LinearActuator::LinearExtend, uniqueLinAct.get());
         thread_x1.join();
-        thread_x2.join();
-        // thread_y1.join();
-        // thread_y2.join();
+        // thread_x2.join();
+        thread_y1.join();
+        thread_y2.join();
         thread_z1.join();
-        thread_z2.join();
+        // thread_z2.join();
         // thread_te.join();
         // introducer_thread.join();
 
@@ -191,34 +191,34 @@ void MiddlewareLayer::set3DVectorIN(std::vector<float> I_X, std::vector<float> I
     for(int i = 0; i < I_X.size(); i++){
 
         std::thread th_x1(&MiddlewareLayer::PolarityCheck, this, I_X[i], MiddlewareLayer::PSU_ENUM::X1);
-        std::thread th_x2(&MiddlewareLayer::PolarityCheck, this, I_X[i], MiddlewareLayer::PSU_ENUM::X2);
-        // std::thread th_y1(&MiddlewareLayer::PolarityCheck, this, I_Y[i], MiddlewareLayer::PSU_ENUM::Y1);
-        // std::thread th_y2(&MiddlewareLayer::PolarityCheck, this, I_Y[i], MiddlewareLayer::PSU_ENUM::Y2);
+        // std::thread th_x2(&MiddlewareLayer::PolarityCheck, this, I_X[i], MiddlewareLayer::PSU_ENUM::X2);
+        std::thread th_y1(&MiddlewareLayer::PolarityCheck, this, I_Y[i], MiddlewareLayer::PSU_ENUM::Y1);
+        std::thread th_y2(&MiddlewareLayer::PolarityCheck, this, I_Y[i], MiddlewareLayer::PSU_ENUM::Y2);
         std::thread th_z1(&MiddlewareLayer::PolarityCheck, this, I_Z[i], MiddlewareLayer::PSU_ENUM::Z1);
-        std::thread th_z2(&MiddlewareLayer::PolarityCheck, this, I_Z[i], MiddlewareLayer::PSU_ENUM::Z2);
+        // std::thread th_z2(&MiddlewareLayer::PolarityCheck, this, I_Z[i], MiddlewareLayer::PSU_ENUM::Z2);
         th_x1.join();
-        th_x2.join();
-        // th_y1.join();
-        // th_y2.join();
+        // th_x2.join();
+        th_y1.join();
+        th_y2.join();
         th_z1.join();
-        th_z2.join();
+        // th_z2.join();
 
         //starting timing here
         std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
         std::thread thread_x1(&DXKDP_PSU::WriteCurrent, uniquePSU_X1.get(), abs(I_X[i])*cal_x, 0x01);
-        std::thread thread_x2(&DXKDP_PSU::WriteCurrent, uniquePSU_X2.get(), abs(I_X[i])*cal_x, 0x01);
-        // std::thread thread_y1(&DXKDP_PSU::WriteCurrent, uniquePSU_Y1.get(), abs(I_Y[i])*cal_y, 0x01);
-        // std::thread thread_y2(&DXKDP_PSU::WriteCurrent, uniquePSU_Y2.get(), abs(I_Y[i])*cal_y, 0x01);
+        // std::thread thread_x2(&DXKDP_PSU::WriteCurrent, uniquePSU_X2.get(), abs(I_X[i])*cal_x, 0x01);
+        std::thread thread_y1(&DXKDP_PSU::WriteCurrent, uniquePSU_Y1.get(), abs(I_Y[i])*cal_y, 0x01);
+        std::thread thread_y2(&DXKDP_PSU::WriteCurrent, uniquePSU_Y2.get(), abs(I_Y[i])*cal_y, 0x01);
         std::thread thread_z1(&DXKDP_PSU::WriteCurrent, uniquePSU_Z1.get(), abs(I_Z[i])*cal_z, 0x01);
-        std::thread thread_z2(&DXKDP_PSU::WriteCurrent, uniquePSU_Z2.get(), abs(I_Z[i])*cal_z, 0x01);
+        // std::thread thread_z2(&DXKDP_PSU::WriteCurrent, uniquePSU_Z2.get(), abs(I_Z[i])*cal_z, 0x01);
         std::thread introducer_thread(&LinearActuator::LinearExtend, uniqueLinAct.get());
         // std::thread thread_te(&MiddlewareLayer::writeXField, this);
         thread_x1.join();
-        thread_x2.join();
-        // thread_y1.join();
-        // thread_y2.join();
+        // thread_x2.join();
+        thread_y1.join();
+        thread_y2.join();
         thread_z1.join();
-        thread_z2.join();        
+        // thread_z2.join();        
                 
         // thread_te.join();
         introducer_thread.join();
@@ -252,34 +252,36 @@ void MiddlewareLayer::set3DVectorOUT(std::vector<float> I_X, std::vector<float> 
     for(int i = 0; i < I_X.size(); i++){
 
         std::thread th_x1(&MiddlewareLayer::PolarityCheck, this, I_X[i], MiddlewareLayer::PSU_ENUM::X1);
-        std::thread th_x2(&MiddlewareLayer::PolarityCheck, this, I_X[i], MiddlewareLayer::PSU_ENUM::X2);
-        // std::thread th_y1(&MiddlewareLayer::PolarityCheck, this, I_Y[i], MiddlewareLayer::PSU_ENUM::Y1);
-        // std::thread th_y2(&MiddlewareLayer::PolarityCheck, this, I_Y[i], MiddlewareLayer::PSU_ENUM::Y2);
+        // std::thread th_x2(&MiddlewareLayer::PolarityCheck, this, I_X[i], MiddlewareLayer::PSU_ENUM::X2);
+        std::thread th_y1(&MiddlewareLayer::PolarityCheck, this, I_Y[i], MiddlewareLayer::PSU_ENUM::Y1);
+        std::thread th_y2(&MiddlewareLayer::PolarityCheck, this, I_Y[i], MiddlewareLayer::PSU_ENUM::Y2);
         std::thread th_z1(&MiddlewareLayer::PolarityCheck, this, I_Z[i], MiddlewareLayer::PSU_ENUM::Z1);
-        std::thread th_z2(&MiddlewareLayer::PolarityCheck, this, I_Z[i], MiddlewareLayer::PSU_ENUM::Z2);
+        // std::thread th_z2(&MiddlewareLayer::PolarityCheck, this, I_Z[i], MiddlewareLayer::PSU_ENUM::Z2);
         th_x1.join();
-        th_x2.join();
+        // th_x2.join();
+        th_y1.join();
+        th_y2.join();
         th_z1.join();
-        th_z2.join();
+        // th_z2.join();
 
         //starting timing here
         std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
         // std::thread thread_x1(&DXKDP_PSU::WriteCurrent, uniquePSU_X1.get(), abs(I_X[i])*cal_x, 0x01);
         std::thread thread_x1(&DXKDP_PSU::WriteCurrent, uniquePSU_X1.get(), abs(I_X[i])*cal_x, 0x01);
-        std::thread thread_x2(&DXKDP_PSU::WriteCurrent, uniquePSU_X2.get(), abs(I_X[i])*cal_x, 0x01);
-        // std::thread thread_y1(&DXKDP_PSU::WriteCurrent, uniquePSU_Y1.get(), abs(I_Y[i])*cal_y, 0x01);
-        // std::thread thread_y2(&DXKDP_PSU::WriteCurrent, uniquePSU_Y2.get(), abs(I_Y[i])*cal_y, 0x01);
+        // std::thread thread_x2(&DXKDP_PSU::WriteCurrent, uniquePSU_X2.get(), abs(I_X[i])*cal_x, 0x01);
+        std::thread thread_y1(&DXKDP_PSU::WriteCurrent, uniquePSU_Y1.get(), abs(I_Y[i])*cal_y, 0x01);
+        std::thread thread_y2(&DXKDP_PSU::WriteCurrent, uniquePSU_Y2.get(), abs(I_Y[i])*cal_y, 0x01);
         std::thread thread_z1(&DXKDP_PSU::WriteCurrent, uniquePSU_Z1.get(), abs(I_Z[i])*cal_z, 0x01);
-        std::thread thread_z2(&DXKDP_PSU::WriteCurrent, uniquePSU_Z2.get(), abs(I_Z[i])*cal_z, 0x01);
+        // std::thread thread_z2(&DXKDP_PSU::WriteCurrent, uniquePSU_Z2.get(), abs(I_Z[i])*cal_z, 0x01);
         // std::thread thread_te(&MiddlewareLayer::writeXField, this);
         
         std::thread introducer_thread(&LinearActuator::LinearContract, uniqueLinAct.get());
         thread_x1.join();
-        thread_x2.join();
-        // thread_y1.join();
-        // thread_y2.join();
+        // thread_x2.join();
+        thread_y1.join();
+        thread_y2.join();
         thread_z1.join();
-        thread_z2.join();        
+        // thread_z2.join();        
                 
         // thread_te.join();
         introducer_thread.join();
@@ -300,26 +302,30 @@ void MiddlewareLayer::set3DVectorOUT(std::vector<float> I_X, std::vector<float> 
 
 void MiddlewareLayer::set3DField(float I_X, float I_Y, float I_Z){
     std::thread th_x1(&MiddlewareLayer::PolarityCheck, this, I_X, MiddlewareLayer::PSU_ENUM::X1);
-    std::thread th_x2(&MiddlewareLayer::PolarityCheck, this, I_X, MiddlewareLayer::PSU_ENUM::X2);
-    // std::thread th_y1(&MiddlewareLayer::PolarityCheck, this, I_Y[i], MiddlewareLayer::PSU_ENUM::Y1);
-    // std::thread th_y2(&MiddlewareLayer::PolarityCheck, this, I_Y[i], MiddlewareLayer::PSU_ENUM::Y2);
+    // std::thread th_x2(&MiddlewareLayer::PolarityCheck, this, I_X, MiddlewareLayer::PSU_ENUM::X2);
+    std::thread th_y1(&MiddlewareLayer::PolarityCheck, this, I_Y, MiddlewareLayer::PSU_ENUM::Y1);
+    std::thread th_y2(&MiddlewareLayer::PolarityCheck, this, I_Y, MiddlewareLayer::PSU_ENUM::Y2);
     std::thread th_z1(&MiddlewareLayer::PolarityCheck, this, I_Z, MiddlewareLayer::PSU_ENUM::Z1);
-    std::thread th_z2(&MiddlewareLayer::PolarityCheck, this, I_Z, MiddlewareLayer::PSU_ENUM::Z2);
+    // std::thread th_z2(&MiddlewareLayer::PolarityCheck, this, I_Z, MiddlewareLayer::PSU_ENUM::Z2);
     th_x1.join();
-    th_x2.join();
+    // th_x2.join();
+    th_y1.join();
+    th_y2.join();
     th_z1.join();
-    th_z2.join();
+    // th_z2.join();
 
     std::thread thread_x1(&DXKDP_PSU::WriteCurrent, uniquePSU_X1.get(), abs(I_X)*cal_x, 0x01);
-    std::thread thread_x2(&DXKDP_PSU::WriteCurrent, uniquePSU_X2.get(), abs(I_X)*cal_x, 0x01);
-    // std::thread thread_y1(&DXKDP_PSU::WriteCurrent, uniquePSU_Y1.get(), abs(I_Y)*cal_y, 0x01);
-    // std::thread thread_y2(&DXKDP_PSU::WriteCurrent, uniquePSU_Y2.get(), abs(I_Y)*cal_y, 0x01);
+    // std::thread thread_x2(&DXKDP_PSU::WriteCurrent, uniquePSU_X2.get(), abs(I_X)*cal_x, 0x01);
+    std::thread thread_y1(&DXKDP_PSU::WriteCurrent, uniquePSU_Y1.get(), abs(I_Y)*cal_y, 0x01);
+    std::thread thread_y2(&DXKDP_PSU::WriteCurrent, uniquePSU_Y2.get(), abs(I_Y)*cal_y, 0x01);
     std::thread thread_z1(&DXKDP_PSU::WriteCurrent, uniquePSU_Z1.get(), abs(I_Z)*cal_z, 0x01);
-    std::thread thread_z2(&DXKDP_PSU::WriteCurrent, uniquePSU_Z2.get(), abs(I_Z)*cal_z, 0x01);
+    // std::thread thread_z2(&DXKDP_PSU::WriteCurrent, uniquePSU_Z2.get(), abs(I_Z)*cal_z, 0x01);
     thread_x1.join();
-    thread_x2.join();
+    // thread_x2.join();
+    thread_y1.join();
+    thread_y2.join();
     thread_z1.join();
-    thread_z2.join();
+    // thread_z2.join();
 
 }
 
@@ -328,26 +334,30 @@ void MiddlewareLayer::set3DField(Eigen::Vector3d field){
     double I_Y = field(1);
     double I_Z = field(2);
     std::thread th_x1(&MiddlewareLayer::PolarityCheck, this, I_X, MiddlewareLayer::PSU_ENUM::X1);
-    std::thread th_x2(&MiddlewareLayer::PolarityCheck, this, I_X, MiddlewareLayer::PSU_ENUM::X2);
-    // std::thread th_y1(&MiddlewareLayer::PolarityCheck, this, I_Y[i], MiddlewareLayer::PSU_ENUM::Y1);
-    // std::thread th_y2(&MiddlewareLayer::PolarityCheck, this, I_Y[i], MiddlewareLayer::PSU_ENUM::Y2);
+    // std::thread th_x2(&MiddlewareLayer::PolarityCheck, this, I_X, MiddlewareLayer::PSU_ENUM::X2);
+    std::thread th_y1(&MiddlewareLayer::PolarityCheck, this, I_Y, MiddlewareLayer::PSU_ENUM::Y1);
+    std::thread th_y2(&MiddlewareLayer::PolarityCheck, this, I_Y, MiddlewareLayer::PSU_ENUM::Y2);
     std::thread th_z1(&MiddlewareLayer::PolarityCheck, this, I_Z, MiddlewareLayer::PSU_ENUM::Z1);
-    std::thread th_z2(&MiddlewareLayer::PolarityCheck, this, I_Z, MiddlewareLayer::PSU_ENUM::Z2);
+    // std::thread th_z2(&MiddlewareLayer::PolarityCheck, this, I_Z, MiddlewareLayer::PSU_ENUM::Z2);
     th_x1.join();
-    th_x2.join();
+    // th_x2.join();
+    th_y1.join();
+    th_y2.join();    
     th_z1.join();
-    th_z2.join();
+    // th_z2.join();
 
     std::thread thread_x1(&DXKDP_PSU::WriteCurrent, uniquePSU_X1.get(), abs(I_X)*cal_x, 0x01);
-    std::thread thread_x2(&DXKDP_PSU::WriteCurrent, uniquePSU_X2.get(), abs(I_X)*cal_x, 0x01);
-    // std::thread thread_y1(&DXKDP_PSU::WriteCurrent, uniquePSU_Y1.get(), abs(I_Y)*cal_y, 0x01);
-    // std::thread thread_y2(&DXKDP_PSU::WriteCurrent, uniquePSU_Y2.get(), abs(I_Y)*cal_y, 0x01);
+    // std::thread thread_x2(&DXKDP_PSU::WriteCurrent, uniquePSU_X2.get(), abs(I_X)*cal_x, 0x01);
+    std::thread thread_y1(&DXKDP_PSU::WriteCurrent, uniquePSU_Y1.get(), abs(I_Y)*cal_y, 0x01);
+    std::thread thread_y2(&DXKDP_PSU::WriteCurrent, uniquePSU_Y2.get(), abs(I_Y)*cal_y, 0x01);
     std::thread thread_z1(&DXKDP_PSU::WriteCurrent, uniquePSU_Z1.get(), abs(I_Z)*cal_z, 0x01);
-    std::thread thread_z2(&DXKDP_PSU::WriteCurrent, uniquePSU_Z2.get(), abs(I_Z)*cal_z, 0x01);
+    // std::thread thread_z2(&DXKDP_PSU::WriteCurrent, uniquePSU_Z2.get(), abs(I_Z)*cal_z, 0x01);
     thread_x1.join();
-    thread_x2.join();
+    // thread_x2.join();
+    thread_y1.join();
+    thread_y2.join();
     thread_z1.join();
-    thread_z2.join();
+    // thread_z2.join();
 
 }
 
