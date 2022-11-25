@@ -314,7 +314,12 @@ void MiddlewareLayer::set3DField(float I_X, float I_Y, float I_Z){
     th_z1.join();
     // th_z2.join();
 
+    // I_X = abs(I_X) * cal_x;
+    // I_Y = abs(I_Y) * cal_y;
+    // I_Z = abs(I_Z) * cal_z;
+
     std::thread thread_x1(&DXKDP_PSU::WriteCurrent, uniquePSU_X1.get(), abs(I_X)*cal_x, 0x01);
+    // std::thread thread_x1(&DXKDP_PSU::WriteVI, uniquePSU_X1.get(), I_X/3, I_X, 0x01);
     // std::thread thread_x2(&DXKDP_PSU::WriteCurrent, uniquePSU_X2.get(), abs(I_X)*cal_x, 0x01);
     std::thread thread_y1(&DXKDP_PSU::WriteCurrent, uniquePSU_Y1.get(), abs(I_Y)*cal_y, 0x01);
     std::thread thread_y2(&DXKDP_PSU::WriteCurrent, uniquePSU_Y2.get(), abs(I_Y)*cal_y, 0x01);
