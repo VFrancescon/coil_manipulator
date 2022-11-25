@@ -39,15 +39,55 @@ private:
 
     int period_us = 1/frequency*1000000; //!< period in microseconds, derived from the frequency.
     
-    float cal_x = 1.849; //!< Bx calibration factor
-    float cal_y = 0.896; //!< By calibration factor
-    float cal_z = 1.583; //!< Bz calibration factor
+    float cal_x = 0.53; //!< Bx calibration factor. Units are mt/A
+    float cal_y = 1.07; //!< By calibration factor. Units are mt/A
+    float cal_z = 0.64; //!< Bz calibration factor. Units are mt/A
 
     float xLimit = 50; //!< current limit in the x supply
     float zLimit = 50; //!< current limit in the y supply
     float yLimit = 30; //!< current limit in the z supply
 
     bool PSU_MODE = false;
+
+    /**
+     * @brief Calculates the voltage required to hold given current I (approx) while staying in CV mode.
+     * 
+     * X-PSU specific, coefficients obtained experimentally
+     * 
+     * @param I current to hold
+     * @return float required V that will maintain the system in CV mode.
+     */
+    float xVoltage(float I);
+    
+    /**
+     * @brief Calculates the voltage required to hold given current I (approx) while staying in CV mode.
+     * 
+     * Y1-PSU specific, coefficients obtained experimentally
+     * 
+     * @param I current to hold
+     * @return float required V that will maintain the system in CV mode.
+     */
+    float y1Voltage(float I);
+    
+    /**
+     * @brief Calculates the voltage required to hold given current I (approx) while staying in CV mode.
+     * 
+     * Y2-PSU specific, coefficients obtained experimentally
+     * 
+     * @param I current to hold
+     * @return float required V that will maintain the system in CV mode.
+     */
+    float y2Voltage(float I);
+
+    /**
+     * @brief Calculates the voltage required to hold given current I (approx) while staying in CV mode.
+     * 
+     * Z-PSU specific, coefficients obtained experimentally
+     * 
+     * @param I current to hold
+     * @return float required V that will maintain the system in CV mode.
+     */
+    float zVoltage(float I);
 
 public:
 
