@@ -111,18 +111,15 @@ void MiddlewareLayer::TurnOffSupply(){
     // thread_y2.join();
     // thread_z1.join();
     // // thread_z2.join();
-    usleep(2e6);
-    this->uniquePSU_X1->WriteVI(0,0);
-    this->uniquePSU_Y1->WriteVI(0,0);
-    this->uniquePSU_Y2->WriteVI(0,0);
-    this->uniquePSU_Z1->WriteVI(0,0);
-    usleep(2e6);
-    this->uniquePSU_X1->PoCtrl(0x00);
-    this->uniquePSU_Y1->PoCtrl(0x00);
-    this->uniquePSU_Y2->PoCtrl(0x00);
-    this->uniquePSU_Z1->PoCtrl(0x00);
-    usleep(2e6);
-
+    usleep(1e6);
+    this->uniquePSU_X1->~DXKDP_PSU();
+    usleep(5e5);
+    this->uniquePSU_Y1->~DXKDP_PSU();
+    usleep(5e5);
+    this->uniquePSU_Y2->~DXKDP_PSU();
+    usleep(5e5);
+    this->uniquePSU_Z1->~DXKDP_PSU();
+    usleep(1e6);
 
     std::cout << "Finished turnoffsupply routine\n";
 }
@@ -516,7 +513,7 @@ void MiddlewareLayer::setFrequency(float fHz){
 
 MiddlewareLayer::~MiddlewareLayer(){
     std::cout << "Started shutdown routine\n";
-    // this->TurnOffSupply();
+    this->TurnOffSupply();
     // this->leftoverTimeFile.close();
     if(!PSU_MODE) this->uniqueLinAct->LinearStop();
     std::cout << "Shutting down\n";
