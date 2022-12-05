@@ -43,6 +43,8 @@ void DXKDP_PSU::PsuRead(output_message &msgOut){
 }
 
 DXKDP_PSU::~DXKDP_PSU(){
+    this->WriteVI(0,0);
+    this->PoCtrl(0x00);
     this->serialPort.Close();
 }
 
