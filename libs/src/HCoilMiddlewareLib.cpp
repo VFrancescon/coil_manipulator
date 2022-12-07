@@ -82,50 +82,7 @@ void MiddlewareLayer::TurnOnSupply(){
     // thread_z2.join();
 }
 
-void MiddlewareLayer::TurnOffSupply(){
-    std::cout << "Started turnoffsupply routine\n";
-    // // std::thread th_x1(&DXKDP_PSU::WriteVI, uniquePSU_X1.get(), 0, 0.00, 0x01);
-    // // // std::thread th_x2(&DXKDP_PSU::WriteVI, uniquePSU_X2.get(), 0, 0.00, 0x01);
-    // // std::thread th_y1(&DXKDP_PSU::WriteVI, uniquePSU_Y1.get(), 0, 0.00, 0x01);
-    // // std::thread th_y2(&DXKDP_PSU::WriteVI, uniquePSU_Y2.get(), 0, 0.00, 0x01);
-    // // std::thread th_z1(&DXKDP_PSU::WriteVI, uniquePSU_Z1.get(), 0, 0.00, 0x01);
-    // // // std::thread th_z2(&DXKDP_PSU::WriteVI, uniquePSU_Z2.get(), 0, 0.00, 0x01);
-    // // th_x1.join();
-    // // // th_x2.join();
-    // // th_y1.join();
-    // // th_y2.join();
-    // // th_z1.join();
-    // // th_z2.join();
-    // std::cout << "Finished WriteVI section of turnoffsupply\n";
-
-    // std::cout << "Started Poctrl part of turnoffsupply\n";
-    // std::thread thread_x1(&DXKDP_PSU::PoCtrl, uniquePSU_X1.get(), 0x00);
-    // // std::thread thread_x2(&DXKDP_PSU::PoCtrl, uniquePSU_X2.get(), 0x00);
-    // std::thread thread_y1(&DXKDP_PSU::PoCtrl, uniquePSU_Y1.get(), 0x00);
-    // std::thread thread_y2(&DXKDP_PSU::PoCtrl, uniquePSU_Y2.get(), 0x00);
-    // std::thread thread_z1(&DXKDP_PSU::PoCtrl, uniquePSU_Z1.get(), 0x00);
-    // // std::thread thread_z2(&DXKDP_PSU::PoCtrl, uniquePSU_Z2.get(), 0x00);
-    // thread_x1.join();
-    // // thread_x2.join();
-    // thread_y1.join();
-    // thread_y2.join();
-    // thread_z1.join();
-    // // thread_z2.join();
-    usleep(1e6);
-    this->uniquePSU_X1->~DXKDP_PSU();
-    usleep(5e5);
-    this->uniquePSU_Y1->~DXKDP_PSU();
-    usleep(5e5);
-    this->uniquePSU_Y2->~DXKDP_PSU();
-    usleep(5e5);
-    this->uniquePSU_Z1->~DXKDP_PSU();
-    usleep(1e6);
-
-    std::cout << "Finished turnoffsupply routine\n";
-}
-
 void MiddlewareLayer::initialSetup(){
-    std::cout << "Initialising Startup\n";
     std::thread thread_x1(&DXKDP_PSU::WriteVI, uniquePSU_X1.get(), 60, 0.00, 0x01);
     // std::thread thread_x2(&DXKDP_PSU::WriteVI, uniquePSU_X2.get(), 60, 0.00, 0x01);
     std::thread thread_y1(&DXKDP_PSU::WriteVI, uniquePSU_Y1.get(), 60, 0.00, 0x01);
@@ -140,7 +97,6 @@ void MiddlewareLayer::initialSetup(){
     // thread_z2.join();
     PositivePolarity = true;
     this->TurnOnSupply();
-    std::cout << "Startup was successful\n";
 }
 
 void MiddlewareLayer::set3DVector(std::vector<float> I_X, std::vector<float> I_Y, std::vector<float> I_Z){
@@ -324,7 +280,6 @@ void MiddlewareLayer::set3DVectorOUT(std::vector<float> I_X, std::vector<float> 
 }
 
 void MiddlewareLayer::set3DField(float I_X, float I_Y, float I_Z){
-    std::cout << "Started set3DField routine with inputs " << I_X << " " << I_Y << " " << I_Z << "\n";
     std::thread th_x1(&MiddlewareLayer::PolarityCheck, this, I_X, MiddlewareLayer::PSU_ENUM::X1);
     // std::thread th_x2(&MiddlewareLayer::PolarityCheck, this, I_X, MiddlewareLayer::PSU_ENUM::X2);
     std::thread th_y1(&MiddlewareLayer::PolarityCheck, this, I_Y, MiddlewareLayer::PSU_ENUM::Y1);
@@ -357,7 +312,6 @@ void MiddlewareLayer::set3DField(float I_X, float I_Y, float I_Z){
     thread_y2.join();
     thread_z1.join();
     // thread_z2.join();
-    std::cout << "Sucessfully completed set3DField routine with inputs " << I_X << " " << I_Y << " " << I_Z << "\n";
 }
 
 void MiddlewareLayer::set3DField(Eigen::Vector3d field){
@@ -525,11 +479,8 @@ void MiddlewareLayer::setFrequency(float fHz){
 }
 
 MiddlewareLayer::~MiddlewareLayer(){
-    std::cout << "Started shutdown routine\n";
-    // this->TurnOffSupply();
     // this->leftoverTimeFile.close();
     if(!PSU_MODE) this->uniqueLinAct->LinearStop();
-    std::cout << "Shutting down\n";
 }
 
 float MiddlewareLayer::xVoltage(float I){

@@ -165,16 +165,6 @@ public:
      * 
      */
     void TurnOnSupply();
-
-    /**
-     * @brief Sets output V to 0, Turns off Supplies. 
-     * 
-     * Notes: Serial objects all destroy themselves from their own constructors, so it should all be taken care of implicitly.
-     * 
-     * Unwinding of the Linear Actuator should go here, if the device worked.
-     * 
-     */
-    void TurnOffSupply();
     
     /**
      * @brief Sets output V to 60. Opens and sets up outputFile csv. Calls TurnOnSupply.
