@@ -39,9 +39,9 @@ private:
 
     int period_us = 1/frequency*1000000; //!< period in microseconds, derived from the frequency.
     
-    float cal_x = 0.53; //!< Bx calibration factor. Units are mt/A
-    float cal_y = 1.07; //!< By calibration factor. Units are mt/A
-    float cal_z = 0.64; //!< Bz calibration factor. Units are mt/A
+    float cal_x = 0.53; //!< Bx calibration factor. Units are mT/A
+    float cal_y = 1.07; //!< By calibration factor. Units are mT/A
+    float cal_z = 1.06; //!< Bz calibration factor. Units are mT/A
 
     float xLimit = 50; //!< current limit in the x supply
     float zLimit = 50; //!< current limit in the y supply
@@ -52,12 +52,22 @@ private:
     /**
      * @brief Calculates the voltage required to hold given current I (approx) while staying in CV mode.
      * 
-     * X-PSU specific, coefficients obtained experimentally
+     * X1-PSU specific, coefficients obtained experimentally
      * 
      * @param I current to hold
      * @return float required V that will maintain the system in CV mode.
      */
-    float xVoltage(float I);
+    float x1Voltage(float I);
+
+    /**
+     * @brief Calculates the voltage required to hold given current I (approx) while staying in CV mode.
+     * 
+     * X2-PSU specific, coefficients obtained experimentally
+     * 
+     * @param I current to hold
+     * @return float required V that will maintain the system in CV mode.
+     */
+    float x2Voltage(float I);
     
     /**
      * @brief Calculates the voltage required to hold given current I (approx) while staying in CV mode.

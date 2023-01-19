@@ -214,13 +214,18 @@ void DXKDP_PSU::WriteCurrent(float targetI, uint8_t addr){
 
 void DXKDP_PSU::WriteVI(float targetV, float targetI, uint8_t addr){
     std::vector<uint8_t> input_vector = this->Encoder23(targetV, targetI, addr);
+    // std::cout << "Printing input_vector, size: "<< input_vector.size() << "\n";
     // for(auto i: input_vector) printf("%02X ", i);
+    // for(int i = 0; i < input_vector.size(); i++){
+    //     printf("%02X ", input_vector[i]);
+    // }
     this->PsuWrite(input_vector);
     output_message msgOut;
     this->PsuRead(msgOut);
     if(msgOut.output1[0] != 0x06) {
         THROW_EXCEPT("Write VI setting did not return 0x06. Aborting");
     } else return;
+    return;
     
 }
 

@@ -2,7 +2,6 @@
 
 MiddlewareLayer::MiddlewareLayer(){
 
-    
     this->setUniquePSUS();
 
     //sensors and actuators
@@ -53,16 +52,15 @@ MiddlewareLayer::MiddlewareLayer(bool PSU_ONLY){
 }
 
 void MiddlewareLayer::setUniquePSUS(){
-        // <X/Y/Z>1 PSUs
-    this->uniquePSU_X1 = std::make_unique<DXKDP_PSU>("/dev/ttyUSB1", 0.1, 0.01);
+    // <X/Y/Z>1 PSUs
+    this->uniquePSU_X1 = std::make_unique<DXKDP_PSU>("/dev/ttyUSB0", 0.1, 0.01);
     this->uniquePSU_Y1 = std::make_unique<DXKDP_PSU>("/dev/ttyUSB4", 0.01, 0.01);
     this->uniquePSU_Z1 = std::make_unique<DXKDP_PSU>("/dev/ttyUSB2", 0.01, 0.01);
     
     // <X/Y/Z>2 PSUs
-    this->uniquePSU_X2 = std::make_unique<DXKDP_PSU>("/dev/ttyUSB3", 0.1, 0.01);
+    this->uniquePSU_X2 = std::make_unique<DXKDP_PSU>("/dev/ttyUSB1", 0.1, 0.01);
     this->uniquePSU_Y2 = std::make_unique<DXKDP_PSU>("/dev/ttyUSB5", 0.01, 0.01);
     // this->uniquePSU_Z2 = std::make_unique<DXKDP_PSU>("/dev/ttyUSB5", 0.01, 0.01);
-
     return;
 }
 
@@ -123,8 +121,8 @@ void MiddlewareLayer::set3DVector(std::vector<float> I_X, std::vector<float> I_Y
 
         //starting timing here
         std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
-        std::thread thread_x1(&DXKDP_PSU::WriteVI, uniquePSU_X1.get(), this->xVoltage(I_X_), I_X_, 0x01);
-        std::thread thread_x2(&DXKDP_PSU::WriteVI, uniquePSU_X2.get(), this->xVoltage(I_X_), I_X_, 0x01);
+        std::thread thread_x1(&DXKDP_PSU::WriteVI, uniquePSU_X1.get(), this->x1Voltage(I_X_), I_X_, 0x01);
+        std::thread thread_x2(&DXKDP_PSU::WriteVI, uniquePSU_X2.get(), this->x2Voltage(I_X_), I_X_, 0x01);
         std::thread thread_y1(&DXKDP_PSU::WriteVI, uniquePSU_Y1.get(), this->y1Voltage(I_Y_), I_Y_, 0x01);
         std::thread thread_y2(&DXKDP_PSU::WriteVI, uniquePSU_Y2.get(), this->y2Voltage(I_Y_), I_Y_, 0x01);
         std::thread thread_z1(&DXKDP_PSU::WriteVI, uniquePSU_Z1.get(), this->zVoltage(I_Z_), I_Z_, 0x01);        // std::thread thread_te(&MiddlewareLayer::writeXField, this);
@@ -183,8 +181,8 @@ void MiddlewareLayer::set3DVectorIN(std::vector<float> I_X, std::vector<float> I
         double I_Z_ = abs(I_Z[i]) / cal_z;
 
         //starting timing here
-        std::thread thread_x1(&DXKDP_PSU::WriteVI, uniquePSU_X1.get(), this->xVoltage(I_X_), I_X_, 0x01);
-        std::thread thread_x2(&DXKDP_PSU::WriteVI, uniquePSU_X2.get(), this->xVoltage(I_X_), I_X_, 0x01);
+        std::thread thread_x1(&DXKDP_PSU::WriteVI, uniquePSU_X1.get(), this->x1Voltage(I_X_), I_X_, 0x01);
+        std::thread thread_x2(&DXKDP_PSU::WriteVI, uniquePSU_X2.get(), this->x2Voltage(I_X_), I_X_, 0x01);
         std::thread thread_y1(&DXKDP_PSU::WriteVI, uniquePSU_Y1.get(), this->y1Voltage(I_Y_), I_Y_, 0x01);
         std::thread thread_y2(&DXKDP_PSU::WriteVI, uniquePSU_Y2.get(), this->y2Voltage(I_Y_), I_Y_, 0x01);
         std::thread thread_z1(&DXKDP_PSU::WriteVI, uniquePSU_Z1.get(), this->zVoltage(I_Z_), I_Z_, 0x01);        
@@ -249,8 +247,8 @@ void MiddlewareLayer::set3DVectorOUT(std::vector<float> I_X, std::vector<float> 
         double I_Z_ = abs(I_Z[i]) / cal_z;
 
         //starting timing here
-        std::thread thread_x1(&DXKDP_PSU::WriteVI, uniquePSU_X1.get(), this->xVoltage(I_X_), I_X_, 0x01);
-        std::thread thread_x2(&DXKDP_PSU::WriteVI, uniquePSU_X2.get(), this->xVoltage(I_X_), I_X_, 0x01);
+        std::thread thread_x1(&DXKDP_PSU::WriteVI, uniquePSU_X1.get(), this->x1Voltage(I_X_), I_X_, 0x01);
+        std::thread thread_x2(&DXKDP_PSU::WriteVI, uniquePSU_X2.get(), this->x2Voltage(I_X_), I_X_, 0x01);
         std::thread thread_y1(&DXKDP_PSU::WriteVI, uniquePSU_Y1.get(), this->y1Voltage(I_Y_), I_Y_, 0x01);
         std::thread thread_y2(&DXKDP_PSU::WriteVI, uniquePSU_Y2.get(), this->y2Voltage(I_Y_), I_Y_, 0x01);
         std::thread thread_z1(&DXKDP_PSU::WriteVI, uniquePSU_Z1.get(), this->zVoltage(I_Z_), I_Z_, 0x01);
@@ -294,16 +292,11 @@ void MiddlewareLayer::set3DField(float I_X, float I_Y, float I_Z){
     th_z1.join();
     // th_z2.join();
 
-    // I_X = abs(I_X) * cal_x;
-    // I_Y = abs(I_Y) * cal_y;
-    // I_Z = abs(I_Z) * cal_z;
-
     I_X = abs(I_X) / cal_x;
     I_Y = abs(I_Y) / cal_y;
     I_Z = abs(I_Z) / cal_z;
-
-    std::thread thread_x1(&DXKDP_PSU::WriteVI, uniquePSU_X1.get(), this->xVoltage(I_X), I_X, 0x01);
-    std::thread thread_x2(&DXKDP_PSU::WriteVI, uniquePSU_X2.get(), this->xVoltage(I_X), I_X, 0x01);
+    std::thread thread_x1(&DXKDP_PSU::WriteVI, uniquePSU_X1.get(), this->x1Voltage(I_X), I_X, 0x01);
+    std::thread thread_x2(&DXKDP_PSU::WriteVI, uniquePSU_X2.get(), this->x2Voltage(I_X), I_X, 0x01);
     std::thread thread_y1(&DXKDP_PSU::WriteVI, uniquePSU_Y1.get(), this->y1Voltage(I_Y), I_Y, 0x01);
     std::thread thread_y2(&DXKDP_PSU::WriteVI, uniquePSU_Y2.get(), this->y2Voltage(I_Y), I_Y, 0x01);
     std::thread thread_z1(&DXKDP_PSU::WriteVI, uniquePSU_Z1.get(), this->zVoltage(I_Z), I_Z, 0x01);
@@ -336,8 +329,8 @@ void MiddlewareLayer::set3DField(Eigen::Vector3d field){
     I_Y = abs(I_Y) / cal_y;
     I_Z = abs(I_Z) / cal_z;
 
-    std::thread thread_x1(&DXKDP_PSU::WriteVI, uniquePSU_X1.get(), this->xVoltage(I_X), I_X, 0x01);
-    std::thread thread_x2(&DXKDP_PSU::WriteVI, uniquePSU_X2.get(), this->xVoltage(I_X), I_X, 0x01);
+    std::thread thread_x1(&DXKDP_PSU::WriteVI, uniquePSU_X1.get(), this->x1Voltage(I_X), I_X, 0x01);
+    std::thread thread_x2(&DXKDP_PSU::WriteVI, uniquePSU_X2.get(), this->x2Voltage(I_X), I_X, 0x01);
     std::thread thread_y1(&DXKDP_PSU::WriteVI, uniquePSU_Y1.get(), this->y1Voltage(I_Y), I_Y, 0x01);
     std::thread thread_y2(&DXKDP_PSU::WriteVI, uniquePSU_Y2.get(), this->y2Voltage(I_Y), I_Y, 0x01);
     std::thread thread_z1(&DXKDP_PSU::WriteVI, uniquePSU_Z1.get(), this->zVoltage(I_Z), I_Z, 0x01);
@@ -417,17 +410,17 @@ void MiddlewareLayer::PolarityCheck(float input, MiddlewareLayer::PSU_ENUM psu_)
         case MiddlewareLayer::PSU_ENUM::X2:
             
             if(input > 0) {
-                uniquePSU_X2->setPolarity(0x0); }
+                uniquePSU_X2->setPolarity(0x1); }
                 // printf("Flipped polarity, X1\n");}
-            else uniquePSU_X2->setPolarity(0x1);
+            else uniquePSU_X2->setPolarity(0x0);
         break;
         
         //block of Y related cases
         case MiddlewareLayer::PSU_ENUM::Y1:
-            if(input > 0) {uniquePSU_Y1->setPolarity(0x1); 
+            if(input > 0) {uniquePSU_Y1->setPolarity(0x0); 
             // printf("Flipped polarity, Y1\n");
             }
-            else uniquePSU_Y1->setPolarity(0x0);
+            else uniquePSU_Y1->setPolarity(0x1);
         break;
         
         case MiddlewareLayer::PSU_ENUM::Y2:
@@ -484,8 +477,12 @@ MiddlewareLayer::~MiddlewareLayer(){
     if(!PSU_MODE) this->uniqueLinAct->LinearStop();
 }
 
-float MiddlewareLayer::xVoltage(float I){
-    return 1.089f * I + 1.554f;
+float MiddlewareLayer::x1Voltage(float I){
+    return 0.6114f * I + 0.7238f;
+}
+
+float MiddlewareLayer::x2Voltage(float I){
+    return 0.6269f * I + 0.7143f;
 }
 
 float MiddlewareLayer::y1Voltage(float I){
