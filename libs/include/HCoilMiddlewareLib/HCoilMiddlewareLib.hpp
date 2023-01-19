@@ -41,7 +41,7 @@ private:
     
     float cal_x = 0.53; //!< Bx calibration factor. Units are mT/A
     float cal_y = 1.07; //!< By calibration factor. Units are mT/A
-    float cal_z = 1.06; //!< Bz calibration factor. Units are mT/A
+    float cal_z = 0.62; //!< Bz calibration factor. Units are mT/A
 
     float xLimit = 50; //!< current limit in the x supply
     float zLimit = 50; //!< current limit in the y supply
