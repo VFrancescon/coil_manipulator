@@ -1,6 +1,6 @@
 #include <DxkdpLib/DxkdpLib.hpp>
 
-DXKDP_PSU::DXKDP_PSU() : serialPort("/dev/ttyUSB0", BaudRate::B_9600, NumDataBits::EIGHT, Parity::NONE, NumStopBits::ONE)
+DXKDP_PSU::DXKDP_PSU() : serialPort("/dev/ttyUSB0", BaudRate::B_4800, NumDataBits::EIGHT, Parity::NONE, NumStopBits::ONE)
 {
     // default constructor, here for debugging mainly
     // will instantiate a power supply at ttyUSB0, addr 1
@@ -9,13 +9,13 @@ DXKDP_PSU::DXKDP_PSU() : serialPort("/dev/ttyUSB0", BaudRate::B_9600, NumDataBit
     std::cout << "Serial port has been opened";
 }
 
-DXKDP_PSU::DXKDP_PSU(std::string COM_PORT) : serialPort(COM_PORT, BaudRate::B_9600, NumDataBits::EIGHT, Parity::NONE, NumStopBits::ONE)
+DXKDP_PSU::DXKDP_PSU(std::string COM_PORT) : serialPort(COM_PORT, BaudRate::B_4800, NumDataBits::EIGHT, Parity::NONE, NumStopBits::ONE)
 {
     this->PsuID = COM_PORT;
     this->DXKDP_Setup();
 }
 
-DXKDP_PSU::DXKDP_PSU(std::string COM_PORT, float V_conv, float I_conv) : serialPort(COM_PORT, BaudRate::B_9600, NumDataBits::EIGHT, Parity::NONE, NumStopBits::ONE)
+DXKDP_PSU::DXKDP_PSU(std::string COM_PORT, float V_conv, float I_conv) : serialPort(COM_PORT, BaudRate::B_4800, NumDataBits::EIGHT, Parity::NONE, NumStopBits::ONE)
 {
     this->PsuID = COM_PORT;
     this->Vconv = V_conv;
@@ -36,19 +36,19 @@ void DXKDP_PSU::PsuWrite(input_message msgIn)
 
 void DXKDP_PSU::PsuWrite(std::vector<uint8_t> input)
 {
-    std::cout << "Started PSUWrite on " << this->PsuID << " \n";
+    // std::cout << "Started PSUWrite on " << this->PsuID << " \n";
     // for(auto i: input){
     //     printf("%02X ", i);
     // }
     this->serialPort.WriteBinary(input);
-    std::cout << "Finished PSUWrite on " << this->PsuID << " \n";
+    // std::cout << "Finished PSUWrite on " << this->PsuID << " \n";
 }
 
 void DXKDP_PSU::PsuRead(output_message &msgOut)
 {
-    std::cout << "Started PSUread on " << this->PsuID << " \n";
+    // std::cout << "Started PSUread on " << this->PsuID << " \n";
     this->serialPort.ReadBinary(msgOut.output1);
-    std::cout << "Finished psuread on " << this->PsuID << " \n";
+    // std::cout << "Finished psuread on " << this->PsuID << " \n";
 }
 
 DXKDP_PSU::~DXKDP_PSU()
@@ -299,7 +299,7 @@ void DXKDP_PSU::ReadVI(uint8_t addr)
 
 void DXKDP_PSU::setPolarity(uint8_t polarity, uint8_t addr)
 {
-    std::cout << "-------------------SET POLARITY--------------------\n";
+    // std::cout << "-------------------SET POLARITY--------------------\n";
     std::vector<uint8_t> input_vector = this->Encoder24(polarity, polarity, addr);
     // for(auto i: input_vector) printf("%02X ", i);
     // std::cout << "\n\n";
