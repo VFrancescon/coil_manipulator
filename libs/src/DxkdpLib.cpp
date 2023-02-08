@@ -33,13 +33,18 @@ void DXKDP_PSU::PsuWrite(input_message msgIn){
 }
 
 void DXKDP_PSU::PsuWrite(std::vector<uint8_t> input){
+    std::cout << "Started PSUWrite \n";
+    // for(auto i: input){
+    //     printf("%02X ", i);
+    // }
     this->serialPort.WriteBinary(input);
+    std::cout << "Finished PSUWrite \n";
 }
 
 void DXKDP_PSU::PsuRead(output_message &msgOut){
-    
+    std::cout << "Started PSUread\n";
     this->serialPort.ReadBinary(msgOut.output1);
-    
+    std::cout << "Finished psuread\n";
 }
 
 DXKDP_PSU::~DXKDP_PSU(){
@@ -224,8 +229,9 @@ void DXKDP_PSU::WriteVI(float targetV, float targetI, uint8_t addr){
     this->PsuRead(msgOut);
     if(msgOut.output1[0] != 0x06) {
         THROW_EXCEPT("Write VI setting did not return 0x06. Aborting");
-    } else return;
-    return;
+    } else {
+        return;
+    } 
     
 }
 
@@ -252,6 +258,7 @@ void DXKDP_PSU::ReadVI(uint8_t addr){
 }
 
 void DXKDP_PSU::setPolarity(uint8_t polarity, uint8_t addr){
+    std::cout << "-------------------SET POLARITY--------------------\n";
     std::vector<uint8_t> input_vector = this->Encoder24(polarity, polarity, addr);
     // for(auto i: input_vector) printf("%02X ", i);
     // std::cout << "\n\n";
@@ -260,5 +267,8 @@ void DXKDP_PSU::setPolarity(uint8_t polarity, uint8_t addr){
     this->PsuRead(msgOut);
     if(msgOut.output1[0] != 0x06) {
         THROW_EXCEPT("Polarity setting did not return 0x06. Aborting");
-    } else return;
+    } else {
+    std::cout << "-------------------SET POLARITY--------------------\n\n\n";
+        return;
+        }
 }

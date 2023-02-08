@@ -417,6 +417,7 @@ void MiddlewareLayer::PolarityCheck(float input, MiddlewareLayer::PSU_ENUM psu_)
         
         //block of Y related cases
         case MiddlewareLayer::PSU_ENUM::Y1:
+
             if(input > 0) {uniquePSU_Y1->setPolarity(0x1); 
             // printf("Flipped polarity, Y1\n");
             }
@@ -434,7 +435,7 @@ void MiddlewareLayer::PolarityCheck(float input, MiddlewareLayer::PSU_ENUM psu_)
 
         //block of Z related cases
         case MiddlewareLayer::PSU_ENUM::Z1:
-
+            
             if(input > 0) {
                 uniquePSU_Z1->setPolarity(0x1); 
                 // printf("Flipped polarity, Z1\n");
@@ -450,7 +451,6 @@ void MiddlewareLayer::PolarityCheck(float input, MiddlewareLayer::PSU_ENUM psu_)
             else uniquePSU_Z2->setPolarity(0x1);
         break;
     }
-    
 }
 
 float MiddlewareLayer::getXField(){
@@ -478,11 +478,12 @@ MiddlewareLayer::~MiddlewareLayer(){
 }
 
 float MiddlewareLayer::x1Voltage(float I){
-    return 0.6114f * I + 0.7238f;
+    return 0.5927f * I + 0.8818f;
 }
 
 float MiddlewareLayer::x2Voltage(float I){
-    return 0.6269f * I + 0.7143f;
+    // return 0.6269f * I + 0.7143f;
+    return 0.5929f * I + 1.114f;
 }
 
 float MiddlewareLayer::y1Voltage(float I){
