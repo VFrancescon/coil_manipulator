@@ -291,6 +291,6 @@ public:
     bool POstate; //!< Current PO state.
     float ReadVoltage; //!< Read Voltages and Currents. Only assigned internally. Needs implementing
     float ReadCurrent; //!< Read Voltages and Currents. Only assigned internally. Needs implementing
-
+    std::string PsuID; //!< UniqueID for the PSU. Will correspond to COMPORT at runtime.
 
 };
