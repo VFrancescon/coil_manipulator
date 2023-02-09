@@ -202,6 +202,7 @@ void DXKDP_PSU::PoCtrl(uint8_t po_state)
     std::vector<uint8_t> input_vector = this->Encoder20(po_state);
     // for(auto i: input_vector) printf("%02X ", i);
     this->PsuWrite(input_vector);
+    usleep(10e3);
     output_message msgOut;
     this->PsuRead(msgOut);
     if (msgOut.output1[0] != 0x06)
@@ -216,10 +217,11 @@ void DXKDP_PSU::PoCtrl(uint8_t po_state)
 void DXKDP_PSU::WriteVoltage(float targetV, uint8_t addr)
 {
     std::vector<uint8_t> input_vector = this->Encoder21(targetV, addr);
-    std::cout << "input vector is: ";
-    for (auto i : input_vector)
-        printf("%02X ", i);
+    // std::cout << "input vector is: ";
+    // for (auto i : input_vector)
+    //     printf("%02X ", i);
     this->PsuWrite(input_vector);
+    usleep(10e3);
     output_message msgOut;
     this->PsuRead(msgOut);
     // for(auto i: msgOut.output1) printf("\nResult: %02X ", i);
@@ -237,6 +239,7 @@ void DXKDP_PSU::WriteCurrent(float targetI, uint8_t addr)
     std::vector<uint8_t> input_vector = this->Encoder22(targetI, addr);
     // for(auto i: input_vector) printf("%02X ", i);
     this->PsuWrite(input_vector);
+    usleep(10e3);
     output_message msgOut;
     this->PsuRead(msgOut);
     if (msgOut.output1[0] != 0x06)
@@ -257,6 +260,7 @@ void DXKDP_PSU::WriteVI(float targetV, float targetI, uint8_t addr)
     //     printf("%02X ", input_vector[i]);
     // }
     this->PsuWrite(input_vector);
+    usleep(10e3);
     output_message msgOut;
     this->PsuRead(msgOut);
     if (msgOut.output1[0] != 0x06)
@@ -274,8 +278,9 @@ void DXKDP_PSU::ReadVI(uint8_t addr)
 {
     std::vector<uint8_t> input_vector = this->Encoder26();
     this->PsuWrite(input_vector);
+    usleep(10e3);
     output_message msgOut;
-    // this->PsuRead(msgOut);
+    this->PsuRead(msgOut);
     this->serialPort.ReadBinary(msgOut.output1);
     this->serialPort.ReadBinary(msgOut.output2);
 
@@ -304,6 +309,7 @@ void DXKDP_PSU::setPolarity(uint8_t polarity, uint8_t addr)
     // for(auto i: input_vector) printf("%02X ", i);
     // std::cout << "\n\n";
     this->PsuWrite(input_vector);
+    usleep(10e3);
     output_message msgOut;
     this->PsuRead(msgOut);
     if (msgOut.output1[0] != 0x06)
