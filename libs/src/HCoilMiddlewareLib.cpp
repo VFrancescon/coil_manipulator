@@ -445,10 +445,11 @@ void MiddlewareLayer::PolarityCheck(float input, MiddlewareLayer::PSU_ENUM psu_)
         case MiddlewareLayer::PSU_ENUM::Z2:
 
             if(input > 0) {
-                uniquePSU_Z2->setPolarity(0x0); 
+                // uniquePSU_Z2->setPolarity(0x0); 
+                uniquePSU_Z2->setPolarityGen2(0x01);
                 // printf("Flipped polarity, Z2\n");
             }
-            else uniquePSU_Z2->setPolarity(0x1);
+            else uniquePSU_Z2->setPolarityGen2(0x2);
         break;
     }
 }
