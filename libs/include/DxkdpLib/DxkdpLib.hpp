@@ -249,6 +249,21 @@ public:
     void setPolarity(uint8_t polarity, uint8_t addr=0x01);
 
     /**
+     * @brief Set the Polarity of the PSU for Gen2 PSUs only.
+     * 
+     * Requires testing. According to the manual, commands go as follows:
+     * 
+     * 0x00: closed
+     * 0x01: positive
+     * 0x02: negative
+     * 0x03: LDI (no idea what it meas)
+     * 
+     * @param polarity Input polarity
+     * @param addr PSU address
+     */
+    void setPolarityGen2(uint8_t polarity, uint8_t addr=0x01);
+
+    /**
      * @brief Sets PO State of the PSU.
      * 
      * @param po_state 0x01 == ON, 0x00 == OFF
