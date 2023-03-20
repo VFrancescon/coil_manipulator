@@ -158,6 +158,13 @@ public:
     MiddlewareLayer(bool PSU_ONLY);
 
     /**
+     * @brief Middleware constructor, allows for middleware to use the PSUs only with no additional devices
+     * 
+     * @param OP_MODE 0 for PSU only. 1 for PSU+Introducer. 2 for PSU+Introducer+Teslameter. Any other inputs defaults to 0.
+     */
+    MiddlewareLayer(int OP_MODE);
+
+    /**
      * @brief Destroy the Middleware Layer object
      * 
      * Calls TurnOffSupply. Closes outputFile.
