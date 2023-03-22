@@ -106,6 +106,15 @@ std::vector<uint8_t> DXKDP_PSU::Encoder24(uint8_t VoltageP, uint8_t CurrentP, ui
     return msgIn.instruction;
 }
 
+std::vector<uint8_t> DXKDP_PSU::Encoder24Gen2(uint8_t VoltageP, uint8_t CurrentP, uint8_t addr)
+{
+    input_message msgIn(0x24, addr);
+    msgIn.cont1_set = 1;
+    msgIn.set_contents(VoltageP);
+    // msgIn.InstructionAssembler();
+    return msgIn.instruction;
+}
+
 std::vector<uint8_t> DXKDP_PSU::Encoder26(uint8_t addr)
 {
     input_message msgIn(0x26, addr);
@@ -334,7 +343,7 @@ void DXKDP_PSU::setPolarity(uint8_t polarity, uint8_t addr)
 void DXKDP_PSU::setPolarityGen2(uint8_t polarity, uint8_t addr)
 {
     // std::cout << "-------------------SET POLARITY--------------------\n";
-    std::vector<uint8_t> input_vector = this->Encoder24(polarity, polarity, addr);
+    std::vector<uint8_t> input_vector = this->Encoder24Gen2(polarity, polarity, addr);
     for(auto i: input_vector) printf("%02X ", i);
     std::cout << "\n\n";
     this->PsuWrite(input_vector);

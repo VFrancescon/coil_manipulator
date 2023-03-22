@@ -105,6 +105,17 @@ private:
      * @return std::vector<uint8_t> vector containing the relevant instruction
      */
     std::vector<uint8_t> Encoder24(uint8_t VoltageP=0x01, uint8_t CurrentP=0x01, uint8_t addr=0x01);
+    /**
+     * @brief Constructs the input_message to set the Polarity.
+     * 
+     * NOTE: This method assumes that you can control Voltage and Current polarity separately. That is not the case apparently and the setPolarity method takes care of that.
+     * 
+     * @param VoltageP Voltage Polarity
+     * @param CurrentP Current Polarity
+     * @param addr PSU Address
+     * @return std::vector<uint8_t> vector containing the relevant instruction
+     */
+    std::vector<uint8_t> Encoder24Gen2(uint8_t VoltageP=0x01, uint8_t CurrentP=0x01, uint8_t addr=0x01);
 
     /**
      * @brief Constructs the input_message to view actual VI values.
