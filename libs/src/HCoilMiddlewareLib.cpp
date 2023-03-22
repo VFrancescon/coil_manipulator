@@ -53,8 +53,77 @@ MiddlewareLayer::MiddlewareLayer(bool PSU_ONLY)
     }
 }
 
-void MiddlewareLayer::setUniquePSUS()
-{
+MiddlewareLayer::MiddlewareLayer(int OP_MODE){
+    
+    switch(OP_MODE){
+        case 0:
+            this->setUniquePSUS();
+            this->initialSetup();
+            this->PSU_MODE = true;            
+        break;
+
+        case 1:
+            this->setUniquePSUS();
+            this->initialSetup();
+            this->uniqueLinAct = std::make_unique<LinearActuator>("/dev/ttyUSB6");
+            this->PSU_MODE = false;            
+        break;
+  
+        case 2:
+            this->setUniquePSUS();
+            this->initialSetup();
+            this->uniqueLinAct = std::make_unique<LinearActuator>("/dev/ttyUSB6");
+            this->uniqueT_Meter = std::make_unique<Teslameter>("/dev/ttyUSB7");
+            this->PSU_MODE = false;   
+        break;
+
+        default: 
+            this->setUniquePSUS();
+            this->initialSetup();
+            this->PSU_MODE = true;   
+        break;
+    }
+    
+}
+
+
+
+MiddlewareLayer::MiddlewareLayer(int OP_MODE){
+    
+    switch(OP_MODE){
+        case 0:
+            this->setUniquePSUS();
+            this->initialSetup();
+            this->PSU_MODE = true;            
+        break;
+
+        case 1:
+            this->setUniquePSUS();
+            this->initialSetup();
+            this->uniqueLinAct = std::make_unique<LinearActuator>("/dev/ttyUSB6");
+            this->PSU_MODE = false;            
+        break;
+  
+        case 2:
+            this->setUniquePSUS();
+            this->initialSetup();
+            this->uniqueLinAct = std::make_unique<LinearActuator>("/dev/ttyUSB6");
+            this->uniqueT_Meter = std::make_unique<Teslameter>("/dev/ttyUSB7");
+            this->PSU_MODE = false;   
+        break;
+
+        default: 
+            this->setUniquePSUS();
+            this->initialSetup();
+            this->PSU_MODE = true;   
+        break;
+    }
+    
+}
+
+
+
+void MiddlewareLayer::setUniquePSUS(){
     // <X/Y/Z>1 PSUs
     this->uniquePSU_X1 = std::make_unique<DXKDP_PSU>("/dev/ttyUSB0", 0.1, 0.01);
     this->uniquePSU_Y1 = std::make_unique<DXKDP_PSU>("/dev/ttyUSB4", 0.01, 0.01);
