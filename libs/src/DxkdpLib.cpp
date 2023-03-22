@@ -217,7 +217,7 @@ void DXKDP_PSU::PoCtrl(uint8_t po_state)
     this->PsuRead(msgOut);
     if (msgOut.output1[0] != 0x06)
     {
-        std::cout << "PsuID: " << this->PsuID << "\n";
+        std::cout << "PoCtrl. PsuID: " << this->PsuID << "\n";
         THROW_EXCEPT("PowerOut setting did not return 0x06. Aborting");
     }
     else
@@ -237,7 +237,7 @@ void DXKDP_PSU::WriteVoltage(float targetV, uint8_t addr)
     // for(auto i: msgOut.output1) printf("\nResult: %02X ", i);
     if (msgOut.output1[0] != 0x06)
     {
-        std::cout << "PsuID: " << this->PsuID << "\n";
+        std::cout << "WriteV .PsuID: " << this->PsuID << "\n";
         THROW_EXCEPT("WriteVoltage setting did not return 0x06. Aborting");
     }
     else
@@ -254,7 +254,7 @@ void DXKDP_PSU::WriteCurrent(float targetI, uint8_t addr)
     this->PsuRead(msgOut);
     if (msgOut.output1[0] != 0x06)
     {
-        std::cout << "PsuID: " << this->PsuID << "\n";
+        std::cout << "WriteI. PsuID: " << this->PsuID << "\n";
         THROW_EXCEPT("WriteCurrent setting did not return 0x06. Aborting");
     }
     else
@@ -275,7 +275,7 @@ void DXKDP_PSU::WriteVI(float targetV, float targetI, uint8_t addr)
     this->PsuRead(msgOut);
     if (msgOut.output1[0] != 0x06)
     {
-        std::cout << "PsuID: " << this->PsuID << "\n";
+        std::cout << "WriteVI. PsuID: " << this->PsuID << "\n";
         THROW_EXCEPT("Write VI setting did not return 0x06. Aborting");
     }
     else
@@ -330,7 +330,7 @@ void DXKDP_PSU::setPolarity(uint8_t polarity, uint8_t addr)
 
     if (msgOut.output1[0] != 0x06)
     {
-        std::cout << "PsuID: " << this->PsuID << "\n";
+        std::cout << "Polarity. PsuID: " << this->PsuID << "\n";
         THROW_EXCEPT("Polarity setting did not return 0x06. Aborting");
     }
     else
