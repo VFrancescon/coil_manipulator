@@ -48,6 +48,7 @@ void DXKDP_PSU::PsuRead(output_message &msgOut)
 {
     // std::cout << "Started PSUread on " << this->PsuID << " \n";
     this->serialPort.ReadBinary(msgOut.output1);
+    // std::cout << "From psuread. size of returned values: " << msgOut.output1.size() << "\n";
     // std::cout << "Finished psuread on " << this->PsuID << " \n";
 }
 
@@ -304,19 +305,20 @@ void DXKDP_PSU::ReadVI(uint8_t addr)
 
 void DXKDP_PSU::setPolarity(uint8_t polarity, uint8_t addr)
 {
-    if (polarity > 0x01)
-    {
-        std::cout << "PsuID: " << this->PsuID << " ";
-        THROW_EXCEPT("Polarity setting called with polarity > 0x01. If you do require such value, please use GEN2 version of the function");
-    }
-    // std::cout << "-------------------SET POLARITY--------------------\n";
+    // if (polarity > 0x01)
+    // {
+    //     std::cout << "PsuID: " << this->PsuID << " ";
+    //     THROW_EXCEPT("Polarity setting called with polarity > 0x01. If you do require such value, please use GEN2 version of the function");
+    // }
     std::vector<uint8_t> input_vector = this->Encoder24(polarity, polarity, addr);
-    // for(auto i: input_vector) printf("%02X ", i);
-    // std::cout << "\n\n";
+    for(auto i: input_vector) printf("%02X ", i);
+    std::cout << "\n\n";
     this->PsuWrite(input_vector);
     usleep(50e3);
     output_message msgOut;
     this->PsuRead(msgOut);
+    std::cout << "Gen2 polarity. size of returned values: " << msgOut.output1.size() << "\n";
+
     if (msgOut.output1[0] != 0x06)
     {
         std::cout << "PsuID: " << this->PsuID << "\n";
@@ -333,20 +335,22 @@ void DXKDP_PSU::setPolarityGen2(uint8_t polarity, uint8_t addr)
 {
     // std::cout << "-------------------SET POLARITY--------------------\n";
     std::vector<uint8_t> input_vector = this->Encoder24(polarity, polarity, addr);
-    // for(auto i: input_vector) printf("%02X ", i);
-    // std::cout << "\n\n";
+    for(auto i: input_vector) printf("%02X ", i);
+    std::cout << "\n\n";
     this->PsuWrite(input_vector);
     usleep(50e3);
     output_message msgOut;
     this->PsuRead(msgOut);
-    if (msgOut.output1[0] != 0x06)
-    {
-        std::cout << "PsuID: " << this->PsuID << "\n";
-        THROW_EXCEPT("Polarity setting did not return 0x06. Aborting");
-    }
-    else
-    {
-        // std::cout << "-------------------SET POLARITY--------------------\n\n\n";
-        return;
-    }
+    std::cout << "Gen2 polarity. size of returned values: " << msgOut.output1.size() << "\n";
+
+    // if (msgOut.output1[0] != 0x06)
+    // {
+    //     std::cout << "PsuID: " << this->PsuID << "\n";
+    //     THROW_EXCEPT("Polarity setting did not return 0x06. Aborting");
+    // }
+    // else
+    // {
+    //     // std::cout << "-------------------SET POLARITY--------------------\n\n\n";
+    //     return;
+    // }
 }
