@@ -110,7 +110,8 @@ std::vector<uint8_t> DXKDP_PSU::Encoder24Gen2(uint8_t VoltageP, uint8_t CurrentP
 {
     input_message msgIn(0x24, addr);
     msgIn.cont1_set = 1;
-    msgIn.set_contents(VoltageP);
+    msgIn.cont2_set = 2;
+    msgIn.set_contents(VoltageP, CurrentP);
     // msgIn.InstructionAssembler();
     return msgIn.instruction;
 }
@@ -211,17 +212,19 @@ void DXKDP_PSU::PoCtrl(uint8_t po_state)
 {
     std::vector<uint8_t> input_vector = this->Encoder20(po_state);
     // for(auto i: input_vector) printf("%02X ", i);
+    input_vector[2] = 0x20;
     this->PsuWrite(input_vector);
     usleep(50e3);
     output_message msgOut;
     this->PsuRead(msgOut);
-    if (msgOut.output1[0] != 0x06)
-    {
-        std::cout << "PoCtrl. PsuID: " << this->PsuID << "\n";
-        THROW_EXCEPT("PowerOut setting did not return 0x06. Aborting");
-    }
-    else
-        return;
+    std::cout << "PoCtrl. size of returned values: " << msgOut.output1.size() << "\n";
+    // if (msgOut.output1[0] != 0x06)
+    // {
+    //     std::cout << "PoCtrl. PsuID: " << this->PsuID << "\n";
+    //     THROW_EXCEPT("PowerOut setting did not return 0x06. Aborting");
+    // }
+    // else
+    //     return;
 }
 
 void DXKDP_PSU::WriteVoltage(float targetV, uint8_t addr)
@@ -273,6 +276,7 @@ void DXKDP_PSU::WriteVI(float targetV, float targetI, uint8_t addr)
     usleep(50e3);
     output_message msgOut;
     this->PsuRead(msgOut);
+    std::cout << "WriteVI. size of returned values: " << msgOut.output1.size() << "\n";
     if (msgOut.output1[0] != 0x06)
     {
         std::cout << "WriteVI. PsuID: " << this->PsuID << "\n";

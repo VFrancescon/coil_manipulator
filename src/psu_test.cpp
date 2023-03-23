@@ -64,7 +64,7 @@ int main(int argc, char* argv[]){
 
     std::cout << "Testing polarity from z2 supply. Press enter to begin";
     std::cin.get();
-    DXKDP_PSU psu1("/dev/ttyUSB3", 0.01, 0.01);
+    DXKDP_PSU psu1("/dev/ttyUSB2", 0.01, 0.01);
     psu1.WriteVI(10,10);
     psu1.PoCtrl(0x01);
     std::cout << "Written 10V,10A and PO=1. Press enter to begin polarity tests";
