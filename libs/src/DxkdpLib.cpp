@@ -37,9 +37,9 @@ void DXKDP_PSU::PsuWrite(input_message msgIn)
 void DXKDP_PSU::PsuWrite(std::vector<uint8_t> input)
 {
     // std::cout << "Started PSUWrite on " << this->PsuID << " \n";
-    // for(auto i: input){
-    //     printf("%02X ", i);
-    // }
+    for(auto i: input){
+        printf("%02X ", i);
+    }
     this->serialPort.WriteBinary(input);
     // std::cout << "Finished PSUWrite on " << this->PsuID << " \n";
 }
@@ -343,13 +343,12 @@ void DXKDP_PSU::setPolarity(uint8_t polarity, uint8_t addr)
         return;
     }
 }
-
 void DXKDP_PSU::setPolarityGen2(uint8_t polarity, uint8_t addr)
 {
     // std::cout << "-------------------SET POLARITY--------------------\n";
     std::vector<uint8_t> input_vector = this->Encoder24Gen2(polarity, polarity, addr);
-    for(auto i: input_vector) printf("%02X ", i);
-    std::cout << "\n\n";
+    // for(auto i: input_vector) printf("%02X ", i);
+    // std::cout << "\n\n";
     this->PsuWrite(input_vector);
     usleep(50e3);
     output_message msgOut;
