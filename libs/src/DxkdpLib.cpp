@@ -1,6 +1,6 @@
 #include <DxkdpLib/DxkdpLib.hpp>
 
-DXKDP_PSU::DXKDP_PSU() : serialPort("/dev/ttyUSB0", BaudRate::B_4800, NumDataBits::EIGHT, Parity::NONE, NumStopBits::ONE)
+DXKDP_PSU::DXKDP_PSU() : serialPort("/dev/ttyUSB0", BaudRate::B_9600, NumDataBits::EIGHT, Parity::NONE, NumStopBits::ONE)
 {
     // default constructor, here for debugging mainly
     // will instantiate a power supply at ttyUSB0, addr 1
@@ -9,17 +9,19 @@ DXKDP_PSU::DXKDP_PSU() : serialPort("/dev/ttyUSB0", BaudRate::B_4800, NumDataBit
     std::cout << "Serial port has been opened";
 }
 
-DXKDP_PSU::DXKDP_PSU(std::string COM_PORT) : serialPort(COM_PORT, BaudRate::B_4800, NumDataBits::EIGHT, Parity::NONE, NumStopBits::ONE)
+DXKDP_PSU::DXKDP_PSU(std::string COM_PORT) : serialPort(COM_PORT, BaudRate::B_9600, NumDataBits::EIGHT, Parity::NONE, NumStopBits::ONE)
 {
     this->PsuID = COM_PORT;
     this->DXKDP_Setup();
+    std::cout << "Serial port has been opened";
 }
 
-DXKDP_PSU::DXKDP_PSU(std::string COM_PORT, float V_conv, float I_conv) : serialPort(COM_PORT, BaudRate::B_4800, NumDataBits::EIGHT, Parity::NONE, NumStopBits::ONE)
+DXKDP_PSU::DXKDP_PSU(std::string COM_PORT, float V_conv, float I_conv) : serialPort(COM_PORT, BaudRate::B_9600, NumDataBits::EIGHT, Parity::NONE, NumStopBits::ONE)
 {
     this->PsuID = COM_PORT;
     this->Vconv = V_conv;
     this->Iconv = I_conv;
+    std::cout << "PSUID: " << this->PsuID <<". Serial port has been opened\n";
     this->DXKDP_Setup();
 }
 
@@ -36,10 +38,11 @@ void DXKDP_PSU::PsuWrite(input_message msgIn)
 
 void DXKDP_PSU::PsuWrite(std::vector<uint8_t> input)
 {
-    // std::cout << "Started PSUWrite on " << this->PsuID << " \n";
-    for(auto i: input){
-        printf("%02X ", i);
-    }
+    // std::cout << "Started PSUWrite on " << this->PsuID << " ";
+    // for(auto i: input){
+    //     printf("%02X ", i);
+    // }
+    // std::cout << "\n";
     this->serialPort.WriteBinary(input);
     // std::cout << "Finished PSUWrite on " << this->PsuID << " \n";
 }
@@ -276,8 +279,12 @@ void DXKDP_PSU::WriteVI(float targetV, float targetI, uint8_t addr)
     usleep(50e3);
     output_message msgOut;
     this->PsuRead(msgOut);
-    std::cout << "WriteVI. size of returned values: " << msgOut.output1.size() << "\n";
-    if (msgOut.output1[0] != 0x06)
+    // std::cout << "WriteVI. size of returned values: " << msgOut.output1.size() << "\n";
+    if (msgOut.output1.size() == 0) {
+        std::cout << "WriteVI. PsuID: " << this->PsuID << "\n";
+        THROW_EXCEPT("Write VI setting did not return anything. Aborting");
+    }
+    if( msgOut.output1[0] != 0x06)
     {
         std::cout << "WriteVI. PsuID: " << this->PsuID << "\n";
         THROW_EXCEPT("Write VI setting did not return 0x06. Aborting");
@@ -324,14 +331,17 @@ void DXKDP_PSU::setPolarity(uint8_t polarity, uint8_t addr)
     //     THROW_EXCEPT("Polarity setting called with polarity > 0x01. If you do require such value, please use GEN2 version of the function");
     // }
     std::vector<uint8_t> input_vector = this->Encoder24(polarity, polarity, addr);
-    // for(auto i: input_vector) printf("%02X ", i);
-    // std::cout << "\n\n";
+    for(auto i: input_vector) printf("%02X ", i);
+    std::cout << "\n\n";
     this->PsuWrite(input_vector);
     usleep(50e3);
     output_message msgOut;
     this->PsuRead(msgOut);
     // std::cout << "Gen2 polarity. size of returned values: " << msgOut.output1.size() << "\n";
-
+    if (msgOut.output1.size() == 0) {
+        std::cout << "PolarityGen1. PsuID: " << this->PsuID << "\n";
+        THROW_EXCEPT("PolarityGen1 setting did not return anything. Aborting");
+    }
     if (msgOut.output1[0] != 0x06)
     {
         std::cout << "Polarity. PsuID: " << this->PsuID << "\n";
@@ -355,14 +365,19 @@ void DXKDP_PSU::setPolarityGen2(uint8_t polarity, uint8_t addr)
     this->PsuRead(msgOut);
     std::cout << "Gen2 polarity. size of returned values: " << msgOut.output1.size() << "\n";
 
-    // if (msgOut.output1[0] != 0x06)
-    // {
-    //     std::cout << "PsuID: " << this->PsuID << "\n";
-    //     THROW_EXCEPT("Polarity setting did not return 0x06. Aborting");
-    // }
-    // else
-    // {
-    //     // std::cout << "-------------------SET POLARITY--------------------\n\n\n";
-    //     return;
-    // }
+
+    if (msgOut.output1.size() == 0) {
+        std::cout << "PolarityGen2. PsuID: " << this->PsuID << "\n";
+        THROW_EXCEPT("PolarityGen2 setting did not return anything. Aborting");
+    }
+    if (msgOut.output1[0] != 0x06)
+    {
+        std::cout << "PsuID: " << this->PsuID << "\n";
+        THROW_EXCEPT("Polarity setting did not return 0x06. Aborting");
+    }
+    else
+    {
+        // std::cout << "-------------------SET POLARITY--------------------\n\n\n";
+        return;
+    }
 }
