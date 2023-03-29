@@ -350,13 +350,13 @@ void MiddlewareLayer::set3DField(float I_X, float I_Y, float I_Z)
     std::thread thread_y1(&DXKDP_PSU::WriteVI, uniquePSU_Y1.get(), this->y1Voltage(I_Y), I_Y, 0x01);
     std::thread thread_y2(&DXKDP_PSU::WriteVI, uniquePSU_Y2.get(), this->y2Voltage(I_Y), I_Y, 0x01);
     std::thread thread_z1(&DXKDP_PSU::WriteVI, uniquePSU_Z1.get(), this->z1Voltage(I_Z), I_Z, 0x01);
-    // std::thread thread_z2(&DXKDP_PSU::WriteVI, uniquePSU_Z2.get(), this->z1Voltage(I_Z), I_Z, 0x01);
+    std::thread thread_z2(&DXKDP_PSU::WriteVIGen2, uniquePSU_Z2.get(), this->z1Voltage(I_Z), I_Z, 0x01);
     thread_x1.join();
     thread_x2.join();
     thread_y1.join();
     thread_y2.join();
     thread_z1.join();
-    // thread_z2.join();
+    thread_z2.join();
 }
 
 void MiddlewareLayer::set3DField(Eigen::Vector3d field)
@@ -369,13 +369,11 @@ void MiddlewareLayer::set3DField(Eigen::Vector3d field)
     std::thread th_y1(&MiddlewareLayer::PolarityCheck, this, I_Y, MiddlewareLayer::PSU_ENUM::Y1);
     std::thread th_y2(&MiddlewareLayer::PolarityCheck, this, I_Y, MiddlewareLayer::PSU_ENUM::Y2);
     std::thread th_z1(&MiddlewareLayer::PolarityCheck, this, I_Z, MiddlewareLayer::PSU_ENUM::Z1);
-    // std::thread th_z2(&MiddlewareLayer::PolarityCheck, this, I_Z, MiddlewareLayer::PSU_ENUM::Z2);
     th_x1.join();
     th_x2.join();
     th_y1.join();
     th_y2.join();
     th_z1.join();
-    // th_z2.join();
 
     I_X = abs(I_X) / cal_x;
     I_Y = abs(I_Y) / cal_y;
@@ -386,13 +384,13 @@ void MiddlewareLayer::set3DField(Eigen::Vector3d field)
     std::thread thread_y1(&DXKDP_PSU::WriteVI, uniquePSU_Y1.get(), this->y1Voltage(I_Y), I_Y, 0x01);
     std::thread thread_y2(&DXKDP_PSU::WriteVI, uniquePSU_Y2.get(), this->y2Voltage(I_Y), I_Y, 0x01);
     std::thread thread_z1(&DXKDP_PSU::WriteVI, uniquePSU_Z1.get(), this->z1Voltage(I_Z), I_Z, 0x01);
-    // std::thread thread_z2(&DXKDP_PSU::WriteVI, uniquePSU_Z2.get(), this->z1Voltage(I_Z), I_Z, 0x01);
+    std::thread thread_z2(&DXKDP_PSU::WriteVIGen2, uniquePSU_Z2.get(), this->z1Voltage(I_Z), I_Z, 0x01);
     thread_x1.join();
     thread_x2.join();
     thread_y1.join();
     thread_y2.join();
     thread_z1.join();
-    // thread_z2.join();
+    thread_z2.join();
 }
 
 void MiddlewareLayer::stepIntroducer()

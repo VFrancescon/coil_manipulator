@@ -257,13 +257,18 @@ void DXKDP_PSU::PoCtrl(uint8_t po_state)
     output_message msgOut;
     this->PsuRead(msgOut);
     std::cout << "PoCtrl. size of returned values: " << msgOut.output1.size() << "\n";
-    // if (msgOut.output1[0] != 0x06)
-    // {
-    //     std::cout << "PoCtrl. PsuID: " << this->PsuID << "\n";
-    //     THROW_EXCEPT("PowerOut setting did not return 0x06. Aborting");
-    // }
-    // else
-    //     return;
+    this->PsuRead(msgOut);
+    if(msgOut.output1.size() == 0){
+        std::cout << "PoCtrl. PsuID: " << this->PsuID << "\n";
+        THROW_EXCEPT("Poctrl did not return.");
+    }
+    if (msgOut.output1[0] != 0x06)
+    {
+        std::cout << "PoCtrl. PsuID: " << this->PsuID << "\n";
+        THROW_EXCEPT("PowerOut setting did not return 0x06. Aborting");
+    }
+    else
+        return;
 }
 
 void DXKDP_PSU::WriteVoltage(float targetV, uint8_t addr)
@@ -277,6 +282,11 @@ void DXKDP_PSU::WriteVoltage(float targetV, uint8_t addr)
     output_message msgOut;
     this->PsuRead(msgOut);
     // for(auto i: msgOut.output1) printf("\nResult: %02X ", i);
+    this->PsuRead(msgOut);
+    if(msgOut.output1.size() == 0){
+        std::cout << "WriteV. PsuID: " << this->PsuID << "\n";
+        THROW_EXCEPT("Write V did not return.");
+    }
     if (msgOut.output1[0] != 0x06)
     {
         std::cout << "WriteV .PsuID: " << this->PsuID << "\n";
@@ -295,6 +305,11 @@ void DXKDP_PSU::WriteCurrent(float targetI, uint8_t addr)
     usleep(50e3);
     output_message msgOut;
     this->PsuRead(msgOut);
+    this->PsuRead(msgOut);
+    if(msgOut.output1.size() == 0){
+        std::cout << "WriteI. PsuID: " << this->PsuID << "\n";
+        THROW_EXCEPT("Write I did not return.");
+    }
     if (msgOut.output1[0] != 0x06)
     {
         std::cout << "WriteI. PsuID: " << this->PsuID << "\n";
@@ -320,6 +335,10 @@ void DXKDP_PSU::WriteCurrentGen2(float targetI, uint8_t addr)
     usleep(50e3);
     output_message msgOut;
     this->PsuRead(msgOut);
+        if(msgOut.output1.size() == 0){
+        std::cout << "WriteI. PsuID: " << this->PsuID << "\n";
+        THROW_EXCEPT("Write I did not return.");
+    }
     if (msgOut.output1[0] != 0x06)
     {
         std::cout << "WriteI. PsuID: " << this->PsuID << "\n";
@@ -376,6 +395,10 @@ void DXKDP_PSU::WriteVIGen2(float targetV, float targetI, uint8_t addr)
     usleep(50e3);
     output_message msgOut;
     this->PsuRead(msgOut);
+    if(msgOut.output1.size() == 0){
+        std::cout << "WriteVI. PsuID: " << this->PsuID << "\n";
+        THROW_EXCEPT("Write VI did not return.");
+    }
     if (msgOut.output1[0] != 0x06)
     {
         std::cout << "WriteVI. PsuID: " << this->PsuID << "\n";
@@ -406,6 +429,12 @@ void DXKDP_PSU::WriteVIGen2(float targetV, float targetI, uint8_t addr)
     usleep(50e3);
     output_message msgOut;
     this->PsuRead(msgOut);
+    
+    if(msgOut.output1.size() == 0){
+        std::cout << "WriteVI. PsuID: " << this->PsuID << "\n";
+        THROW_EXCEPT("Write VI did not return.");
+    }
+
     if (msgOut.output1[0] != 0x06)
     {
         std::cout << "WriteVI. PsuID: " << this->PsuID << "\n";
