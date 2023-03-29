@@ -92,6 +92,7 @@ std::vector<uint8_t> DXKDP_PSU::Encoder22(float Current, uint8_t addr)
 std::vector<uint8_t> DXKDP_PSU::Encoder22Gen2(float Current, uint8_t addr)
 {
     // std::cout << "Current is: " << Current << "\n";
+    Current = abs(Current);
     input_message msgIn(0x22, addr);
     this->DecToHexSigned(Current, Iconv, msgIn);
     msgIn.InstructionAssembler();
@@ -111,6 +112,7 @@ std::vector<uint8_t> DXKDP_PSU::Encoder23(float Voltage, float Current, uint8_t 
 std::vector<uint8_t> DXKDP_PSU::Encoder23Gen2(float Voltage, float Current, uint8_t addr)
 {
     // std::cout << "Current is: " << Current << "\n";
+    Current = abs(Current);
     input_message msgIn(0x23, addr);
     this->DecToHex(Voltage, Vconv, msgIn, 1);
     this->DecToHexSigned(Current, Iconv, msgIn, 2);
@@ -376,39 +378,6 @@ void DXKDP_PSU::WriteVI(float targetV, float targetI, uint8_t addr)
     }
 }
 
-void DXKDP_PSU::WriteVIGen2(float targetV, float targetI, uint8_t addr)
-{
-    std::vector<uint8_t> input_vector;
-    if (targetI >= 0)
-    {
-        input_vector = this->Encoder23(targetV, targetI, addr);
-    }
-    else
-    {
-        input_vector = this->Encoder23Gen2(targetV, targetI, addr);
-    } // std::cout << "Printing input_vector, size: "<< input_vector.size() << "\n";
-    // for(auto i: input_vector) printf("%02X ", i);
-    // for(int i = 0; i < input_vector.size(); i++){
-    //     printf("%02X ", input_vector[i]);
-    // }
-    this->PsuWrite(input_vector);
-    usleep(50e3);
-    output_message msgOut;
-    this->PsuRead(msgOut);
-    if(msgOut.output1.size() == 0){
-        std::cout << "WriteVI. PsuID: " << this->PsuID << "\n";
-        THROW_EXCEPT("Write VI did not return.");
-    }
-    if (msgOut.output1[0] != 0x06)
-    {
-        std::cout << "WriteVI. PsuID: " << this->PsuID << "\n";
-        THROW_EXCEPT("Write VI setting did not return 0x06. Aborting");
-    }
-    else
-    {
-        return;
-    }
-}
 
 void DXKDP_PSU::WriteVIGen2(float targetV, float targetI, uint8_t addr)
 {
@@ -445,6 +414,7 @@ void DXKDP_PSU::WriteVIGen2(float targetV, float targetI, uint8_t addr)
         return;
     }
 }
+
 
 void DXKDP_PSU::ReadVI(uint8_t addr)
 {
