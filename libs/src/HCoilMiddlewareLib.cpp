@@ -156,7 +156,8 @@ void MiddlewareLayer::set3DVector(std::vector<float> I_X, std::vector<float> I_Y
 
         double I_X_ = abs(I_X[i]) / cal_x;
         double I_Y_ = abs(I_Y[i]) / cal_y;
-        double I_Z_ = I_Z[i] / cal_z;
+        double I_Z_signed = I_Z[i] / cal_z;
+        double I_Z_ = abs(I_Z[i]) / cal_z;
 
         // starting timing here
         std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
@@ -165,7 +166,7 @@ void MiddlewareLayer::set3DVector(std::vector<float> I_X, std::vector<float> I_Y
         std::thread thread_y1(&DXKDP_PSU::WriteVI, uniquePSU_Y1.get(), this->y1Voltage(I_Y_), I_Y_, 0x01);
         std::thread thread_y2(&DXKDP_PSU::WriteVI, uniquePSU_Y2.get(), this->y2Voltage(I_Y_), I_Y_, 0x01);
         std::thread thread_z1(&DXKDP_PSU::WriteVI, uniquePSU_Z1.get(), this->z1Voltage(I_Z_), I_Z_, 0x01);
-        std::thread thread_z2(&DXKDP_PSU::WriteVIGen2, uniquePSU_Z2.get(), this->z1Voltage(abs(I_Z_)), I_Z_, 0x01);
+        std::thread thread_z2(&DXKDP_PSU::WriteVIGen2, uniquePSU_Z2.get(), this->z2Voltage(I_Z_), I_Z_signed*-1, 0x01);
         // std::thread introducer_thread(&LinearActuator::LinearExtend, uniqueLinAct.get());
         thread_x1.join();
         thread_x2.join();
@@ -222,7 +223,8 @@ void MiddlewareLayer::set3DVectorIN(std::vector<float> I_X, std::vector<float> I
         std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
         double I_X_ = abs(I_X[i]) / cal_x;
         double I_Y_ = abs(I_Y[i]) / cal_y;
-        double I_Z_ = I_Z[i] / cal_z;
+        double I_Z_signed = I_Z[i] / cal_z;
+        double I_Z_ = abs(I_Z[i]) / cal_z;
 
         // starting timing here
         std::thread thread_x1(&DXKDP_PSU::WriteVI, uniquePSU_X1.get(), this->x1Voltage(I_X_), I_X_, 0x01);
@@ -230,7 +232,7 @@ void MiddlewareLayer::set3DVectorIN(std::vector<float> I_X, std::vector<float> I
         std::thread thread_y1(&DXKDP_PSU::WriteVI, uniquePSU_Y1.get(), this->y1Voltage(I_Y_), I_Y_, 0x01);
         std::thread thread_y2(&DXKDP_PSU::WriteVI, uniquePSU_Y2.get(), this->y2Voltage(I_Y_), I_Y_, 0x01);
         std::thread thread_z1(&DXKDP_PSU::WriteVI, uniquePSU_Z1.get(), this->z1Voltage(I_Z_), I_Z_, 0x01);
-        std::thread thread_z2(&DXKDP_PSU::WriteVIGen2, uniquePSU_Z2.get(), this->z2Voltage(abs(I_Z_)), I_Z_, 0x01);
+        std::thread thread_z2(&DXKDP_PSU::WriteVIGen2, uniquePSU_Z2.get(), this->z2Voltage(I_Z_), I_Z_signed*-1, 0x01);
         std::thread introducer_thread(&LinearActuator::LinearExtend, uniqueLinAct.get());
         // std::thread thread_te(&MiddlewareLayer::writeXField, this);
         thread_x1.join();
@@ -291,7 +293,8 @@ void MiddlewareLayer::set3DVectorOUT(std::vector<float> I_X, std::vector<float> 
         std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
         double I_X_ = abs(I_X[i]) / cal_x;
         double I_Y_ = abs(I_Y[i]) / cal_y;
-        double I_Z_ = I_Z[i] / cal_z;
+        double I_Z_signed = I_Z[i] / cal_z;
+        double I_Z_ = abs(I_Z[i]) / cal_z;
 
         // starting timing here
         std::thread thread_x1(&DXKDP_PSU::WriteVI, uniquePSU_X1.get(), this->x1Voltage(I_X_), I_X_, 0x01);
@@ -299,7 +302,7 @@ void MiddlewareLayer::set3DVectorOUT(std::vector<float> I_X, std::vector<float> 
         std::thread thread_y1(&DXKDP_PSU::WriteVI, uniquePSU_Y1.get(), this->y1Voltage(I_Y_), I_Y_, 0x01);
         std::thread thread_y2(&DXKDP_PSU::WriteVI, uniquePSU_Y2.get(), this->y2Voltage(I_Y_), I_Y_, 0x01);
         std::thread thread_z1(&DXKDP_PSU::WriteVI, uniquePSU_Z1.get(), this->z1Voltage(I_Z_), I_Z_, 0x01);
-        std::thread thread_z2(&DXKDP_PSU::WriteVIGen2, uniquePSU_Z2.get(), this->z1Voltage(I_Z_), I_Z_, 0x01);
+        std::thread thread_z2(&DXKDP_PSU::WriteVIGen2, uniquePSU_Z2.get(), this->z2Voltage(I_Z_), I_Z_signed*-1, 0x01);
 
         std::thread introducer_thread(&LinearActuator::LinearContract, uniqueLinAct.get());
         thread_x1.join();
@@ -344,13 +347,14 @@ void MiddlewareLayer::set3DField(float I_X, float I_Y, float I_Z)
 
     I_X = abs(I_X) / cal_x;
     I_Y = abs(I_Y) / cal_y;
-    I_Z = I_Z / cal_z;
+    float I_Z_signed = I_Z / cal_z;
+    I_Z = abs(I_Z) / cal_z;
     std::thread thread_x1(&DXKDP_PSU::WriteVI, uniquePSU_X1.get(), this->x1Voltage(I_X), I_X, 0x01);
     std::thread thread_x2(&DXKDP_PSU::WriteVI, uniquePSU_X2.get(), this->x2Voltage(I_X), I_X, 0x01);
     std::thread thread_y1(&DXKDP_PSU::WriteVI, uniquePSU_Y1.get(), this->y1Voltage(I_Y), I_Y, 0x01);
     std::thread thread_y2(&DXKDP_PSU::WriteVI, uniquePSU_Y2.get(), this->y2Voltage(I_Y), I_Y, 0x01);
     std::thread thread_z1(&DXKDP_PSU::WriteVI, uniquePSU_Z1.get(), this->z1Voltage(I_Z), I_Z, 0x01);
-    std::thread thread_z2(&DXKDP_PSU::WriteVIGen2, uniquePSU_Z2.get(), this->z1Voltage(abs(I_Z)), I_Z, 0x01);
+    std::thread thread_z2(&DXKDP_PSU::WriteVIGen2, uniquePSU_Z2.get(), this->z2Voltage(I_Z), I_Z_signed * -1, 0x01);
     thread_x1.join();
     thread_x2.join();
     thread_y1.join();
@@ -377,14 +381,15 @@ void MiddlewareLayer::set3DField(Eigen::Vector3d field)
 
     I_X = abs(I_X) / cal_x;
     I_Y = abs(I_Y) / cal_y;
-    I_Z = I_Z / cal_z;
+    float I_Z_signed = I_Z / cal_z;
+    I_Z = abs(I_Z) / cal_z;
 
     std::thread thread_x1(&DXKDP_PSU::WriteVI, uniquePSU_X1.get(), this->x1Voltage(I_X), I_X, 0x01);
     std::thread thread_x2(&DXKDP_PSU::WriteVI, uniquePSU_X2.get(), this->x2Voltage(I_X), I_X, 0x01);
     std::thread thread_y1(&DXKDP_PSU::WriteVI, uniquePSU_Y1.get(), this->y1Voltage(I_Y), I_Y, 0x01);
     std::thread thread_y2(&DXKDP_PSU::WriteVI, uniquePSU_Y2.get(), this->y2Voltage(I_Y), I_Y, 0x01);
     std::thread thread_z1(&DXKDP_PSU::WriteVI, uniquePSU_Z1.get(), this->z1Voltage(I_Z), I_Z, 0x01);
-    std::thread thread_z2(&DXKDP_PSU::WriteVIGen2, uniquePSU_Z2.get(), this->z1Voltage(I_Z), I_Z, 0x01);
+    std::thread thread_z2(&DXKDP_PSU::WriteVIGen2, uniquePSU_Z2.get(), this->z2Voltage(I_Z), I_Z_signed * -1, 0x01);
     thread_x1.join();
     thread_x2.join();
     thread_y1.join();

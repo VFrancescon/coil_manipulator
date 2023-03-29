@@ -65,11 +65,18 @@ int main(int argc, char* argv[]){
     std::cout << "Testing polarity from z2 supply. Press enter to begin";
     std::cin.get();
     DXKDP_PSU psu1("/dev/ttyUSB3", 0.01, 0.01);
-    psu1.WriteVI(10,10);
+    psu1.WriteVIGen2(10,10);
     psu1.PoCtrl(0x01);
     std::cout << "Written 10V,10A and PO=1. Press enter to begin polarity tests";
     std::cin.get();
 
+    std::cout << "Now setting -10A. big roll";
+    std::cin.get();
+    psu1.WriteVIGen2(10,-10);
+
+
+    std::cout << "Press enter to exit";
+    std::cin.get();
     // std::cout << "0x00. Closed ";
     // psu1.setPolarityGen2(0x00);
     // std::cin.get();

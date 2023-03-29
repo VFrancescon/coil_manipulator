@@ -253,17 +253,16 @@ void DXKDP_PSU::PoCtrl(uint8_t po_state)
 {
     std::vector<uint8_t> input_vector = this->Encoder20(po_state);
     // for(auto i: input_vector) printf("%02X ", i);
-    input_vector[2] = 0x20;
     this->PsuWrite(input_vector);
     usleep(50e3);
     output_message msgOut;
     this->PsuRead(msgOut);
-    std::cout << "PoCtrl. size of returned values: " << msgOut.output1.size() << "\n";
+    // std::cout << "PoCtrl. size of returned values: " << msgOut.output1.size() << "\n";
     this->PsuRead(msgOut);
-    if(msgOut.output1.size() == 0){
-        std::cout << "PoCtrl. PsuID: " << this->PsuID << "\n";
-        THROW_EXCEPT("Poctrl did not return.");
-    }
+    // if(msgOut.output1.size() == 0){
+    //     std::cout << "PoCtrl. PsuID: " << this->PsuID << "\n";
+    //     THROW_EXCEPT("Poctrl did not return.");
+    // }
     if (msgOut.output1[0] != 0x06)
     {
         std::cout << "PoCtrl. PsuID: " << this->PsuID << "\n";
@@ -452,8 +451,8 @@ void DXKDP_PSU::setPolarity(uint8_t polarity, uint8_t addr)
     //     THROW_EXCEPT("Polarity setting called with polarity > 0x01. If you do require such value, please use GEN2 version of the function");
     // }
     std::vector<uint8_t> input_vector = this->Encoder24(polarity, polarity, addr);
-    for(auto i: input_vector) printf("%02X ", i);
-    std::cout << "\n\n";
+    // for(auto i: input_vector) printf("%02X ", i);
+    // std::cout << "\n\n";
     this->PsuWrite(input_vector);
     usleep(50e3);
     output_message msgOut;
