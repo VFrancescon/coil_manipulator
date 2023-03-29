@@ -70,6 +70,8 @@ private:
      */
     std::vector<uint8_t> Encoder22(float Current=0, uint8_t addr=0x01);
 
+    std::vector<uint8_t> Encoder22Gen2(float Current=0, uint8_t addr=0x01);
+
     /*
     Constructs the input msg to set the Current.
     Current can be any float to 2dp
@@ -87,6 +89,9 @@ private:
      * @return std::vector<uint8_t> vector containing the relevant instruction
      */
     std::vector<uint8_t> Encoder23(float Voltage=0, float Current=0, uint8_t addr=0x01);
+
+
+    std::vector<uint8_t> Encoder23Gen2(float Voltage=0, float Current=0, uint8_t addr=0x01);
 
     /*
     Constructs the input_message to set the Polarity.
@@ -187,6 +192,8 @@ private:
      * @param entry 1 writes to CONT1, CONT2. 2 writes to CONT3, CONT4
      */
     void DecToHex(float value, float Conv, input_message &msgIn, int entry = 1);
+
+    void DecToHexSigned(float value, float Conv, input_message &msgIn, int entry = 2);
 
 public:
     /*default constructor, here for debugging mainly
@@ -297,6 +304,8 @@ public:
      */
     void WriteCurrent(float targetI, uint8_t addr=0x01);
     
+    void WriteCurrentGen2(float targetI, uint8_t addr=0x01);
+    
     /**
      * @brief Writes VI to Power Supply
      * 
@@ -305,6 +314,8 @@ public:
      * @param addr PSU Address
      */
     void WriteVI(float targetV, float targetI, uint8_t addr=0x01);
+
+    void WriteVIGen2(float targetV, float targetI, uint8_t addr=0x01);
 
     /**
      * @brief reads the VI currently output by the PSU. Writes the minto msg

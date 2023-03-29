@@ -86,6 +86,15 @@ std::vector<uint8_t> DXKDP_PSU::Encoder22(float Current, uint8_t addr)
     return msgIn.instruction;
 }
 
+std::vector<uint8_t> DXKDP_PSU::Encoder22Gen2(float Current, uint8_t addr)
+{
+    // std::cout << "Current is: " << Current << "\n";
+    input_message msgIn(0x22, addr);
+    this->DecToHexSigned(Current, Iconv, msgIn);
+    msgIn.InstructionAssembler();
+    return msgIn.instruction;
+}
+
 std::vector<uint8_t> DXKDP_PSU::Encoder23(float Voltage, float Current, uint8_t addr)
 {
     // std::cout << "Current is: " << Current << "\n";
@@ -96,21 +105,22 @@ std::vector<uint8_t> DXKDP_PSU::Encoder23(float Voltage, float Current, uint8_t 
     return msgIn.instruction;
 }
 
+std::vector<uint8_t> DXKDP_PSU::Encoder23Gen2(float Voltage, float Current, uint8_t addr)
+{
+    // std::cout << "Current is: " << Current << "\n";
+    input_message msgIn(0x23, addr);
+    this->DecToHex(Voltage, Vconv, msgIn, 1);
+    this->DecToHexSigned(Current, Iconv, msgIn, 2);
+    msgIn.InstructionAssembler();
+    return msgIn.instruction;
+}
+
 std::vector<uint8_t> DXKDP_PSU::Encoder24(uint8_t VoltageP, uint8_t CurrentP, uint8_t addr)
 {
     input_message msgIn(0x24, addr);
     msgIn.cont1_set = 1;
     msgIn.cont2_set = 2;
     msgIn.set_contents(VoltageP, CurrentP);
-    // msgIn.InstructionAssembler();
-    return msgIn.instruction;
-}
-
-std::vector<uint8_t> DXKDP_PSU::Encoder24Gen2(uint8_t VoltageP, uint8_t CurrentP, uint8_t addr)
-{
-    input_message msgIn(0x24, addr);
-    msgIn.cont1_set = 1;
-    msgIn.set_contents(VoltageP);
     // msgIn.InstructionAssembler();
     return msgIn.instruction;
 }
@@ -207,6 +217,33 @@ void DXKDP_PSU::DecToHex(float value, float Conv, input_message &msgIn, int entr
     }
 }
 
+void DXKDP_PSU::DecToHexSigned(float value, float Conv, input_message &msgIn, int entry)
+{
+    value = abs(value);
+    float intermediate = value / Conv;
+    int intermediate_INT = (int)intermediate;
+    int negativeConvert = 65536;
+    int intermediate_FLIP = negativeConvert - intermediate_INT;
+    uint16_t hexConverted = (uint16_t)intermediate_FLIP;
+
+    switch (entry)
+    {
+    case 2:
+        msgIn.CONT3 = (uint8_t)hexConverted;
+        msgIn.CONT4 = (uint8_t)(hexConverted >> 8);
+        msgIn.cont3_set = 1;
+        msgIn.cont4_set = 1;
+        break;
+
+    default:
+        msgIn.CONT1 = (uint8_t)hexConverted;
+        msgIn.CONT2 = (uint8_t)(hexConverted >> 8);
+        msgIn.cont1_set = 1;
+        msgIn.cont2_set = 1;
+        break;
+    }
+}
+
 void DXKDP_PSU::PoCtrl(uint8_t po_state)
 {
     std::vector<uint8_t> input_vector = this->Encoder20(po_state);
@@ -247,6 +284,32 @@ void DXKDP_PSU::WriteVoltage(float targetV, uint8_t addr)
 void DXKDP_PSU::WriteCurrent(float targetI, uint8_t addr)
 {
     std::vector<uint8_t> input_vector = this->Encoder22(targetI, addr);
+
+    // for(auto i: input_vector) printf("%02X ", i);
+    this->PsuWrite(input_vector);
+    usleep(50e3);
+    output_message msgOut;
+    this->PsuRead(msgOut);
+    if (msgOut.output1[0] != 0x06)
+    {
+        std::cout << "WriteI. PsuID: " << this->PsuID << "\n";
+        THROW_EXCEPT("WriteCurrent setting did not return 0x06. Aborting");
+    }
+    else
+        return;
+}
+
+void DXKDP_PSU::WriteCurrentGen2(float targetI, uint8_t addr)
+{
+    std::vector<uint8_t> input_vector;
+    if (targetI >= 0)
+    {
+        input_vector = this->Encoder22(targetI, addr);
+    }
+    else
+    {
+        input_vector = this->Encoder22Gen2(targetI, addr);
+    }
     // for(auto i: input_vector) printf("%02X ", i);
     this->PsuWrite(input_vector);
     usleep(50e3);
@@ -265,6 +328,36 @@ void DXKDP_PSU::WriteVI(float targetV, float targetI, uint8_t addr)
 {
     std::vector<uint8_t> input_vector = this->Encoder23(targetV, targetI, addr);
     // std::cout << "Printing input_vector, size: "<< input_vector.size() << "\n";
+    // for(auto i: input_vector) printf("%02X ", i);
+    // for(int i = 0; i < input_vector.size(); i++){
+    //     printf("%02X ", input_vector[i]);
+    // }
+    this->PsuWrite(input_vector);
+    usleep(50e3);
+    output_message msgOut;
+    this->PsuRead(msgOut);
+    if (msgOut.output1[0] != 0x06)
+    {
+        std::cout << "WriteVI. PsuID: " << this->PsuID << "\n";
+        THROW_EXCEPT("Write VI setting did not return 0x06. Aborting");
+    }
+    else
+    {
+        return;
+    }
+}
+
+void DXKDP_PSU::WriteVIGen2(float targetV, float targetI, uint8_t addr)
+{
+    std::vector<uint8_t> input_vector;
+    if (targetI >= 0)
+    {
+        input_vector = this->Encoder23(targetV, targetI, addr);
+    }
+    else
+    {
+        input_vector = this->Encoder23Gen2(targetV, targetI, addr);
+    } // std::cout << "Printing input_vector, size: "<< input_vector.size() << "\n";
     // for(auto i: input_vector) printf("%02X ", i);
     // for(int i = 0; i < input_vector.size(); i++){
     //     printf("%02X ", input_vector[i]);
@@ -338,28 +431,4 @@ void DXKDP_PSU::setPolarity(uint8_t polarity, uint8_t addr)
         // std::cout << "-------------------SET POLARITY--------------------\n\n\n";
         return;
     }
-}
-
-void DXKDP_PSU::setPolarityGen2(uint8_t polarity, uint8_t addr)
-{
-    // std::cout << "-------------------SET POLARITY--------------------\n";
-    std::vector<uint8_t> input_vector = this->Encoder24Gen2(polarity, polarity, addr);
-    for(auto i: input_vector) printf("%02X ", i);
-    std::cout << "\n\n";
-    this->PsuWrite(input_vector);
-    usleep(50e3);
-    output_message msgOut;
-    this->PsuRead(msgOut);
-    std::cout << "Gen2 polarity. size of returned values: " << msgOut.output1.size() << "\n";
-
-    // if (msgOut.output1[0] != 0x06)
-    // {
-    //     std::cout << "PsuID: " << this->PsuID << "\n";
-    //     THROW_EXCEPT("Polarity setting did not return 0x06. Aborting");
-    // }
-    // else
-    // {
-    //     // std::cout << "-------------------SET POLARITY--------------------\n\n\n";
-    //     return;
-    // }
 }
