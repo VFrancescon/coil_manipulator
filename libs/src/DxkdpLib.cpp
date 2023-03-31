@@ -58,6 +58,7 @@ void DXKDP_PSU::PsuRead(output_message &msgOut)
 DXKDP_PSU::~DXKDP_PSU()
 {
     this->WriteVI(0, 0);
+    usleep(500e3);
     this->PoCtrl(0x00);
     this->serialPort.Close();
 }
@@ -363,8 +364,11 @@ void DXKDP_PSU::WriteVI(float targetV, float targetI, uint8_t addr)
     this->PsuRead(msgOut);
     // std::cout << "WriteVI. size of returned values: " << msgOut.output1.size() << "\n";
     if (msgOut.output1.size() == 0) {
-        std::cout << "WriteVI. PsuID: " << this->PsuID << ". Attempting recursive call.\n";
-        this->WriteVI(targetV, targetI);
+        std::cout << "WriteVI. PsuID: " << this->PsuID << ".\n";
+        for(auto i: input_vector) printf("%02X ", i);
+        std::cout << "\n";
+        THROW_EXCEPT("WriteVI did not return.\n");
+
     }
     if( msgOut.output1[0] != 0x06)
     {
@@ -399,8 +403,11 @@ void DXKDP_PSU::WriteVIGen2(float targetV, float targetI, uint8_t addr)
     this->PsuRead(msgOut);
     
     if(msgOut.output1.size() == 0){
-        std::cout << "WriteVI. PsuID: " << this->PsuID << ". Attempting recursive call\n";
-        this->WriteVIGen2(targetV, targetI);
+        std::cout << "WriteVI. PsuID: " << this->PsuID << "\n";
+        for(auto i: input_vector) printf("%02X ", i);
+        std::cout << "\n";
+        THROW_EXCEPT("WriteVI did not return.\n");
+        // this->WriteVIGen2(targetV, targetI);
     }
 
     if (msgOut.output1[0] != 0x06)
@@ -459,8 +466,10 @@ void DXKDP_PSU::setPolarity(uint8_t polarity, uint8_t addr)
     this->PsuRead(msgOut);
     // std::cout << "Gen2 polarity. size of returned values: " << msgOut.output1.size() << "\n";
     if (msgOut.output1.size() == 0) {
-        std::cout << "PolarityGen1. PsuID: " << this->PsuID << ". Attempting recursive call.\n";
-        this->setPolarity(polarity, addr);
+        std::cout << "PolarityGen1. PsuID: " << this->PsuID << ".\n";
+        for(auto i: input_vector) printf("%02X ", i);
+        std::cout << "\n";
+        THROW_EXCEPT("WriteVI did not return.\n");
         // THROW_EXCEPT("PolarityGen1 setting did not return anything. Aborting");
     }
     if (msgOut.output1[0] != 0x06)
