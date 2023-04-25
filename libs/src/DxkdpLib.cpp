@@ -288,10 +288,13 @@ void DXKDP_PSU::WriteCurrent(float targetI, uint8_t addr) {
     output_message msgOut;
     this->PsuRead(msgOut);
     this->PsuRead(msgOut);
+    //print input vector
+    for(auto i: input_vector) printf("Input: %02X ", i);
     if (msgOut.output1.size() == 0) {
         std::cout << "WriteI. PsuID: " << this->PsuID << "\n";
         THROW_EXCEPT("Write I did not return.");
     }
+    for(auto i: msgOut.output1) printf("\nResult: %02X ", i);
     if (msgOut.output1[0] != 0x06) {
         std::cout << "WriteI. PsuID: " << this->PsuID << "\n";
         THROW_EXCEPT("WriteCurrent setting did not return 0x06. Aborting");
@@ -335,6 +338,15 @@ void DXKDP_PSU::WriteVI(float targetV, float targetI, uint8_t addr) {
     this->PsuRead(msgOut);
     // std::cout << "WriteVI. size of returned values: " <<
     // msgOut.output1.size() << "\n";
+
+    //print psuID
+    std::cout << "WriteVI. PsuID: " << this->PsuID << "";
+
+    std::cout << "Input: ";
+    //print input_vector
+    for(auto i: input_vector) printf("%02X ", i);
+    
+
     if (msgOut.output1.size() == 0) {
         std::cout << "WriteVI. PsuID: " << this->PsuID << ".\n";
         for (auto i : input_vector) printf("%02X ", i);
@@ -342,6 +354,10 @@ void DXKDP_PSU::WriteVI(float targetV, float targetI, uint8_t addr) {
         // return;
         THROW_EXCEPT("WriteVI did not return.\n");
     }
+    //print output vector
+    std::cout << "Result: ";
+    for(auto i: msgOut.output1) printf("%02X ", i);
+    std::cout << "\n";
     if (msgOut.output1[0] != 0x06) {
         std::cout << "WriteVI. PsuID: " << this->PsuID << "\n";
         THROW_EXCEPT("Write VI setting did not return 0x06. Aborting");
@@ -367,6 +383,13 @@ void DXKDP_PSU::WriteVIGen2(float targetV, float targetI, uint8_t addr) {
     output_message msgOut;
     this->PsuRead(msgOut);
 
+    //print psuID
+    std::cout << "WriteVI. PsuID: " << this->PsuID << "";
+
+    std::cout << "Input: ";
+    //print input_vector
+    for(auto i: input_vector) printf("%02X ", i);
+
     if (msgOut.output1.size() == 0) {
         std::cout << "WriteVI. PsuID: " << this->PsuID << "\n";
         for (auto i : input_vector) printf("%02X ", i);
@@ -374,6 +397,10 @@ void DXKDP_PSU::WriteVIGen2(float targetV, float targetI, uint8_t addr) {
         THROW_EXCEPT("WriteVI did not return.\n");
         // this->WriteVIGen2(targetV, targetI);
     }
+    //print output vector
+    std::cout << "Result: ";
+    for(auto i: msgOut.output1) printf("%02X ", i);
+    std::cout << "\n";
 
     if (msgOut.output1[0] != 0x06) {
         std::cout << "WriteVI. PsuID: " << this->PsuID << "\n";

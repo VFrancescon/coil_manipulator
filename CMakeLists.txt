@@ -33,6 +33,8 @@ add_executable( introducer "src/introducer.cpp")
 add_executable( psus "src/psu_test.cpp")
 add_executable( pylonSave "src/opencv/pylonSave.cpp")
 add_executable( debugPolarity "src/debugPolarity.cpp")
+add_executable( waterfall "src/waterfall.cpp")
+
 # add_executable( PsuLibTest "src/PSULib_test.cpp")
 # add_executable( initial_test "src/initial_serial_comm.cpp")
 # add_executable( teslameter_test "src/TeslameterTest.cpp")
@@ -51,6 +53,9 @@ target_link_libraries( precomps Eigen3::Eigen)
 target_link_libraries( psus LINK_PUBLIC DxkdpLib)
 target_link_libraries( pylonSave ${Pylon_LIBRARIES} ${OpenCV_LIBS})
 target_link_libraries( debugPolarity LINK_PUBLIC CppLinuxSerial)
+#link libs Dxkdp, cpplinuxserial to waterfall target
+target_link_libraries( waterfall LINK_PUBLIC DxkdpLib CppLinuxSerial)
+
 # target_link_libraries( PsuLibTest LINK_PUBLIC DxkdpLib )
 # target_link_libraries( initial_test LINK_PUBLIC CppLinuxSerial )
 # target_link_libraries( teslameter_test LINK_PUBLIC LakeshoreF71Lib )
