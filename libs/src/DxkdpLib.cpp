@@ -29,7 +29,7 @@ DXKDP_PSU::DXKDP_PSU(std::string COM_PORT, float V_conv, float I_conv)
 }
 
 void DXKDP_PSU::DXKDP_Setup() {
-    this->serialPort.SetTimeout(100);
+    this->serialPort.SetTimeout(200);
     this->serialPort.Open();
 }
 
@@ -467,5 +467,42 @@ void DXKDP_PSU::setPolarity(uint8_t polarity, uint8_t addr) {
         // std::cout << "-------------------SET
         // POLARITY--------------------\n\n\n";
         return;
+    }
+}
+
+
+uint8_t DXKDP_PSU::debugWriteVI(float targetV, float targetI, uint8_t addr){
+    std::vector<uint8_t> input_vector = this->Encoder23(targetV, targetI, addr);
+    // std::cout << "Printing input_vector, size: "<< input_vector.size() <<
+    // "\n"; for(auto i: input_vector) printf("%02X ", i); for(int i = 0; i <
+    // input_vector.size(); i++){
+    //     printf("%02X ", input_vector[i]);
+    // }
+    this->PsuWrite(input_vector);
+    usleep(200e3);
+    output_message msgOut;
+    this->PsuRead(msgOut);
+    // std::cout << "WriteVI. size of returned values: " <<
+    // msgOut.output1.size() << "\n";
+
+    //print psuID
+    std::cout << "WriteVI. PsuID: " << this->PsuID << "";
+
+    std::cout << "Input: ";
+    //print input_vector
+    for(auto i: input_vector) printf("%02X ", i);
+    
+
+    if (msgOut.output1.size() == 0) {
+        std::cout << "No return value. PsuID: " << this->PsuID << ".\n";
+        // for (auto i : input_vector) printf("%02X ", i);
+        // std::cout << "\n";
+        // return;
+        // THROW_EXCEPT("WriteVI did not return.\n");
+        return 0x99;
+    } else {
+        std::cout << "Result: ";
+        for(auto i: msgOut.output1) printf("%02X ", i);
+        return msgOut.output1.at(0);
     }
 }

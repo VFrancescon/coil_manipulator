@@ -338,6 +338,8 @@ class DXKDP_PSU {
 
     void WriteVIGen2(float targetV, float targetI, uint8_t addr = 0x01);
 
+	uint8_t debugWriteVI(float targetV, float targetI, uint8_t addr = 0x01);
+
     /**
      * @brief reads the VI currently output by the PSU. Writes the minto msg
      *
