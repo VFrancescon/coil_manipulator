@@ -14,7 +14,7 @@ int main(int argc, char* argv[]){
     //-25 -> 0 A
     dxkdp_psu.setPolarity(0x01);
     for(int i = 0; i < 25; i++){
-        std::cout << "Setting i = " << i << "\n";
+        std::cout << "Setting i = " << 25 - i << "\n";
         returnVal = dxkdp_psu.debugWriteVI(60, 25-i);
         switch( returnVal ){
             case 0x06:
@@ -69,7 +69,10 @@ int main(int argc, char* argv[]){
         }
     }
     std::cout << "Exiting\n";
-    dxkdp_psu.WriteVI(0,0);
+    
+    while(dxkdp_psu.debugWriteVI(0,0) != 0x06){
+        std::cout << "Reattempting to set i = 0\n";
+    }
     dxkdp_psu.PoCtrl(0x00);
 
     return 0;
