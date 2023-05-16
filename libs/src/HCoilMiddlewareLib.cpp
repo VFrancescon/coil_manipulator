@@ -380,8 +380,6 @@ void MiddlewareLayer::set3DVectorOUT(std::vector<float> I_X,
 }
 
 void MiddlewareLayer::set3DField(float I_X, float I_Y, float I_Z) {
-    
-    
     std::thread th_x1(&MiddlewareLayer::PolarityCheck, this, I_X,
                       MiddlewareLayer::PSU_ENUM::X1);
     // std::thread th_x2(&MiddlewareLayer::PolarityCheck, this, I_X,
@@ -401,7 +399,7 @@ void MiddlewareLayer::set3DField(float I_X, float I_Y, float I_Z) {
     th_z1.join();
     // th_z2.join();
 
-
+    // std::cout << "I_X: " << I_X << " I_X / cal_x = " << I_X / cal_x << "\n";
     I_X = abs(I_X) / cal_x;
     I_Y = abs(I_Y) / cal_y;
     float I_Z_signed = I_Z / cal_z;
@@ -424,7 +422,6 @@ void MiddlewareLayer::set3DField(float I_X, float I_Y, float I_Z) {
     thread_y2.join();
     thread_z1.join();
     thread_z2.join();
-
 }
 
 void MiddlewareLayer::set3DField(Eigen::Vector3d field) {
@@ -612,12 +609,9 @@ MiddlewareLayer::~MiddlewareLayer() {
     if (!PSU_MODE) this->uniqueLinAct->LinearStop();
 }
 
-float MiddlewareLayer::x1Voltage(float I) { return 0.5927f * I + 0.8818f; }
+float MiddlewareLayer::x1Voltage(float I) { return 2 * (0.5927f * I + 0.8818f); }
 
-float MiddlewareLayer::x2Voltage(float I) {
-    // return 0.6269f * I + 0.7143f;
-    return 0.5929f * I + 1.114f;
-}
+float MiddlewareLayer::x2Voltage(float I) { return 0.5929f * I + 1.114f; }
 
 float MiddlewareLayer::y1Voltage(float I) { return 0.45f * I + 1.5f; }
 
