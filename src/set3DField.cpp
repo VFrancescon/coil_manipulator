@@ -16,7 +16,6 @@ int main(int argc, char *argv[]){
         bool psu_only_mode = true; 
         MiddlewareLayer mid(psu_only_mode);
 
-
         mid.set3DField(I_X, I_Y, I_Z);
         std::cout << "Holding field as printed above. press enter to quit";
         std::cin.get();
