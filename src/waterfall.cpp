@@ -1,7 +1,7 @@
 #include <DxkdpLib/DxkdpLib.hpp>
 
 int main(int argc, char** argv) {
-    DXKDP_PSU X1("/dev/ttyUSB0", 0.1, 0.01);
+    // DXKDP_PSU X1("/dev/ttyUSB0", 0.1, 0.01);
     DXKDP_PSU X2("/dev/ttyUSB1", 0.1, 0.01);
 
     DXKDP_PSU Y1("/dev/ttyUSB4", 0.01, 0.01);
@@ -12,7 +12,7 @@ int main(int argc, char** argv) {
 
 
     //setup VI
-    X1.WriteVI(60,0);
+    // X1.WriteVI(60,0);
     X2.WriteVI(60,0);
     Y1.WriteVI(60,0);
     Y2.WriteVI(60,0);
@@ -20,7 +20,7 @@ int main(int argc, char** argv) {
     Z2.WriteVI(60,0);
 
     //setup Power
-    X1.PoCtrl(0x01);
+    // X1.PoCtrl(0x01);
     X2.PoCtrl(0x01);
     Y1.PoCtrl(0x01);
     Y2.PoCtrl(0x01);
@@ -36,7 +36,7 @@ int main(int argc, char** argv) {
     //start cycling currents
 
     //setup negative polarities
-    X1.setPolarity(0x01);
+    // X1.setPolarity(0x01);
     X2.setPolarity(0x01);
     Y1.setPolarity(0x00);
     Y2.setPolarity(0x01);
@@ -47,23 +47,23 @@ int main(int argc, char** argv) {
         //print a separator and the current value of i
         std::cout << "-------------------\n";
         std::cout << "i = " << i << "\n";
-        X1.WriteVI(60,i);
+        // X1.WriteVI(60,i);
         //sleep for 0.2 seconds
-        usleep(200000);
+        usleep(50000);
         X2.WriteVI(60,i);
-        usleep(200000);
+        usleep(50000);
         Y1.WriteVI(60,i);
-        usleep(200000);
+        usleep(50000);
         Y2.WriteVI(60,i);
-        usleep(200000);
+        usleep(50000);
         Z1.WriteVI(60,i);
-        usleep(200000);
+        usleep(50000);
         Z2.WriteVIGen2(60, -i);
-        usleep(500000);
+        usleep(100000);
     }
 
     //setup positive polarities
-    X1.setPolarity(0x00);
+    // X1.setPolarity(0x00);
     X2.setPolarity(0x00);
     Y1.setPolarity(0x01);
     Y2.setPolarity(0x00);
@@ -74,19 +74,19 @@ int main(int argc, char** argv) {
         std::cout << "-------------------\n";
         std::cout << "i = " << i << "\n";
 
-        X1.WriteVI(60,i);
+        // X1.WriteVI(60,i);
         //sleep for 0.2 seconds
-        usleep(200000);
+        usleep(50000);
         X2.WriteVI(60,i);
-        usleep(200000);
+        usleep(50000);
         Y1.WriteVI(60,i);
-        usleep(200000);
+        usleep(50000);
         Y2.WriteVI(60,i);
-        usleep(200000);
+        usleep(50000);
         Z1.WriteVI(60,i);
-        usleep(200000);
+        usleep(50000);
         Z2.WriteVIGen2(60, i);
-        usleep(500000);
+        usleep(100000);
     }
 
     //print a divider and that the program is shutting down
@@ -94,7 +94,7 @@ int main(int argc, char** argv) {
     std::cout << "Shutting Down\n";
 
     // shutdown
-    X1.PoCtrl(0x00);
+    // X1.PoCtrl(0x00);
     X2.PoCtrl(0x00);
     Y1.PoCtrl(0x00);
     Y2.PoCtrl(0x00);
@@ -102,7 +102,7 @@ int main(int argc, char** argv) {
     Z2.PoCtrl(0x00);
 
     //call writeVI on all objects with 0,0 args
-    X1.WriteVI(0,0);
+    // X1.WriteVI(0,0);
     X2.WriteVI(0,0);
     Y1.WriteVI(0,0);
     Y2.WriteVI(0,0);

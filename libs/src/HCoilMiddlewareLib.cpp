@@ -538,11 +538,11 @@ void MiddlewareLayer::PolarityCheck(float input,
         case MiddlewareLayer::PSU_ENUM::X2:
 
             if (input > 0) {
-                uniquePSU_X2->setPolarity(0x0);
+                uniquePSU_X2->setPolarity(0x1);
             }
             // printf("Flipped polarity, X1\n");}
             else
-                uniquePSU_X2->setPolarity(0x1);
+                uniquePSU_X2->setPolarity(0x0);
             break;
 
         // block of Y related cases
@@ -611,7 +611,7 @@ MiddlewareLayer::~MiddlewareLayer() {
 
 float MiddlewareLayer::x1Voltage(float I) { return 2 * (0.5927f * I + 0.8818f); }
 
-float MiddlewareLayer::x2Voltage(float I) { return 0.5929f * I + 1.114f; }
+float MiddlewareLayer::x2Voltage(float I) { return 2*(0.5929f * I + 1.114f); }
 
 float MiddlewareLayer::y1Voltage(float I) { return 0.45f * I + 1.5f; }
 
