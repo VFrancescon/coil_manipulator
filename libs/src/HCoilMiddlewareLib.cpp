@@ -611,7 +611,7 @@ MiddlewareLayer::~MiddlewareLayer() {
 
 float MiddlewareLayer::x1Voltage(float I) { return 2 * (0.5927f * I + 0.8818f); }
 
-float MiddlewareLayer::x2Voltage(float I) { return 2*(0.5929f * I + 1.114f); }
+float MiddlewareLayer::x2Voltage(float I) { return 60; }
 
 float MiddlewareLayer::y1Voltage(float I) { return 0.45f * I + 1.5f; }
 
