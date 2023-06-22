@@ -30,8 +30,7 @@
 class MiddlewareLayer {
    private:
     bool PositivePolarity;
-    int stepper_count = 0;  //!< keeps track of how many extensions/retractions
-                            //!< happened to the stepper motor.
+
 
     std::ofstream outputFile;        //!< Output file object
     std::ofstream leftoverTimeFile;  //!< Leftover time file object
@@ -123,6 +122,9 @@ class MiddlewareLayer {
     float z2Voltage(float I);
 
    public:
+    int stepper_count = 0;  //!< keeps track of how many extensions/retractions
+                        //!< happened to the stepper motor.
+    
     /**
      * @brief Enum class allowing to choose which PSU to operate on.
      *
