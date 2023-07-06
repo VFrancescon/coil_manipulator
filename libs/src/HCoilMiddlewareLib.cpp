@@ -606,7 +606,10 @@ void MiddlewareLayer::setFrequency(float fHz) {
 
 MiddlewareLayer::~MiddlewareLayer() {
     // this->leftoverTimeFile.close();
-    if (!PSU_MODE) this->uniqueLinAct->LinearStop();
+    if (!PSU_MODE) {
+        if(this->stepper_count > 0) this->retractIntroducer(this->stepper_count);
+        else this->stepIntroducer(this->stepper_count);
+        this->uniqueLinAct->LinearStop();}
 }
 
 float MiddlewareLayer::x1Voltage(float I) { return 2 * (0.5927f * I + 0.8818f); }
