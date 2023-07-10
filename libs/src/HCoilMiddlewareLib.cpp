@@ -488,6 +488,7 @@ void MiddlewareLayer::retractIntroducer() {
 }
 
 void MiddlewareLayer::retractIntroducer(int stepCount_) {
+   	std::cout << "Called retract with " << stepCount_ << " steps\n"; 
     this->stepper_count -= stepCount_;
     for (int i = 0; i < stepCount_; i++) {
         this->uniqueLinAct->LinearContract();
