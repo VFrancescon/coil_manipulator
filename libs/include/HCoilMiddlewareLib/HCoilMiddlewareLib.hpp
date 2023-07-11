@@ -314,6 +314,12 @@ class MiddlewareLayer {
     void PolarityCheck(float input, MiddlewareLayer::PSU_ENUM psu_);
 
     /**
+     * @brief unwinds the introducer by this->step_count steps.
+     * 
+     */
+    void unwindIntroducer(void);
+
+    /**
      * @brief Reads Field in X direction.
      *
      * Once the tri-axis probe arrives, we will need to expand (or duplicate)

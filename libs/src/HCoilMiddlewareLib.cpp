@@ -605,11 +605,16 @@ void MiddlewareLayer::setFrequency(float fHz) {
     return;
 }
 
+// void MiddlewareLayer::unwindIntroducer(void){
+//     if(this->stepper_count > 0) this->retractIntroducer( abs(this->stepper_count));
+//     else this->stepIntroducer(abs(this->stepper_count));
+// }
+
 MiddlewareLayer::~MiddlewareLayer() {
     // this->leftoverTimeFile.close();
     if (!PSU_MODE) {
-        if(this->stepper_count > 0) this->retractIntroducer(this->stepper_count);
-        else this->stepIntroducer(this->stepper_count);
+        // if(this->stepper_count > 0) this->retractIntroducer(this->stepper_count);
+        // else this->stepIntroducer(this->stepper_count);
         this->uniqueLinAct->LinearStop();}
 }
 
