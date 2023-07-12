@@ -455,9 +455,9 @@ void MiddlewareLayer::set3DField(Eigen::Vector3d field) {
     I_Z = abs(I_Z) / cal_z;
 
     std::thread thread_x1(&DXKDP_PSU::WriteVI, uniquePSU_X1.get(),
-                          this->x1Voltage(I_X), I_X, 0x01);
+                          60, I_X, 0x01);
     std::thread thread_x2(&DXKDP_PSU::WriteVIGen2, uniquePSU_X2.get(),
-                          this->x2Voltage(I_X), I_X_signed*-1, 0x01);
+                          60, I_X_signed, 0x01);
     std::thread thread_y1(&DXKDP_PSU::WriteVI, uniquePSU_Y1.get(),
                           this->y1Voltage(I_Y), I_Y, 0x01);
     std::thread thread_y2(&DXKDP_PSU::WriteVI, uniquePSU_Y2.get(),
