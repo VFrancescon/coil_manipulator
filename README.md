@@ -1,5 +1,9 @@
 # Helmz Coil Manipulator
 
+## WARNING
+
+This repo is now archived. A minimal version of the coil back-end has been ported to the [minimal repo](https://github.com/VFrancescon/coil_libs) to cut down on dependencies.
+
 ## Dependencies
 
 ### Functional
