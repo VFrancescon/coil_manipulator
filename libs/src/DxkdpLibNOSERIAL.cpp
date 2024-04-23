@@ -35,12 +35,11 @@ void DXKDP_PSU::PsuWrite(input_message msgIn) {
 }
 
 void DXKDP_PSU::PsuWrite(std::vector<uint8_t> input) {
-    std::cout << "Started PSUWrite on " << this->PsuID << " ";
+    // std::cout << "Started PSUWrite on " << this->PsuID << " ";
     for(auto i: input){
         printf("%02X ", i);
     }
-    std::cout << "\n";
-    std::cout << "Finished PSUWrite on " << this->PsuID << " \n";
+    // std::cout << "Finished PSUWrite on " << this->PsuID << " \n";
 }
 
 void DXKDP_PSU::PsuRead(output_message &msgOut) {
@@ -236,8 +235,9 @@ void DXKDP_PSU::DecToHexSigned(float value, float Conv, input_message &msgIn,
 void DXKDP_PSU::PoCtrl(uint8_t po_state) {
     std::vector<uint8_t> input_vector = this->Encoder20(po_state);
     // for(auto i: input_vector) printf("%02X ", i);
-    std::cout << "#Started PoCtrl on " << this->PsuID << " ";
     this->PsuWrite(input_vector);
+    std::cout << "#PoCtrl on " << this->PsuID << "\n";
+
     // usleep(200e3);
     // output_message msgOut;
     // this->PsuRead(msgOut);
@@ -330,8 +330,8 @@ void DXKDP_PSU::WriteVI(float targetV, float targetI, uint8_t addr) {
     // input_vector.size(); i++){
     //     printf("%02X ", input_vector[i]);
     // }
-    std::cout << "#Started WriteVI on " << this->PsuID << " ";
     this->PsuWrite(input_vector);
+    std::cout << "#WriteVI on " << this->PsuID << "\n";
     // usleep(200e3);
     // output_message msgOut;
     // this->PsuRead(msgOut);
@@ -378,8 +378,8 @@ void DXKDP_PSU::WriteVIGen2(float targetV, float targetI, uint8_t addr) {
     // for(int i = 0; i < input_vector.size(); i++){
     //     printf("%02X ", input_vector[i]);
     // }
-    std::cout << "#Started WriteVIGen2 on " << this->PsuID << " ";
     this->PsuWrite(input_vector);
+    std::cout << "#WriteVIGen2 on " << this->PsuID << "\n";
     // usleep(200e3);
     // output_message msgOut;
     // this->PsuRead(msgOut);
@@ -448,6 +448,7 @@ void DXKDP_PSU::setPolarity(uint8_t polarity, uint8_t addr) {
     // for(auto i: input_vector) printf("%02X ", i);
     // std::cout << "\n\n";
     this->PsuWrite(input_vector);
+    std::cout << "#setPolarity on " << this->PsuID << "\n";
     // usleep(200e3);
     // output_message msgOut;
     // this->PsuRead(msgOut);
