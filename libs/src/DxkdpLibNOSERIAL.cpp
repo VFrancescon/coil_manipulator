@@ -1,8 +1,7 @@
 #include <DxkdpLib/DxkdpLib.hpp>
 
 DXKDP_PSU::DXKDP_PSU()
-    : serialPort("/dev/ttyUSB0", BaudRate::B_9600, NumDataBits::EIGHT,
-                 Parity::NONE, NumStopBits::ONE) {
+     /* removed serialPort initialization */ {
     // default constructor, here for debugging mainly
     // will instantiate a power supply at ttyUSB0, addr 1
 
@@ -11,16 +10,14 @@ DXKDP_PSU::DXKDP_PSU()
 }
 
 DXKDP_PSU::DXKDP_PSU(std::string COM_PORT)
-    : serialPort(COM_PORT, BaudRate::B_9600, NumDataBits::EIGHT, Parity::NONE,
-                 NumStopBits::ONE) {
+     /* removed serialPort initialization */ {
     this->PsuID = COM_PORT;
     this->DXKDP_Setup();
     std::cout << "Serial port has been opened";
 }
 
 DXKDP_PSU::DXKDP_PSU(std::string COM_PORT, float V_conv, float I_conv)
-    : serialPort(COM_PORT, BaudRate::B_9600, NumDataBits::EIGHT, Parity::NONE,
-                 NumStopBits::ONE) {
+     /* removed serialPort initialization */ {
     this->PsuID = COM_PORT;
     this->Vconv = V_conv;
     this->Iconv = I_conv;
@@ -38,18 +35,17 @@ void DXKDP_PSU::PsuWrite(input_message msgIn) {
 }
 
 void DXKDP_PSU::PsuWrite(std::vector<uint8_t> input) {
-    // std::cout << "Started PSUWrite on " << this->PsuID << " ";
-    // for(auto i: input){
-    //     printf("%02X ", i);
-    // }
-    // std::cout << "\n";
-    this->serialPort.WriteBinary(input);
-    // std::cout << "Finished PSUWrite on " << this->PsuID << " \n";
+    std::cout << "Started PSUWrite on " << this->PsuID << " ";
+    for(auto i: input){
+        printf("%02X ", i);
+    }
+    std::cout << "\n";
+    std::cout << "Finished PSUWrite on " << this->PsuID << " \n";
 }
 
 void DXKDP_PSU::PsuRead(output_message &msgOut) {
     // std::cout << "Started PSUread on " << this->PsuID << " \n";
-    this->serialPort.ReadBinary(msgOut.output1);
+    /* removed serialPort.ReadBinary(msgOut.output1); */
     // std::cout << "From psuread. size of returned values: " <<
     // msgOut.output1.size() << "\n"; std::cout << "Finished psuread on " <<
     // this->PsuID << " \n";
@@ -60,7 +56,7 @@ DXKDP_PSU::~DXKDP_PSU() {
     this->WriteVI(0, 0);
     usleep(50e3);
     this->PoCtrl(0x00);
-    this->serialPort.Close();
+    /* removed serialPort.Close(); */
 }
 
 std::vector<uint8_t> DXKDP_PSU::Encoder20(uint8_t PO_STATE, uint8_t addr) {
@@ -240,22 +236,23 @@ void DXKDP_PSU::DecToHexSigned(float value, float Conv, input_message &msgIn,
 void DXKDP_PSU::PoCtrl(uint8_t po_state) {
     std::vector<uint8_t> input_vector = this->Encoder20(po_state);
     // for(auto i: input_vector) printf("%02X ", i);
+    std::cout << "#Started PoCtrl on " << this->PsuID << " ";
     this->PsuWrite(input_vector);
-    usleep(200e3);
-    output_message msgOut;
-    this->PsuRead(msgOut);
-    // std::cout << "PoCtrl. size of returned values: " << msgOut.output1.size()
-    // << "\n";
-    this->PsuRead(msgOut);
+    // usleep(200e3);
+    // output_message msgOut;
+    // this->PsuRead(msgOut);
+    // // std::cout << "PoCtrl. size of returned values: " << msgOut.output1.size()
+    // // << "\n";
+    // this->PsuRead(msgOut);
     // if(msgOut.output1.size() == 0){
     //     std::cout << "PoCtrl. PsuID: " << this->PsuID << "\n";
     //     THROW_EXCEPT("Poctrl did not return.");
     // }
-    if (msgOut.output1[0] != 0x06) {
-        std::cout << "PoCtrl. PsuID: " << this->PsuID << "\n";
-        THROW_EXCEPT("PowerOut setting did not return 0x06. Aborting");
-    } else
-        return;
+    // if (msgOut.output1[0] != 0x06) {
+    //     std::cout << "PoCtrl. PsuID: " << this->PsuID << "\n";
+    //     THROW_EXCEPT("PowerOut setting did not return 0x06. Aborting");
+    // } else
+    //     return;
 }
 
 void DXKDP_PSU::WriteVoltage(float targetV, uint8_t addr) {
@@ -266,18 +263,18 @@ void DXKDP_PSU::WriteVoltage(float targetV, uint8_t addr) {
     this->PsuWrite(input_vector);
     usleep(200e3);
     output_message msgOut;
-    this->PsuRead(msgOut);
-    // for(auto i: msgOut.output1) printf("\nResult: %02X ", i);
-    this->PsuRead(msgOut);
-    if (msgOut.output1.size() == 0) {
-        std::cout << "WriteV. PsuID: " << this->PsuID << "\n";
-        THROW_EXCEPT("Write V did not return.");
-    }
-    if (msgOut.output1[0] != 0x06) {
-        std::cout << "WriteV .PsuID: " << this->PsuID << "\n";
-        THROW_EXCEPT("WriteVoltage setting did not return 0x06. Aborting");
-    } else
-        return;
+    // this->PsuRead(msgOut);
+    // // for(auto i: msgOut.output1) printf("\nResult: %02X ", i);
+    // this->PsuRead(msgOut);
+    // if (msgOut.output1.size() == 0) {
+    //     std::cout << "WriteV. PsuID: " << this->PsuID << "\n";
+    //     THROW_EXCEPT("Write V did not return.");
+    // }
+    // if (msgOut.output1[0] != 0x06) {
+    //     std::cout << "WriteV .PsuID: " << this->PsuID << "\n";
+    //     THROW_EXCEPT("WriteVoltage setting did not return 0x06. Aborting");
+    // } else
+    //     return;
 }
 
 void DXKDP_PSU::WriteCurrent(float targetI, uint8_t addr) {
@@ -285,22 +282,22 @@ void DXKDP_PSU::WriteCurrent(float targetI, uint8_t addr) {
 
     // for(auto i: input_vector) printf("%02X ", i);
     this->PsuWrite(input_vector);
-    usleep(200e3);
-    output_message msgOut;
-    this->PsuRead(msgOut);
-    this->PsuRead(msgOut);
-    //print input vector
-    for(auto i: input_vector) printf("Input: %02X ", i);
-    if (msgOut.output1.size() == 0) {
-        std::cout << "WriteI. PsuID: " << this->PsuID << "\n";
-        THROW_EXCEPT("Write I did not return.");
-    }
-    // for(auto i: msgOut.output1) printf("\nResult: %02X ", i);
-    if (msgOut.output1[0] != 0x06) {
-        std::cout << "WriteI. PsuID: " << this->PsuID << "\n";
-        THROW_EXCEPT("WriteCurrent setting did not return 0x06. Aborting");
-    } else
-        return;
+    // usleep(200e3);
+    // output_message msgOut;
+    // this->PsuRead(msgOut);
+    // this->PsuRead(msgOut);
+    // //print input vector
+    // for(auto i: input_vector) printf("Input: %02X ", i);
+    // if (msgOut.output1.size() == 0) {
+    //     std::cout << "WriteI. PsuID: " << this->PsuID << "\n";
+    //     THROW_EXCEPT("Write I did not return.");
+    // }
+    // // for(auto i: msgOut.output1) printf("\nResult: %02X ", i);
+    // if (msgOut.output1[0] != 0x06) {
+    //     std::cout << "WriteI. PsuID: " << this->PsuID << "\n";
+    //     THROW_EXCEPT("WriteCurrent setting did not return 0x06. Aborting");
+    // } else
+    //     return;
 }
 
 void DXKDP_PSU::WriteCurrentGen2(float targetI, uint8_t addr) {
@@ -312,18 +309,18 @@ void DXKDP_PSU::WriteCurrentGen2(float targetI, uint8_t addr) {
     }
     // for(auto i: input_vector) printf("%02X ", i);
     this->PsuWrite(input_vector);
-    usleep(200e3);
-    output_message msgOut;
-    this->PsuRead(msgOut);
-    if (msgOut.output1.size() == 0) {
-        std::cout << "WriteI. PsuID: " << this->PsuID << "\n";
-        THROW_EXCEPT("Write I did not return.");
-    }
-    if (msgOut.output1[0] != 0x06) {
-        std::cout << "WriteI. PsuID: " << this->PsuID << "\n";
-        THROW_EXCEPT("WriteCurrent setting did not return 0x06. Aborting");
-    } else
-        return;
+    // usleep(200e3);
+    // output_message msgOut;
+    // this->PsuRead(msgOut);
+    // if (msgOut.output1.size() == 0) {
+    //     std::cout << "WriteI. PsuID: " << this->PsuID << "\n";
+    //     THROW_EXCEPT("Write I did not return.");
+    // }
+    // if (msgOut.output1[0] != 0x06) {
+    //     std::cout << "WriteI. PsuID: " << this->PsuID << "\n";
+    //     THROW_EXCEPT("WriteCurrent setting did not return 0x06. Aborting");
+    // } else
+    //     return;
 }
 
 void DXKDP_PSU::WriteVI(float targetV, float targetI, uint8_t addr) {
@@ -333,38 +330,40 @@ void DXKDP_PSU::WriteVI(float targetV, float targetI, uint8_t addr) {
     // input_vector.size(); i++){
     //     printf("%02X ", input_vector[i]);
     // }
+    std::cout << "#Started WriteVI on " << this->PsuID << " ";
     this->PsuWrite(input_vector);
-    usleep(200e3);
-    output_message msgOut;
-    this->PsuRead(msgOut);
-    // std::cout << "WriteVI. size of returned values: " <<
-    // msgOut.output1.size() << "\n";
+    // usleep(200e3);
+    // output_message msgOut;
+    // this->PsuRead(msgOut);
+    // // std::cout << "WriteVI. size of returned values: " <<
+    // // msgOut.output1.size() << "\n";
 
-    //print psuID
-    // std::cout << "WriteVI. PsuID: " << this->PsuID << "";
+    // //print psuID
+    // // std::cout << "WriteVI. PsuID: " << this->PsuID << "";
 
-    // std::cout << "Input: ";
-    // //print input_vector
-    // for(auto i: input_vector) printf("%02X ", i);
+    // // std::cout << "Input: ";
+    // // //print input_vector
+    // // for(auto i: input_vector) printf("%02X ", i);
     
 
-    if (msgOut.output1.size() == 0) {
-        std::cout << "WriteVI. PsuID: " << this->PsuID << ".\n";
-        for (auto i : input_vector) printf("%02X ", i);
-        std::cout << "\n";
-        // return;
-        THROW_EXCEPT("WriteVI did not return.\n");
-    }
-    //print output vector
-    // std::cout << "Result: ";
-    // for(auto i: msgOut.output1) printf("%02X ", i);
-    // std::cout << "\n";
-    if (msgOut.output1[0] != 0x06) {
-        std::cout << "WriteVI. PsuID: " << this->PsuID << "\n";
-        THROW_EXCEPT("Write VI setting did not return 0x06. Aborting");
-    } else {
-        return;
-    }
+    // if (msgOut.output1.size() == 0) {
+    //     std::cout << "WriteVI. PsuID: " << this->PsuID << ".\n";
+    //     for (auto i : input_vector) printf("%02X ", i);
+    //     std::cout << "\n";
+    //     THROW_EXCEPT("WriteVI did not return.\n");
+    // }
+    // //print output vector
+    // // std::cout << "Result: ";
+    // //print output vector
+    // // std::cout << "Result: ";
+    // // for(auto i: msgOut.output1) printf("%02X ", i);
+    // // std::cout << "\n";
+    // if (msgOut.output1[0] != 0x06) {
+    //     std::cout << "WriteVI. PsuID: " << this->PsuID << "\n";
+    //     THROW_EXCEPT("Write VI setting did not return 0x06. Aborting");
+    // } else {
+    //     return;
+    // }
 }
 
 void DXKDP_PSU::WriteVIGen2(float targetV, float targetI, uint8_t addr) {
@@ -379,61 +378,62 @@ void DXKDP_PSU::WriteVIGen2(float targetV, float targetI, uint8_t addr) {
     // for(int i = 0; i < input_vector.size(); i++){
     //     printf("%02X ", input_vector[i]);
     // }
+    std::cout << "#Started WriteVIGen2 on " << this->PsuID << " ";
     this->PsuWrite(input_vector);
-    usleep(200e3);
-    output_message msgOut;
-    this->PsuRead(msgOut);
+    // usleep(200e3);
+    // output_message msgOut;
+    // this->PsuRead(msgOut);
 
-    // //print psuID
-    // std::cout << "WriteVI. PsuID: " << this->PsuID << "";
+    // // //print psuID
+    // // std::cout << "WriteVI. PsuID: " << this->PsuID << "";
 
-    // std::cout << "Input: ";
-    // //print input_vector
-    // for(auto i: input_vector) printf("%02X ", i);
+    // // std::cout << "Input: ";
+    // // //print input_vector
+    // // for(auto i: input_vector) printf("%02X ", i);
 
-    if (msgOut.output1.size() == 0) {
-        std::cout << "WriteVI. PsuID: " << this->PsuID << "\n";
-        for (auto i : input_vector) printf("%02X ", i);
-        std::cout << "\n";
-        THROW_EXCEPT("WriteVI did not return.\n");
-        // this->WriteVIGen2(targetV, targetI);
-    }
-    //print output vector
-    // std::cout << "Result: ";
-    // for(auto i: msgOut.output1) printf("%02X ", i);
-    // std::cout << "\n";
+    // if (msgOut.output1.size() == 0) {
+    //     std::cout << "WriteVI. PsuID: " << this->PsuID << "\n";
+    //     for (auto i : input_vector) printf("%02X ", i);
+    //     std::cout << "\n";
+    //     THROW_EXCEPT("WriteVI did not return.\n");
+    //     // this->WriteVIGen2(targetV, targetI);
+    // }
+    // //print output vector
+    // // std::cout << "Result: ";
+    // // for(auto i: msgOut.output1) printf("%02X ", i);
+    // // std::cout << "\n";
 
-    if (msgOut.output1[0] != 0x06) {
-        std::cout << "WriteVI. PsuID: " << this->PsuID << "\n";
-        THROW_EXCEPT("Write VI setting did not return 0x06. Aborting");
-    } else {
-        return;
-    }
+    // if (msgOut.output1[0] != 0x06) {
+    //     std::cout << "WriteVI. PsuID: " << this->PsuID << "\n";
+    //     THROW_EXCEPT("Write VI setting did not return 0x06. Aborting");
+    // } else {
+    //     return;
+    // }
 }
 
 void DXKDP_PSU::ReadVI(uint8_t addr) {
     std::vector<uint8_t> input_vector = this->Encoder26();
     this->PsuWrite(input_vector);
-    usleep(200e3);
-    output_message msgOut;
-    this->PsuRead(msgOut);
-    this->serialPort.ReadBinary(msgOut.output1);
-    this->serialPort.ReadBinary(msgOut.output2);
+    // usleep(200e3);
+    // output_message msgOut;
+    // this->PsuRead(msgOut);
+    // this->serialPort.ReadBinary(msgOut.output1);
+    // this->serialPort.ReadBinary(msgOut.output2);
 
-    // for(auto i: msgOut.output1){
-    //     printf(" %02X", i);
-    // }
-    // for(auto i: msgOut.output2){
-    //     printf(" %02X", i);
-    // }
+    // // for(auto i: msgOut.output1){
+    // //     printf(" %02X", i);
+    // // }
+    // // for(auto i: msgOut.output2){
+    // //     printf(" %02X", i);
+    // // }
 
-    this->Decoder26(msgOut);
+    // this->Decoder26(msgOut);
 
-    if (msgOut.output1[0] == 0x15) {
-        std::cout << "PsuID: " << this->PsuID << "\n";
-        THROW_EXCEPT("Reading VI did not return 0x06. Aborting");
-    } else
-        return;
+    // if (msgOut.output1[0] == 0x15) {
+    //     std::cout << "PsuID: " << this->PsuID << "\n";
+    //     THROW_EXCEPT("Reading VI did not return 0x06. Aborting");
+    // } else
+    //     return;
 }
 
 void DXKDP_PSU::setPolarity(uint8_t polarity, uint8_t addr) {
@@ -448,27 +448,27 @@ void DXKDP_PSU::setPolarity(uint8_t polarity, uint8_t addr) {
     // for(auto i: input_vector) printf("%02X ", i);
     // std::cout << "\n\n";
     this->PsuWrite(input_vector);
-    usleep(200e3);
-    output_message msgOut;
-    this->PsuRead(msgOut);
-    // std::cout << "Gen2 polarity. size of returned values: " <<
-    // msgOut.output1.size() << "\n";
-    if (msgOut.output1.size() == 0) {
-        std::cout << "PolarityGen1. PsuID: " << this->PsuID << ".\n";
-        for (auto i : input_vector) printf("%02X ", i);
-        std::cout << "\n";
-        THROW_EXCEPT("WriteVI did not return.\n");
-        // THROW_EXCEPT("PolarityGen1 setting did not return anything.
-        // Aborting");
-    }
-    if (msgOut.output1[0] != 0x06) {
-        std::cout << "Polarity. PsuID: " << this->PsuID << "\n";
-        THROW_EXCEPT("Polarity setting did not return 0x06. Aborting");
-    } else {
-        // std::cout << "-------------------SET
-        // POLARITY--------------------\n\n\n";
-        return;
-    }
+    // usleep(200e3);
+    // output_message msgOut;
+    // this->PsuRead(msgOut);
+    // // std::cout << "Gen2 polarity. size of returned values: " <<
+    // // msgOut.output1.size() << "\n";
+    // if (msgOut.output1.size() == 0) {
+    //     std::cout << "PolarityGen1. PsuID: " << this->PsuID << ".\n";
+    //     for (auto i : input_vector) printf("%02X ", i);
+    //     std::cout << "\n";
+    //     THROW_EXCEPT("WriteVI did not return.\n");
+    //     // THROW_EXCEPT("PolarityGen1 setting did not return anything.
+    //     // Aborting");
+    // }
+    // if (msgOut.output1[0] != 0x06) {
+    //     std::cout << "Polarity. PsuID: " << this->PsuID << "\n";
+    //     THROW_EXCEPT("Polarity setting did not return 0x06. Aborting");
+    // } else {
+    //     // std::cout << "-------------------SET
+    //     // POLARITY--------------------\n\n\n";
+    //     return;
+    // }
 }
 
 
@@ -480,30 +480,30 @@ uint8_t DXKDP_PSU::debugWriteVI(float targetV, float targetI, uint8_t addr){
     //     printf("%02X ", input_vector[i]);
     // }
     this->PsuWrite(input_vector);
-    usleep(200e3);
-    output_message msgOut;
-    this->PsuRead(msgOut);
-    // std::cout << "WriteVI. size of returned values: " <<
-    // msgOut.output1.size() << "\n";
+    // usleep(200e3);
+    // output_message msgOut;
+    // this->PsuRead(msgOut);
+    // // std::cout << "WriteVI. size of returned values: " <<
+    // // msgOut.output1.size() << "\n";
 
-    //print psuID
-    std::cout << "WriteVI. PsuID: " << this->PsuID << "";
+    // //print psuID
+    // std::cout << "WriteVI. PsuID: " << this->PsuID << "";
 
-    std::cout << "Input: ";
-    //print input_vector
-    for(auto i: input_vector) printf("%02X ", i);
+    // std::cout << "Input: ";
+    // //print input_vector
+    // for(auto i: input_vector) printf("%02X ", i);
     
 
-    if (msgOut.output1.size() == 0) {
-        std::cout << "No return value. PsuID: " << this->PsuID << ".\n";
-        // for (auto i : input_vector) printf("%02X ", i);
-        // std::cout << "\n";
-        // return;
-        // THROW_EXCEPT("WriteVI did not return.\n");
-        return 0x99;
-    } else {
-        std::cout << "Result: ";
-        for(auto i: msgOut.output1) printf("%02X ", i);
-        return msgOut.output1.at(0);
-    }
+    // if (msgOut.output1.size() == 0) {
+    //     std::cout << "No return value. PsuID: " << this->PsuID << ".\n";
+    //     // for (auto i : input_vector) printf("%02X ", i);
+    //     // std::cout << "\n";
+    //     // return;
+    //     // THROW_EXCEPT("WriteVI did not return.\n");
+    //     return 0x99;
+    // } else {
+    //     std::cout << "Result: ";
+    //     for(auto i: msgOut.output1) printf("%02X ", i);
+    //     return msgOut.output1.at(0);
+    // }
 }

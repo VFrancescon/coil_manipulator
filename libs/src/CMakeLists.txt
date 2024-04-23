@@ -3,8 +3,13 @@ find_package (Eigen3 3.3 REQUIRED NO_MODULE)
 
 # STEP 1: Include cpp files
 
-file(GLOB_RECURSE PSU_LIB_SRC
-        "DxkdpLib.cpp")
+if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+        file(GLOB_RECURSE PSU_LIB_SRC
+                        "DxkdpLibNOSERIAL.cpp")
+else()
+        file(GLOB_RECURSE PSU_LIB_SRC
+                        "DxkdpLib.cpp")
+endif()
 
 file(GLOB_RECURSE LIN_ACT_LIB_SRC
         "LinActuatorLib.cpp")
